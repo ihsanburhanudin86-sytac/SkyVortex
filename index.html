@@ -2754,11 +2754,12 @@ function playSoundBossDefeat(){
   });
 }
 
-// ─── FIREBASE LEADERBOARD ─────────────────────────────────
-const FB_URL='https://sky-vortex-default-rtdb.asia-southeast1.firebasedatabase.app';
+// ─── SUPABASE LEADERBOARD ─────────────────────────────────
+const SB_URL='https://nnwgbcifimwifnkjmeqr.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ud2diY2lmaW13aWZua2ptZXFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTQwMDMsImV4cCI6MjA5MzkzMDAwM30.BoiToWUkWAWdKOQV4feU3Ss9l8P2xkwKbhtJxRJZfrM';
 
-// Fetch dengan timeout agar APK tidak hang selamanya
-async function fbFetch(url,opts={},timeoutMs=8000){
+// Fetch dengan timeout agar APK tidak hang
+async function sbFetch(url,opts={},timeoutMs=8000){
   const ctrl=new AbortController();
   const tid=setTimeout(()=>ctrl.abort(),timeoutMs);
   try{
@@ -2768,8 +2769,8 @@ async function fbFetch(url,opts={},timeoutMs=8000){
   }catch(e){clearTimeout(tid);throw e;}
 }
 
-// Retry helper: coba sampai maxTry kali dengan jeda
-async function fbRetry(fn,maxTry=3,delayMs=1000){
+// Retry helper
+async function sbRetry(fn,maxTry=3,delayMs=1000){
   for(let i=0;i<maxTry;i++){
     try{return await fn();}
     catch(e){
@@ -2779,30 +2780,36 @@ async function fbRetry(fn,maxTry=3,delayMs=1000){
   }
 }
 
+const SB_HEADERS={
+  'Content-Type':'application/json',
+  'apikey':SB_KEY,
+  'Authorization':'Bearer '+SB_KEY,
+  'Prefer':'return=minimal'
+};
+
 async function addToLeaderboard(name,sc,wv){
-  // Validasi dasar
   if(!name||typeof sc!=='number'||sc<0)return;
   const entry={name:String(name).slice(0,20),score:Math.floor(sc),wave:Math.floor(wv)||1,date:Date.now()};
 
-  // Simpan lokal dulu (langsung bisa dilihat walau offline)
+  // Simpan lokal dulu
   gameData.leaderboard.push(entry);
   gameData.leaderboard.sort((a,b)=>b.score-a.score);
   if(gameData.leaderboard.length>20)gameData.leaderboard.length=20;
   saveData();
 
-  // Upload ke Firebase dengan retry (penting untuk APK WebView)
+  // Upload ke Supabase dengan retry
   try{
-    await fbRetry(async()=>{
-      const res=await fbFetch(FB_URL+'/leaderboard.json',{
+    await sbRetry(async()=>{
+      const res=await sbFetch(SB_URL+'/rest/v1/leaderboard',{
         method:'POST',
-        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        headers:SB_HEADERS,
         body:JSON.stringify(entry)
       });
-      if(!res.ok)throw new Error('HTTP '+res.status);
+      if(!res.ok){const t=await res.text();throw new Error('HTTP '+res.status+' '+t);}
     },3,1200);
-    console.log('[LB] Score uploaded to Firebase ✓');
+    console.log('[LB] Score uploaded to Supabase ✓');
   }catch(e){
-    console.warn('[LB] Firebase upload failed (score tersimpan lokal):',e.message);
+    console.warn('[LB] Supabase upload failed (score tersimpan lokal):',e.message);
   }
 }
 
@@ -2822,19 +2829,14 @@ async function loadFirebaseLeaderboard(){
   const tbody=document.getElementById('lbBody');
   tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:rgba(0,245,255,0.4);letter-spacing:2px;font-size:9px;padding:16px;">⟳ MEMUAT...</td></tr>';
   try{
-    const res=await fbFetch(FB_URL+'/leaderboard.json?orderBy="score"&limitToLast=50',{
-      headers:{'Accept':'application/json'}
+    const res=await sbFetch(SB_URL+'/rest/v1/leaderboard?select=name,score,wave,date&order=score.desc&limit=50',{
+      headers:{...SB_HEADERS,'Prefer':''}
     },8000);
     if(!res.ok)throw new Error('HTTP '+res.status);
-    const raw=await res.json();
-    if(!raw){renderLeaderboard([]);return;}
+    const arr=await res.json();
+    if(!arr||!arr.length){renderLeaderboard([]);return;}
 
-    // Firebase POST menghasilkan object {key: entry}, ambil values-nya
-    const arr=Object.values(raw)
-      .filter(e=>e&&typeof e.score==='number'&&e.name) // buang entry corrupt
-      .sort((a,b)=>b.score-a.score);
-
-    // Dedup: per nama, hanya simpan skor tertinggi
+    // Dedup: per nama, hanya skor tertinggi
     const seen=new Map();
     arr.forEach(e=>{
       const key=String(e.name).toUpperCase();
@@ -2843,9 +2845,9 @@ async function loadFirebaseLeaderboard(){
     const deduped=[...seen.values()].sort((a,b)=>b.score-a.score).slice(0,20);
 
     renderLeaderboard(deduped);
-    console.log('[LB] Loaded from Firebase:',deduped.length,'entries');
+    console.log('[LB] Loaded from Supabase:',deduped.length,'entries');
   }catch(e){
-    console.warn('[LB] Firebase load failed, pakai data lokal:',e.message);
+    console.warn('[LB] Supabase load failed, pakai data lokal:',e.message);
     renderLeaderboard(gameData.leaderboard);
   }
 }
