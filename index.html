@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#04080f">
 <meta name="description" content="SKY VORTEX - 2D Arcade Shooter dengan Gacha Pesawat">
 <link rel="manifest" href="manifest.json">
-<title>SKY VORTEX v1.0</title>
+<title>SKY VORTEX v2.0</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -456,7 +456,7 @@
 
 <script>
 // ── SERVICE WORKER: Auto-Update tanpa download ulang ──────
-const APP_VERSION = 'v1.0';
+const APP_VERSION = 'v2.0';
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
@@ -552,7 +552,7 @@ document.head.appendChild(st);
   <div id="eggToast"></div>
   <div id="ghostOverlay"></div>
   <div id="hiddenBossWarning">⚠ ??? TELAH TERBANGUN ⚠<br><span style="font-size:10px;color:#ff88ff;letter-spacing:6px;">BOSS TERSEMBUNYI</span></div>
-  <div id="footer"><span>SKY VORTEX v1.0</span><span id="footerMode">ANALOG: BEBAS</span></div>
+  <div id="footer"><span>SKY VORTEX v2.0</span><span id="footerMode">ANALOG: BEBAS</span></div>
 
   <!-- MAIN MENU -->
   <div class="panel show" id="menuPanel">
@@ -724,7 +724,7 @@ document.head.appendChild(st);
         <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       </button>
       <h2 style="color:var(--cyan);text-shadow:0 0 20px var(--cyan);">🏆 LEADERBOARD</h2>
-      <div class="panel-sub">TOP PILOT — SKY VORTEX ARENA</div>
+      <div class="panel-sub">TOP PILOT — SKY VORTEX ARENA &nbsp;<button onclick="loadFirebaseLeaderboard()" style="background:transparent;border:1px solid rgba(0,245,255,0.4);color:var(--cyan);font-size:9px;padding:2px 8px;cursor:pointer;letter-spacing:1px;font-family:'Orbitron',monospace;">⟳ REFRESH</button></div>
     </div>
     <div class="panel-body">
       <table class="lb-table" id="lbTable">
@@ -2754,30 +2754,64 @@ function playSoundBossDefeat(){
 }
 
 // ─── LEADERBOARD ──────────────────────────────────────────
-function addToLeaderboard(name,sc,wv){
+// ─── FIREBASE LEADERBOARD ─────────────────────────────────
+const FB_URL='https://sky-vortex-default-rtdb.asia-southeast1.firebasedatabase.app';
+
+async function addToLeaderboard(name,sc,wv){
+  // Simpan lokal dulu
   gameData.leaderboard.push({name,score:sc,wave:wv,date:Date.now()});
   gameData.leaderboard.sort((a,b)=>b.score-a.score);
   if(gameData.leaderboard.length>20)gameData.leaderboard.length=20;
   saveData();
+  // Upload ke Firebase
+  try{
+    const entry={name,score:sc,wave:wv,date:Date.now()};
+    await fetch(FB_URL+'/leaderboard.json',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(entry)
+    });
+  }catch(e){console.warn('[LB] Firebase error:',e);}
 }
 
 function openLeaderboard(){
   playSoundMenuClick();
   document.getElementById('menuPanel').classList.remove('show');
   document.getElementById('leaderboardPanel').classList.add('show');
-  renderLeaderboard();
+  loadFirebaseLeaderboard();
 }
 function closeLeaderboard(){
   playSoundMenuBack();
   document.getElementById('leaderboardPanel').classList.remove('show');
   document.getElementById('menuPanel').classList.add('show');
 }
-function renderLeaderboard(){
+
+async function loadFirebaseLeaderboard(){
   const tbody=document.getElementById('lbBody');
-  if(!gameData.leaderboard.length){tbody.innerHTML='<tr><td colspan="4" class="lb-empty">BELUM ADA SKOR</td></tr>';return;}
-  tbody.innerHTML=gameData.leaderboard.slice(0,15).map((e,i)=>{
+  tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:rgba(0,245,255,0.4);letter-spacing:2px;font-size:9px;padding:16px;">⟳ MEMUAT...</td></tr>';
+  try{
+    const res=await fetch(FB_URL+'/leaderboard.json');
+    const raw=await res.json();
+    if(!raw){renderLeaderboard([]);return;}
+    // Convert Firebase object to array
+    const arr=Object.values(raw);
+    arr.sort((a,b)=>b.score-a.score);
+    renderLeaderboard(arr.slice(0,20));
+  }catch(e){
+    console.warn('[LB] Load error:',e);
+    // Fallback ke data lokal
+    renderLeaderboard(gameData.leaderboard);
+  }
+}
+
+function renderLeaderboard(data){
+  const tbody=document.getElementById('lbBody');
+  const list=data||gameData.leaderboard;
+  if(!list.length){tbody.innerHTML='<tr><td colspan="4" class="lb-empty">BELUM ADA SKOR</td></tr>';return;}
+  tbody.innerHTML=list.slice(0,20).map((e,i)=>{
     const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}`;
-    return`<tr><td class="lb-rank">${medal}</td><td>${e.name}</td><td>${e.score.toLocaleString()}</td><td>${e.wave}</td></tr>`;
+    const d=e.date?new Date(e.date).toLocaleDateString('id-ID',{day:'2-digit',month:'2-digit'}):'';
+    return`<tr><td class="lb-rank">${medal}</td><td>${e.name}</td><td>${(e.score||0).toLocaleString()}</td><td>${e.wave}</td></tr>`;
   }).join('');
 }
 
