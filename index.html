@@ -6,11 +6,11 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="SKY VORTEX">
+<meta name="apple-mobile-web-app-title" content="SKY VORTEX v4.0">
 <meta name="theme-color" content="#04080f">
-<meta name="description" content="SKY VORTEX - 2D Arcade Shooter dengan Gacha Pesawat">
+<meta name="description" content="SKY VORTEX v4.0 - 2D Arcade Shooter dengan Gacha Pesawat">
 <link rel="manifest" href="manifest.json">
-<title>SKY VORTEX v3.0</title>
+<title>SKY VORTEX v4.0</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -20,7 +20,10 @@
   }
   html{overscroll-behavior:none;overscroll-behavior-y:none;overflow:hidden;position:fixed;width:100%;height:100%;}
   body{background:var(--dark);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Orbitron',monospace;overflow:hidden;color:var(--cyan);touch-action:pan-x pan-y;overscroll-behavior:none;position:fixed;width:100%;height:100%;}
-  #wrapper{position:relative;display:flex;flex-direction:column;align-items:center;overscroll-behavior:none;}
+  #wrapper{
+    position:relative;display:flex;flex-direction:column;align-items:center;overscroll-behavior:none;
+    transform-origin:top center;
+  }
   #hud{display:flex;justify-content:space-between;align-items:center;width:480px;padding:7px 12px;background:rgba(0,245,255,0.05);border:1px solid rgba(0,245,255,0.2);border-bottom:none;font-size:11px;letter-spacing:2px;}
   #hud .val{color:#fff;font-weight:700;font-size:13px;}
   #coinHud{color:var(--gold);font-size:12px;letter-spacing:2px;display:flex;align-items:center;gap:4px;}
@@ -35,7 +38,7 @@
 
   /* ═══════ RETRO ARCADE MAIN MENU ═══════ */
   @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-  #menuPanel{background:radial-gradient(ellipse at top,#0a001a 0%,#000000 100%) !important;image-rendering:pixelated;border:4px solid #ff00ff !important;box-shadow:0 0 0 2px #000,0 0 0 4px #ff00ff,0 0 40px #ff00ff88 !important;}
+  #menuPanel{background:radial-gradient(ellipse at top,#0a001a 0%,#000000 100%) !important;image-rendering:pixelated;border:4px solid #ff00ff !important;box-shadow:0 0 0 2px #000,0 0 0 4px #ff00ff,0 0 40px #ff00ff88 !important;justify-content:flex-start !important;overflow-y:auto !important;}
   #menuPanel h1{font-family:'Press Start 2P',monospace !important;font-size:22px !important;font-weight:400 !important;letter-spacing:2px !important;color:#ffff00 !important;text-shadow:3px 3px 0 #ff8800,-1px -1px 0 #ff4400,0 0 20px #ffff00 !important;line-height:1.4 !important;text-align:center !important;animation:titleBlink 1.2s step-end infinite;}
   @keyframes titleBlink{0%,100%{opacity:1;}50%{opacity:0.85;}}
   @keyframes scanline{0%{background-position:0 0;}100%{background-position:0 4px;}}
@@ -563,7 +566,7 @@
 
 <script>
 // ── SERVICE WORKER: Auto-Update tanpa download ulang ──────
-const APP_VERSION = 'v3.0';
+const APP_VERSION = 'v4.0';
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
@@ -659,7 +662,7 @@ document.head.appendChild(st);
   <div id="eggToast"></div>
   <div id="ghostOverlay"></div>
   <div id="hiddenBossWarning">⚠ ??? TELAH TERBANGUN ⚠<br><span style="font-size:10px;color:#ff88ff;letter-spacing:6px;">BOSS TERSEMBUNYI</span></div>
-  <div id="footer"><span>SKY VORTEX v3.0</span><span id="footerMode">ANALOG: BEBAS</span></div>
+  <div id="footer"><span>SKY VORTEX v4.0</span><span id="footerMode">ANALOG: BEBAS</span></div>
 
   <!-- MAIN MENU (RETRO ARCADE) -->
   <div class="panel show" id="menuPanel" style="justify-content:flex-start;padding:16px 0 12px;gap:8px;">
@@ -1088,12 +1091,20 @@ document.head.appendChild(st);
       </div>
       <div id="adminCoinsMsg" class="admin-msg" style="color:#ffd700;"></div>
 
-      <div class="admin-section-title" style="margin-top:12px;">✈️ BERI PESAWAT</div>
+      <div class="admin-section-title" style="margin-top:12px;">✈️ BERI PESAWAT KE PEMAIN</div>
+      <div style="font-size:8px;letter-spacing:1px;color:rgba(0,200,255,0.45);margin-bottom:8px;width:100%;">Kirim pesawat ke pemain lain lewat server — mereka terima otomatis saat buka game</div>
+      <div style="width:90%;display:flex;align-items:center;gap:4px;margin-bottom:8px;">
+        <span style="font-size:9px;letter-spacing:2px;color:rgba(0,200,255,0.5);white-space:nowrap;">NAMA</span>
+        <input class="admin-input" id="giveShipName" type="text" placeholder="NAMA PEMAIN TUJUAN..." maxlength="20" style="flex:1;text-transform:uppercase;margin:0;border-color:rgba(0,200,255,0.4);color:#00ccff;">
+        <button class="admin-action-btn" style="border-color:rgba(0,245,255,0.5);color:#00f5ff;font-size:9px;padding:6px 8px;" onclick="adminSearchShipName()" title="Cari nama di leaderboard">🔍</button>
+      </div>
+      <div id="adminShipNameSuggestions" style="width:90%;display:flex;flex-wrap:wrap;gap:4px;min-height:0;margin-bottom:6px;"></div>
+      <div style="font-size:9px;letter-spacing:2px;color:rgba(0,200,255,0.5);width:100%;margin-bottom:4px;">REGULAR SHIPS</div>
       <div style="width:100%;display:grid;grid-template-columns:1fr 1fr;gap:6px;" id="adminShipGrid"></div>
       <div style="margin-top:8px;font-size:9px;letter-spacing:2px;color:rgba(255,34,102,0.4);width:100%;">SECRET SHIPS</div>
       <div style="width:100%;display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;" id="adminSecretShipGrid"></div>
       <div id="adminShipMsg" class="admin-msg" style="color:#00f5ff;margin-top:6px;"></div>
-      <button class="glow-btn" style="width:90%;border-color:#00f5ff;color:#00f5ff;font-size:10px;padding:9px;margin-top:8px;" onclick="adminGiveAllShips()">✈️ UNLOCK SEMUA PESAWAT</button>
+      <button class="glow-btn" style="width:90%;border-color:#00f5ff;color:#00f5ff;font-size:10px;padding:9px;margin-top:8px;" onclick="adminGiveAllShips()">✈️ UNLOCK SEMUA (DIRI SENDIRI)</button>
     </div>
 
     <!-- ═══ TAB: BAN ═══ -->
@@ -4923,7 +4934,25 @@ function renderAdminShipGrid(){
     </button>`;
   }).join('');
 }
-function adminGiveShip(id,name,isSecret){
+async function adminGiveShip(id,name,isSecret){
+  const targetName=(document.getElementById('giveShipName').value||'').trim().toUpperCase();
+  const myName=(myPlayerName||localStorage.getItem('sv_player_name')||'').toUpperCase().trim();
+  // Kalau ada nama target dan beda dengan diri sendiri — kirim via server
+  if(targetName && targetName!==myName){
+    setAdminTabMsg('adminShipMsg','⏳ MENGIRIM '+name+' → '+targetName+'...','rgba(0,200,255,0.5)');
+    try{
+      const res=await sbFetch(SB_URL+'/rest/v1/pending_ships',{
+        method:'POST',
+        headers:{...SB_HDR,'Prefer':'return=minimal'},
+        body:JSON.stringify({name:targetName,ship_id:id,ship_name:name,is_secret:isSecret})
+      });
+      if(!res.ok)throw new Error('HTTP '+res.status);
+      playSoundAdminShip();
+      setAdminTabMsg('adminShipMsg','✓ '+name+' DIKIRIM → '+targetName,'#00f5ff');
+    }catch(e){setAdminTabMsg('adminShipMsg','✕ GAGAL: '+e.message,'#ff2244');}
+    return;
+  }
+  // Kalau tidak ada nama / nama sendiri — berikan ke diri sendiri (lokal)
   if(isSecret){
     if(!gameData.unlockedSecrets)gameData.unlockedSecrets=[];
     if(gameData.unlockedSecrets.includes(id)){setAdminTabMsg('adminShipMsg','⚠ '+name+' SUDAH DIMILIKI','#ff6600');return;}
@@ -4936,7 +4965,20 @@ function adminGiveShip(id,name,isSecret){
   saveData();
   renderAdminShipGrid();
   playSoundAdminShip();
-  setAdminTabMsg('adminShipMsg','✓ '+name+' DIBERIKAN!','#00f5ff');
+  setAdminTabMsg('adminShipMsg','✓ '+name+' DIBERIKAN KE DIRI SENDIRI!','#00f5ff');
+}
+
+async function adminSearchShipName(){
+  const q=(document.getElementById('giveShipName').value||'').trim().toUpperCase();
+  const sug=document.getElementById('adminShipNameSuggestions');
+  if(!q){sug.innerHTML='';return;}
+  try{
+    const res=await sbFetch(SB_URL+'/rest/v1/leaderboard?select=name&order=score.desc&limit=200',{headers:SB_HDR});
+    if(!res.ok){sug.innerHTML='';return;}
+    const rows=await res.json();
+    const names=[...new Set(rows.map(r=>r.name).filter(n=>n&&n.toUpperCase().includes(q)))].slice(0,6);
+    sug.innerHTML=names.map(n=>`<button onclick="document.getElementById('giveShipName').value='${n}';document.getElementById('adminShipNameSuggestions').innerHTML='';setAdminTabMsg('adminShipMsg','✓ NAMA: ${n}','#00f5ff');" style="background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.4);color:#00ccff;font-family:'Share Tech Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;letter-spacing:1px;">${n}</button>`).join('');
+  }catch(e){sug.innerHTML='';}
 }
 function adminGiveAllShips(){
   if(!gameData.ownedShips)gameData.ownedShips=['falcon'];
@@ -5091,12 +5133,12 @@ addToLeaderboard = async function(name,sc,wv){
 async function claimPendingCoins(){
   const name=(myPlayerName||localStorage.getItem('sv_player_name')||'').toUpperCase().trim();
   if(!name)return;
-  // Guard: hindari double-claim jika dipanggil berulang
   if(claimPendingCoins._running)return;
   claimPendingCoins._running=true;
   try{
+    // 1. Ambil semua pending koin untuk nama ini
     const res=await sbFetch(
-      SB_URL+'/rest/v1/pending_coins?name=eq.'+encodeURIComponent(name)+'&claimed=eq.false&select=id,amount',
+      SB_URL+'/rest/v1/pending_coins?name=eq.'+encodeURIComponent(name)+'&select=id,amount',
       {headers:SB_HDR}
     );
     if(!res.ok){claimPendingCoins._running=false;return;}
@@ -5104,26 +5146,68 @@ async function claimPendingCoins(){
     if(!rows||!rows.length){claimPendingCoins._running=false;return;}
     const total=rows.reduce((s,r)=>s+(r.amount||0),0);
     if(total<=0){claimPendingCoins._running=false;return;}
-    // Mark semua sebagai claimed dulu — baru tambah ke lokal setelah semua berhasil
+    // 2. DELETE semua row sekaligus — kalau gagal, koin tidak ditambah
     const ids=rows.map(r=>r.id);
-    const patchResults=await Promise.all(ids.map(id=>
-      sbFetch(SB_URL+'/rest/v1/pending_coins?id=eq.'+id,{
-        method:'PATCH',
-        headers:{...SB_HDR,'Prefer':'return=minimal'},
-        body:JSON.stringify({claimed:true})
-      }).then(r=>r.ok).catch(()=>false)
-    ));
-    // Hanya tambah koin yang berhasil di-mark
-    const successRows=rows.filter((_,i)=>patchResults[i]);
-    const claimedTotal=successRows.reduce((s,r)=>s+(r.amount||0),0);
-    if(claimedTotal<=0){claimPendingCoins._running=false;return;}
-    // Tambah ke koin lokal hanya setelah DB berhasil diupdate
-    gameData.coins=(gameData.coins||0)+claimedTotal;
+    const delRes=await sbFetch(
+      SB_URL+'/rest/v1/pending_coins?id=in.('+ids.join(',')+')&name=eq.'+encodeURIComponent(name),
+      {method:'DELETE',headers:{...SB_HDR,'Prefer':'return=minimal'}}
+    );
+    if(!delRes.ok){claimPendingCoins._running=false;return;}
+    // 3. Baru tambah ke lokal setelah DB row terhapus
+    gameData.coins=(gameData.coins||0)+total;
     saveData();updateHUD();
     playSoundAdminCoin();
-    showPendingCoinNotif(claimedTotal);
+    showPendingCoinNotif(total);
   }catch(e){console.warn('[PendingCoins] gagal:',e);}
   claimPendingCoins._running=false;
+}
+
+// ── CLAIM PENDING SHIPS ────────────────────────────────────
+async function claimPendingShips(){
+  const name=(myPlayerName||localStorage.getItem('sv_player_name')||'').toUpperCase().trim();
+  if(!name)return;
+  if(claimPendingShips._running)return;
+  claimPendingShips._running=true;
+  try{
+    const res=await sbFetch(
+      SB_URL+'/rest/v1/pending_ships?name=eq.'+encodeURIComponent(name)+'&select=id,ship_id,ship_name,is_secret',
+      {headers:SB_HDR}
+    );
+    if(!res.ok){claimPendingShips._running=false;return;}
+    const rows=await res.json();
+    if(!rows||!rows.length){claimPendingShips._running=false;return;}
+    const ids=rows.map(r=>r.id);
+    const delRes=await sbFetch(
+      SB_URL+'/rest/v1/pending_ships?id=in.('+ids.join(',')+')&name=eq.'+encodeURIComponent(name),
+      {method:'DELETE',headers:{...SB_HDR,'Prefer':'return=minimal'}}
+    );
+    if(!delRes.ok){claimPendingShips._running=false;return;}
+    // Tambah pesawat ke lokal
+    if(!gameData.ownedShips)gameData.ownedShips=['falcon'];
+    if(!gameData.unlockedSecrets)gameData.unlockedSecrets=[];
+    const newShips=[];
+    rows.forEach(r=>{
+      if(r.is_secret){
+        if(!gameData.unlockedSecrets.includes(r.ship_id)){gameData.unlockedSecrets.push(r.ship_id);newShips.push(r.ship_name);}
+      }else{
+        if(!gameData.ownedShips.includes(r.ship_id)){gameData.ownedShips.push(r.ship_id);newShips.push(r.ship_name);}
+      }
+    });
+    if(newShips.length){saveData();showPendingShipNotif(newShips);}
+  }catch(e){console.warn('[PendingShips] gagal:',e);}
+  claimPendingShips._running=false;
+}
+function showPendingShipNotif(ships){
+  const el=document.createElement('div');
+  el.style.cssText=`position:fixed;top:60px;left:50%;transform:translateX(-50%);
+    background:rgba(4,8,20,0.97);border:2px solid #00f5ff;padding:14px 28px;
+    font-family:Orbitron,monospace;text-align:center;z-index:9999;
+    box-shadow:0 0 30px rgba(0,245,255,0.4);animation:fadeInDown .4s ease;`;
+  el.innerHTML=`<div style="font-size:11px;letter-spacing:3px;color:rgba(0,245,255,0.6);margin-bottom:4px;">PESAWAT DITERIMA!</div>
+    <div style="font-size:16px;font-weight:900;color:#00f5ff;text-shadow:0 0 20px #00f5ff;">${ships.join(', ')}</div>
+    <div style="font-size:9px;letter-spacing:2px;color:rgba(0,245,255,0.4);margin-top:4px;">DARI ADMIN</div>`;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),3500);
 }
 function showPendingCoinNotif(total){
   // Buat popup notif koin masuk
@@ -5140,10 +5224,24 @@ function showPendingCoinNotif(total){
 }
 
 // ─── INIT ──────────────────────────────────────────────────
+// ── AUTO SCALE wrapper to fit screen ──────────────────────
+(function scaleWrapper(){
+  const wrap=document.getElementById('wrapper');
+  function doScale(){
+    const sw=window.innerWidth,sh=window.innerHeight;
+    const scaleX=sw/480,scaleY=sh/672; // 672 = hud(36)+canvas(600)+footer(36)
+    const scale=Math.min(scaleX,scaleY,1); // max scale = 1 (never upscale past native)
+    wrap.style.transform='scale('+scale+')';
+    wrap.style.marginTop=((sh-(672*scale))/2)+'px';
+  }
+  doScale();
+  window.addEventListener('resize',doScale);
+})();
+
 initStars();particles=[];powerups=[];bullets=[];enemyBullets=[];enemies=[];
 updateHUD();loop();
 // Cek pending koin dari admin saat game dibuka
-setTimeout(()=>claimPendingCoins(),2000);
+setTimeout(()=>{claimPendingCoins();claimPendingShips();},2000);
 
 // Inject mute button into HUD
 (function(){
