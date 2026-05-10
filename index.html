@@ -5909,7 +5909,9 @@ async function claimOneShip(id, shipId, shipName, isSecret){
     }
     if(btn){btn.textContent='✓ DIKLAIM';btn.style.color='#00ff99';btn.style.borderColor='#00ff99';}
     updateMailBadge(mailboxData.length);
-    setTimeout(()=>loadMailbox(true),500);
+    // Re-render dari cache lokal saja
+    const myName2=(myPlayerName||localStorage.getItem('sv_player_name')||'').toUpperCase().trim();
+    setTimeout(()=>renderMailbox(myName2),450);
   }catch(e){
     if(btn){btn.disabled=false;btn.textContent='KLAIM';}
     alert('Gagal klaim: '+e.message);
@@ -5956,17 +5958,22 @@ async function claimOneMail(id, amount){
     gameData.coins=(gameData.coins||0)+claimedAmt;
     saveData();updateHUD();
     playSoundAdminCoin();
-    // Animasi item
+    // Hapus dari cache lokal dulu
+    mailboxData=mailboxData.filter(m=>String(m.id)!==String(id));
+    // Animasi hilang
     const item=document.getElementById('mailItem_'+id);
     if(item){
       item.style.transition='opacity .4s,transform .4s';
       item.style.opacity='0';item.style.transform='translateX(60px)';
-      setTimeout(()=>item.remove(),400);
+      setTimeout(()=>{
+        item.remove();
+        updateMailBadge(mailboxData.length);
+        // Re-render dari cache lokal (bukan fetch ulang — biar tidak muncul lagi)
+        const myName=(myPlayerName||localStorage.getItem('sv_player_name')||'').toUpperCase().trim();
+        renderMailbox(myName);
+      },400);
     }
-    // Refresh dari Supabase supaya data benar-benar sinkron
-    mailboxData=mailboxData.filter(m=>String(m.id)!==String(id));
     showPendingCoinNotif(claimedAmt);
-    setTimeout(()=>loadMailbox(true),500);
   }catch(e){
     if(btn){btn.disabled=false;btn.textContent='KLAIM';}
     console.warn('[Mailbox] claimOne error:',e);
