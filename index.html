@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#04080f">
 <meta name="description" content="SKY VORTEX - 2D Arcade Shooter dengan Gacha Pesawat">
 <link rel="manifest" href="manifest.json">
-<title>SKY VORTEX v3.0</title>
+<title>SKY VORTEX v1.0</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -18,8 +18,9 @@
     --cyan:#00f5ff;--orange:#ff6b00;--red:#ff2244;--gold:#ffd700;--purple:#cc44ff;
     --dark:#04080f;--mid:#0a1628;--panel:rgba(4,12,28,0.97);
   }
-  body{background:var(--dark);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Orbitron',monospace;overflow:hidden;color:var(--cyan);}
-  #wrapper{position:relative;display:flex;flex-direction:column;align-items:center;}
+  html,body{overscroll-behavior:none;overscroll-behavior-y:none;}
+  body{background:var(--dark);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Orbitron',monospace;overflow:hidden;color:var(--cyan);touch-action:none;}
+  #wrapper{position:relative;display:flex;flex-direction:column;align-items:center;overscroll-behavior:none;}
   #hud{display:flex;justify-content:space-between;align-items:center;width:480px;padding:7px 12px;background:rgba(0,245,255,0.05);border:1px solid rgba(0,245,255,0.2);border-bottom:none;font-size:11px;letter-spacing:2px;}
   #hud .val{color:#fff;font-weight:700;font-size:13px;}
   #coinHud{color:var(--gold);font-size:12px;letter-spacing:2px;display:flex;align-items:center;gap:4px;}
@@ -455,7 +456,7 @@
 
 <script>
 // ── SERVICE WORKER: Auto-Update tanpa download ulang ──────
-const APP_VERSION = 'v10.3';
+const APP_VERSION = 'v1.0';
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
@@ -551,7 +552,7 @@ document.head.appendChild(st);
   <div id="eggToast"></div>
   <div id="ghostOverlay"></div>
   <div id="hiddenBossWarning">⚠ ??? TELAH TERBANGUN ⚠<br><span style="font-size:10px;color:#ff88ff;letter-spacing:6px;">BOSS TERSEMBUNYI</span></div>
-  <div id="footer"><span>SKY VORTEX v3.0</span><span id="footerMode">ANALOG: BEBAS</span></div>
+  <div id="footer"><span>SKY VORTEX v1.0</span><span id="footerMode">ANALOG: BEBAS</span></div>
 
   <!-- MAIN MENU -->
   <div class="panel show" id="menuPanel">
@@ -4125,6 +4126,10 @@ updateHUD();loop();
   }
   document.addEventListener('click',firstTouch);
   document.addEventListener('touchstart',firstTouch,{passive:true});
+  // Blokir pull-to-refresh di semua area
+  document.addEventListener('touchmove',e=>{
+    if(!e.target.closest('.panel-body'))e.preventDefault();
+  },{passive:false});
 })();
 </script>
 </body>

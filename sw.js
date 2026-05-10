@@ -1,6 +1,6 @@
 // ── SKY VORTEX SERVICE WORKER ──────────────────────────────
 // Versi cache — naikkan angka ini setiap update game
-const CACHE_VERSION = 'sky-vortex-v11';
+const CACHE_VERSION = 'sky-vortex-v1';
 const CACHE_NAME = `sv-cache-${CACHE_VERSION}`;
 
 // File yang di-cache untuk offline play
