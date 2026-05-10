@@ -86,17 +86,55 @@
   .back-btn{font-size:10px;letter-spacing:3px;color:rgba(0,245,255,0.4);background:transparent;border:none;cursor:pointer;font-family:'Orbitron';padding:8px 14px;transition:color .2s;margin-top:4px;}
   .back-btn:hover{color:var(--cyan);}
 
+
   /* LEADERBOARD PANEL */
   #leaderboardPanel .panel-header h2{color:var(--cyan);}
-  .lb-table{width:100%;border-collapse:collapse;margin-bottom:14px;}
-  .lb-table th{font-size:8px;letter-spacing:3px;color:rgba(0,245,255,0.4);padding:6px 10px;text-align:left;border-bottom:1px solid rgba(0,245,255,0.1);}
-  .lb-table td{font-size:11px;letter-spacing:2px;padding:9px 10px;border-bottom:1px solid rgba(0,245,255,0.06);color:rgba(255,255,255,0.8);}
-  .lb-table tr:nth-child(1) td{color:var(--gold);font-weight:700;}
+  .lb-table{width:100%;border-collapse:collapse;}
+  .lb-table th{font-size:8px;letter-spacing:3px;color:rgba(0,245,255,0.4);padding:6px 10px;text-align:left;border-bottom:1px solid rgba(0,245,255,0.12);}
+  .lb-table td{font-size:11px;letter-spacing:1.5px;padding:8px 10px;border-bottom:1px solid rgba(0,245,255,0.05);color:rgba(255,255,255,0.8);transition:background .3s;}
+  .lb-table tr:nth-child(1) td{color:var(--gold);font-weight:700;text-shadow:0 0 12px rgba(255,215,0,.4);}
   .lb-table tr:nth-child(2) td{color:#c0c0c0;}
   .lb-table tr:nth-child(3) td{color:#cd7f32;}
-  .lb-rank{color:rgba(0,245,255,0.4)!important;font-size:9px!important;}
-  .lb-me{background:rgba(0,245,255,0.06);}
+  .lb-rank{color:rgba(0,245,255,0.45)!important;font-size:9px!important;width:32px;}
+  .lb-score-col{text-align:right!important;font-family:'Share Tech Mono',monospace;font-size:12px!important;letter-spacing:1px!important;}
+  .lb-wave-col{text-align:center!important;font-size:9px!important;color:rgba(255,255,255,0.4)!important;width:40px;}
   .lb-empty{text-align:center;color:rgba(0,245,255,0.3);font-size:10px;letter-spacing:3px;padding:30px;}
+
+  /* MY ROW highlight */
+  .lb-me td{background:rgba(0,245,255,0.07)!important;color:var(--cyan)!important;font-weight:700;}
+  .lb-me td:first-child::before{content:'▶ ';font-size:8px;}
+
+  /* Rank change badge */
+  .rank-up{display:inline-block;color:#00ff88;font-size:7px;letter-spacing:1px;margin-left:4px;animation:rankPop .4s ease;}
+  .rank-new{display:inline-block;color:var(--cyan);font-size:7px;letter-spacing:1px;margin-left:4px;}
+  @keyframes rankPop{0%{transform:scale(1.6)translateY(-4px);opacity:0;}100%{transform:none;opacity:1;}}
+
+  /* Row entry animation */
+  @keyframes lbRowIn{from{opacity:0;transform:translateX(-14px);}to{opacity:1;transform:none;}}
+  .lb-row-anim{animation:lbRowIn .3s ease both;}
+
+  /* Status bar */
+  .lb-statusbar{display:flex;align-items:center;justify-content:space-between;padding:5px 2px;margin-bottom:4px;font-size:8px;letter-spacing:2px;}
+  .lb-online-dot{width:7px;height:7px;border-radius:50%;background:#00ff88;box-shadow:0 0 6px #00ff88;display:inline-block;margin-right:5px;animation:dotPulse 1.6s ease-in-out infinite;}
+  .lb-offline-dot{width:7px;height:7px;border-radius:50%;background:#ff8800;display:inline-block;margin-right:5px;}
+  @keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+  .lb-count-badge{font-size:7px;letter-spacing:1px;color:rgba(0,245,255,0.35);}
+
+  /* Refresh button */
+  .lb-refresh-btn{background:transparent;border:1px solid rgba(0,245,255,0.3);color:rgba(0,245,255,0.6);font-family:'Orbitron',monospace;font-size:8px;letter-spacing:1px;padding:3px 10px;cursor:pointer;border-radius:2px;transition:all .2s;}
+  .lb-refresh-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+  .lb-refresh-btn.spinning svg{animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* My score banner */
+  .lb-my-banner{width:100%;background:rgba(0,245,255,0.06);border:1px solid rgba(0,245,255,0.2);border-radius:4px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .lb-my-banner .my-name{font-size:10px;letter-spacing:3px;color:var(--cyan);}
+  .lb-my-banner .my-rank{font-size:9px;letter-spacing:2px;color:rgba(0,245,255,0.5);}
+  .lb-my-banner .my-score{font-size:13px;font-weight:700;letter-spacing:1px;color:#fff;font-family:'Share Tech Mono',monospace;}
+
+  /* Loading skeleton */
+  .lb-skeleton{width:100%;height:36px;background:linear-gradient(90deg,rgba(0,245,255,0.03) 25%,rgba(0,245,255,0.07) 50%,rgba(0,245,255,0.03) 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:2px;margin-bottom:2px;}
+  @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
 
   /* NAME INPUT */
   #nameModal{position:absolute;top:36px;left:0;width:480px;height:600px;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(4,8,15,0.98);z-index:30;gap:16px;}
@@ -105,6 +143,8 @@
   #nameModal p{font-size:9px;letter-spacing:3px;color:rgba(0,245,255,0.4);text-align:center;}
   #nameInput{background:transparent;border:2px solid var(--cyan);color:#fff;font-family:'Orbitron',monospace;font-size:16px;letter-spacing:4px;padding:12px 20px;width:280px;outline:none;text-align:center;text-transform:uppercase;}
   #nameInput::placeholder{color:rgba(255,255,255,0.2);}
+  .name-saved-hint{font-size:8px;letter-spacing:2px;color:rgba(0,245,255,0.35);text-align:center;}
+
 
   /* SETTINGS */
   .setting-group{width:100%;display:flex;flex-direction:column;gap:14px;}
@@ -725,22 +765,59 @@ document.head.appendChild(st);
         <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       </button>
       <h2 style="color:var(--cyan);text-shadow:0 0 20px var(--cyan);">🏆 LEADERBOARD</h2>
-      <div class="panel-sub">TOP PILOT — SKY VORTEX ARENA &nbsp;<button onclick="loadFirebaseLeaderboard()" style="background:transparent;border:1px solid rgba(0,245,255,0.4);color:var(--cyan);font-size:9px;padding:2px 8px;cursor:pointer;letter-spacing:1px;font-family:'Orbitron',monospace;">⟳ REFRESH</button></div>
+      <div class="panel-sub">SKY VORTEX — GLOBAL ARENA</div>
     </div>
     <div class="panel-body">
-      <table class="lb-table" id="lbTable">
-        <thead><tr><th style="width:30px">#</th><th>NAMA</th><th>SKOR</th><th>WAVE</th></tr></thead>
+      <!-- Status bar -->
+      <div class="lb-statusbar" style="width:100%;">
+        <div id="lbOnlineStatus" style="display:flex;align-items:center;color:rgba(0,245,255,0.4);">
+          <span class="lb-offline-dot" id="lbDot"></span>
+          <span id="lbStatusText">MENGHUBUNGKAN...</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="lb-count-badge" id="lbCountBadge"></span>
+          <button class="lb-refresh-btn" id="lbRefreshBtn" onclick="refreshLeaderboard()" title="Refresh">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- My score banner (shown after submit) -->
+      <div class="lb-my-banner" id="lbMyBanner" style="display:none;">
+        <div>
+          <div class="my-name" id="lbMyName">PILOT</div>
+          <div class="my-rank" id="lbMyRankText">RANK #--</div>
+        </div>
+        <div class="my-score" id="lbMyScore">0</div>
+      </div>
+
+      <!-- Table -->
+      <div id="lbSkeletons" style="width:100%;">
+        <div class="lb-skeleton"></div><div class="lb-skeleton"></div><div class="lb-skeleton"></div>
+        <div class="lb-skeleton"></div><div class="lb-skeleton"></div>
+      </div>
+      <table class="lb-table" id="lbTable" style="display:none;width:100%;">
+        <thead>
+          <tr>
+            <th class="lb-rank">#</th>
+            <th>NAMA</th>
+            <th style="text-align:right;">SKOR</th>
+            <th style="text-align:center;">WAVE</th>
+          </tr>
+        </thead>
         <tbody id="lbBody"></tbody>
       </table>
+      <div id="lbEmptyMsg" style="display:none;" class="lb-empty">BELUM ADA SKOR GLOBAL</div>
     </div>
   </div>
 
   <!-- NAME INPUT MODAL -->
   <div id="nameModal">
     <h2>⌨ MASUKKAN NAMA</h2>
-    <p>NAMA KAMU AKAN MASUK LEADERBOARD</p>
+    <p>NAMA TERSIMPAN UNTUK SESI BERIKUTNYA</p>
     <input type="text" id="nameInput" maxlength="12" placeholder="NAMA KAMU" autocomplete="off" spellcheck="false">
-    <button class="glow-btn" onclick="submitName()">✔ SIMPAN SKOR</button>
+    <div class="name-saved-hint" id="nameSavedHint"></div>
+    <button class="glow-btn" onclick="submitName()">✔ SIMPAN & UPLOAD SKOR</button>
     <button class="back-btn" onclick="skipName()">LEWATI</button>
   </div>
 
@@ -2545,19 +2622,36 @@ function endGame(){
   const earned=calcCoins(score,wave);
   gameData.coins+=earned;saveData();
   updateHUD();
-  // Show name input for leaderboard
+  // Tampilkan modal nama
+  const savedName=myPlayerName||localStorage.getItem('sv_player_name')||'';
+  const nameInput=document.getElementById('nameInput');
+  const hint=document.getElementById('nameSavedHint');
+  if(savedName){
+    nameInput.value=savedName;
+    hint.textContent='✓ NAMA TERSIMPAN — LANGSUNG UPLOAD';
+    hint.style.color='rgba(0,245,255,0.5)';
+  }else{
+    nameInput.value='';
+    hint.textContent='';
+  }
   document.getElementById('nameModal').classList.add('show');
 }
 
-function submitName(){
+async function submitName(){
   const raw=document.getElementById('nameInput').value.trim().toUpperCase();
   const name=raw||'ANON';
+  // Simpan nama untuk sesi berikutnya
+  myPlayerName=name;
+  localStorage.setItem('sv_player_name',name);
   const isEgg=checkSpecialName(raw);
-  addToLeaderboard(name,pendingScore,pendingWave);
+  await addToLeaderboard(name,pendingScore,pendingWave);
   document.getElementById('nameModal').classList.remove('show');
   document.getElementById('nameInput').value='';
   showGameOver(pendingScore,calcCoins(pendingScore,pendingWave));
+  // Invalidate cache supaya leaderboard fresh saat dibuka
+  lbLastRefresh=0;
 }
+
 function skipName(){
   document.getElementById('nameModal').classList.remove('show');
   document.getElementById('nameInput').value='';
@@ -2757,110 +2851,203 @@ function playSoundBossDefeat(){
 // ─── SUPABASE LEADERBOARD ─────────────────────────────────
 const SB_URL='https://nnwgbcifimwifnkjmeqr.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ud2diY2lmaW13aWZua2ptZXFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTQwMDMsImV4cCI6MjA5MzkzMDAwM30.BoiToWUkWAWdKOQV4feU3Ss9l8P2xkwKbhtJxRJZfrM';
+const SB_HDR={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
 
-// Fetch dengan timeout agar APK tidak hang
-async function sbFetch(url,opts={},timeoutMs=8000){
+// State
+let lbCache=[];           // data global terakhir
+let lbIsOnline=false;
+let lbAutoRefreshTimer=null;
+let lbLastRefresh=0;
+let myPlayerName=localStorage.getItem('sv_player_name')||'';
+let lastSubmittedScore=0;
+
+// Fetch dengan timeout
+async function sbFetch(url,opts={},ms=8000){
   const ctrl=new AbortController();
-  const tid=setTimeout(()=>ctrl.abort(),timeoutMs);
-  try{
-    const res=await fetch(url,{...opts,signal:ctrl.signal});
-    clearTimeout(tid);
-    return res;
-  }catch(e){clearTimeout(tid);throw e;}
+  const tid=setTimeout(()=>ctrl.abort(),ms);
+  try{const r=await fetch(url,{...opts,signal:ctrl.signal});clearTimeout(tid);return r;}
+  catch(e){clearTimeout(tid);throw e;}
 }
 
-// Retry helper
-async function sbRetry(fn,maxTry=3,delayMs=1000){
-  for(let i=0;i<maxTry;i++){
-    try{return await fn();}
-    catch(e){
-      if(i===maxTry-1)throw e;
-      await new Promise(r=>setTimeout(r,delayMs*(i+1)));
-    }
-  }
+// ── SET STATUS UI ──────────────────────────────────────────
+function setLbStatus(online,text){
+  lbIsOnline=online;
+  const dot=document.getElementById('lbDot');
+  const txt=document.getElementById('lbStatusText');
+  if(!dot||!txt)return;
+  dot.className=online?'lb-online-dot':'lb-offline-dot';
+  txt.textContent=text;
+  txt.style.color=online?'rgba(0,255,136,0.7)':'rgba(255,136,0,0.6)';
 }
 
-const SB_HEADERS={
-  'Content-Type':'application/json',
-  'apikey':SB_KEY,
-  'Authorization':'Bearer '+SB_KEY,
-  'Prefer':'return=minimal'
-};
-
-async function addToLeaderboard(name,sc,wv){
-  if(!name||typeof sc!=='number'||sc<0)return;
-  const entry={name:String(name).slice(0,20),score:Math.floor(sc),wave:Math.floor(wv)||1,date:Date.now()};
-
-  // Simpan lokal dulu
-  gameData.leaderboard.push(entry);
-  gameData.leaderboard.sort((a,b)=>b.score-a.score);
-  if(gameData.leaderboard.length>20)gameData.leaderboard.length=20;
-  saveData();
-
-  // Upload ke Supabase dengan retry
+// ── FETCH GLOBAL DATA ──────────────────────────────────────
+async function fetchGlobalLeaderboard(){
   try{
-    await sbRetry(async()=>{
-      const res=await sbFetch(SB_URL+'/rest/v1/leaderboard',{
-        method:'POST',
-        headers:SB_HEADERS,
-        body:JSON.stringify(entry)
-      });
-      if(!res.ok){const t=await res.text();throw new Error('HTTP '+res.status+' '+t);}
-    },3,1200);
-    console.log('[LB] Score uploaded to Supabase ✓');
+    const res=await sbFetch(
+      SB_URL+'/rest/v1/leaderboard?select=name,score,wave,date&order=score.desc&limit=100',
+      {headers:{...SB_HDR,'Prefer':''}}
+    );
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const arr=await res.json();
+
+    // Dedup: per nama, ambil skor tertinggi saja
+    const seen=new Map();
+    arr.forEach(e=>{
+      const k=(e.name||'').toUpperCase().trim();
+      if(!k)return;
+      if(!seen.has(k)||e.score>seen.get(k).score)seen.set(k,e);
+    });
+    lbCache=[...seen.values()].sort((a,b)=>b.score-a.score).slice(0,50);
+    lbLastRefresh=Date.now();
+    setLbStatus(true,'ONLINE — GLOBAL');
+    document.getElementById('lbCountBadge').textContent=lbCache.length+' PILOT';
+    return lbCache;
   }catch(e){
-    console.warn('[LB] Supabase upload failed (score tersimpan lokal):',e.message);
+    console.warn('[LB] Fetch error:',e.message);
+    setLbStatus(false,'OFFLINE — DATA LOKAL');
+    document.getElementById('lbCountBadge').textContent='';
+    return null;
   }
 }
 
+// ── RENDER LEADERBOARD ─────────────────────────────────────
+function renderLeaderboard(data, highlightName=''){
+  const tbody=document.getElementById('lbBody');
+  const table=document.getElementById('lbTable');
+  const skel=document.getElementById('lbSkeletons');
+  const empty=document.getElementById('lbEmptyMsg');
+  const list=data||[];
+
+  skel.style.display='none';
+  if(!list.length){
+    table.style.display='none';empty.style.display='block';return;
+  }
+  empty.style.display='none';table.style.display='table';
+
+  const myName=(highlightName||myPlayerName||'').toUpperCase().trim();
+  let myRank=-1;
+
+  tbody.innerHTML=list.map((e,i)=>{
+    const rank=i+1;
+    const medal=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+    const isMe=myName&&(e.name||'').toUpperCase().trim()===myName;
+    if(isMe)myRank=rank;
+    const rowCls='lb-row-anim'+(isMe?' lb-me':'');
+    const delay=Math.min(i*35,400);
+    const score=(e.score||0).toLocaleString('id-ID');
+    return `<tr class="${rowCls}" style="animation-delay:${delay}ms">
+      <td class="lb-rank">${medal}</td>
+      <td>${(e.name||'?').toUpperCase()}</td>
+      <td class="lb-score-col">${score}</td>
+      <td class="lb-wave-col">${e.wave||'-'}</td>
+    </tr>`;
+  }).join('');
+
+  // Update my banner
+  if(myName&&myRank>0){
+    const myEntry=list[myRank-1];
+    document.getElementById('lbMyBanner').style.display='flex';
+    document.getElementById('lbMyName').textContent=myName;
+    document.getElementById('lbMyRankText').textContent='RANK #'+myRank+' dari '+list.length;
+    document.getElementById('lbMyScore').textContent=(myEntry.score||0).toLocaleString('id-ID');
+  }
+}
+
+// ── LOAD (tampilkan skeleton lalu fetch) ───────────────────
+async function loadLeaderboard(force=false){
+  const skel=document.getElementById('lbSkeletons');
+  const table=document.getElementById('lbTable');
+  // Jika cache masih segar (<30 detik) dan tidak force, langsung render
+  if(!force&&lbCache.length&&Date.now()-lbLastRefresh<30000){
+    renderLeaderboard(lbCache);return;
+  }
+  skel.style.display='block';table.style.display='none';
+  const data=await fetchGlobalLeaderboard();
+  renderLeaderboard(data||gameData.leaderboard);
+}
+
+// ── REFRESH BUTTON ─────────────────────────────────────────
+async function refreshLeaderboard(){
+  const btn=document.getElementById('lbRefreshBtn');
+  btn.classList.add('spinning');btn.disabled=true;
+  await loadLeaderboard(true);
+  btn.classList.remove('spinning');btn.disabled=false;
+}
+
+// ── AUTO REFRESH (tiap 30 detik saat panel terbuka) ────────
+function startLbAutoRefresh(){
+  stopLbAutoRefresh();
+  lbAutoRefreshTimer=setInterval(()=>{
+    if(document.getElementById('leaderboardPanel').classList.contains('show')){
+      loadLeaderboard(true);
+    }
+  },30000);
+}
+function stopLbAutoRefresh(){
+  if(lbAutoRefreshTimer){clearInterval(lbAutoRefreshTimer);lbAutoRefreshTimer=null;}
+}
+
+// ── OPEN / CLOSE ───────────────────────────────────────────
 function openLeaderboard(){
   playSoundMenuClick();
   document.getElementById('menuPanel').classList.remove('show');
   document.getElementById('leaderboardPanel').classList.add('show');
-  loadFirebaseLeaderboard();
+  document.getElementById('lbMyBanner').style.display='none';
+  loadLeaderboard();
+  startLbAutoRefresh();
 }
 function closeLeaderboard(){
   playSoundMenuBack();
+  stopLbAutoRefresh();
   document.getElementById('leaderboardPanel').classList.remove('show');
   document.getElementById('menuPanel').classList.add('show');
 }
+// alias legacy
+function loadFirebaseLeaderboard(){loadLeaderboard(true);}
 
-async function loadFirebaseLeaderboard(){
-  const tbody=document.getElementById('lbBody');
-  tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:rgba(0,245,255,0.4);letter-spacing:2px;font-size:9px;padding:16px;">⟳ MEMUAT...</td></tr>';
-  try{
-    const res=await sbFetch(SB_URL+'/rest/v1/leaderboard?select=name,score,wave,date&order=score.desc&limit=50',{
-      headers:{...SB_HEADERS,'Prefer':''}
-    },8000);
-    if(!res.ok)throw new Error('HTTP '+res.status);
-    const arr=await res.json();
-    if(!arr||!arr.length){renderLeaderboard([]);return;}
+// ── UPLOAD SCORE ───────────────────────────────────────────
+async function addToLeaderboard(name,sc,wv){
+  if(!name||typeof sc!=='number'||sc<=0)return;
+  const entry={
+    name:String(name).slice(0,20).toUpperCase(),
+    score:Math.floor(sc),
+    wave:Math.floor(wv)||1,
+    date:Date.now()
+  };
 
-    // Dedup: per nama, hanya skor tertinggi
-    const seen=new Map();
-    arr.forEach(e=>{
-      const key=String(e.name).toUpperCase();
-      if(!seen.has(key)||e.score>seen.get(key).score)seen.set(key,e);
-    });
-    const deduped=[...seen.values()].sort((a,b)=>b.score-a.score).slice(0,20);
+  // Simpan lokal
+  const idx=gameData.leaderboard.findIndex(e=>e.name===entry.name);
+  if(idx>=0){if(entry.score>gameData.leaderboard[idx].score)gameData.leaderboard[idx]=entry;}
+  else{gameData.leaderboard.push(entry);}
+  gameData.leaderboard.sort((a,b)=>b.score-a.score);
+  if(gameData.leaderboard.length>30)gameData.leaderboard.length=30;
+  saveData();
 
-    renderLeaderboard(deduped);
-    console.log('[LB] Loaded from Supabase:',deduped.length,'entries');
-  }catch(e){
-    console.warn('[LB] Supabase load failed, pakai data lokal:',e.message);
-    renderLeaderboard(gameData.leaderboard);
+  // Anti-cheat dasar: skor tidak masuk akal di-skip
+  if(sc>999999){console.warn('[LB] Score terlalu tinggi, tidak diupload');return;}
+
+  // Upload ke Supabase (retry 3x)
+  for(let attempt=1;attempt<=3;attempt++){
+    try{
+      const res=await sbFetch(SB_URL+'/rest/v1/leaderboard',{
+        method:'POST',
+        headers:{...SB_HDR,'Prefer':'return=minimal'},
+        body:JSON.stringify(entry)
+      },10000);
+      if(!res.ok){const t=await res.text();throw new Error('HTTP '+res.status+': '+t);}
+      console.log('[LB] Score uploaded ✓ (attempt '+attempt+')');
+      lastSubmittedScore=sc;
+      // Invalidate cache supaya refresh berikutnya ambil data terbaru
+      lbLastRefresh=0;
+      return;
+    }catch(e){
+      console.warn('[LB] Upload attempt '+attempt+' failed:',e.message);
+      if(attempt<3)await new Promise(r=>setTimeout(r,1500*attempt));
+    }
   }
+  console.warn('[LB] Upload gagal setelah 3x, score tersimpan lokal.');
 }
 
-function renderLeaderboard(data){
-  const tbody=document.getElementById('lbBody');
-  const list=data||gameData.leaderboard;
-  if(!list.length){tbody.innerHTML='<tr><td colspan="4" class="lb-empty">BELUM ADA SKOR</td></tr>';return;}
-  tbody.innerHTML=list.slice(0,20).map((e,i)=>{
-    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}`;
-    return`<tr><td class="lb-rank">${medal}</td><td>${(e.name||'?').toUpperCase()}</td><td>${(e.score||0).toLocaleString()}</td><td>${e.wave||'-'}</td></tr>`;
-  }).join('');
-}
 
 // ─── GACHA ────────────────────────────────────────────────
 function openGacha(){
