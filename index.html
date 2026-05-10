@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#04080f">
 <meta name="description" content="SKY VORTEX - 2D Arcade Shooter dengan Gacha Pesawat">
 <link rel="manifest" href="manifest.json">
-<title>SKY VORTEX v2.0</title>
+<title>SKY VORTEX v3.0</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -18,8 +18,8 @@
     --cyan:#00f5ff;--orange:#ff6b00;--red:#ff2244;--gold:#ffd700;--purple:#cc44ff;
     --dark:#04080f;--mid:#0a1628;--panel:rgba(4,12,28,0.97);
   }
-  html,body{overscroll-behavior:none;overscroll-behavior-y:none;}
-  body{background:var(--dark);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Orbitron',monospace;overflow:hidden;color:var(--cyan);touch-action:none;}
+  html{overscroll-behavior:none;overscroll-behavior-y:none;overflow:hidden;position:fixed;width:100%;height:100%;}
+  body{background:var(--dark);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Orbitron',monospace;overflow:hidden;color:var(--cyan);touch-action:pan-x pan-y;overscroll-behavior:none;position:fixed;width:100%;height:100%;}
   #wrapper{position:relative;display:flex;flex-direction:column;align-items:center;overscroll-behavior:none;}
   #hud{display:flex;justify-content:space-between;align-items:center;width:480px;padding:7px 12px;background:rgba(0,245,255,0.05);border:1px solid rgba(0,245,255,0.2);border-bottom:none;font-size:11px;letter-spacing:2px;}
   #hud .val{color:#fff;font-weight:700;font-size:13px;}
@@ -163,6 +163,7 @@
   @keyframes homePulse{0%,100%{opacity:0.5;transform:scale(1);}50%{opacity:0;transform:scale(1.4);}}
 
   /* Panel scroll body */
+  .panel-body{overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
   .panel-body{flex:1;overflow-y:auto;width:100%;display:flex;flex-direction:column;align-items:center;padding:14px 16px;gap:12px;box-sizing:border-box;}
   .panel-body::-webkit-scrollbar{width:3px;}
   .panel-body::-webkit-scrollbar-thumb{background:rgba(0,245,255,0.2);border-radius:2px;}
@@ -456,7 +457,7 @@
 
 <script>
 // ── SERVICE WORKER: Auto-Update tanpa download ulang ──────
-const APP_VERSION = 'v2.0';
+const APP_VERSION = 'v3.0';
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
@@ -552,7 +553,7 @@ document.head.appendChild(st);
   <div id="eggToast"></div>
   <div id="ghostOverlay"></div>
   <div id="hiddenBossWarning">⚠ ??? TELAH TERBANGUN ⚠<br><span style="font-size:10px;color:#ff88ff;letter-spacing:6px;">BOSS TERSEMBUNYI</span></div>
-  <div id="footer"><span>SKY VORTEX v2.0</span><span id="footerMode">ANALOG: BEBAS</span></div>
+  <div id="footer"><span>SKY VORTEX v3.0</span><span id="footerMode">ANALOG: BEBAS</span></div>
 
   <!-- MAIN MENU -->
   <div class="panel show" id="menuPanel">
@@ -2753,25 +2754,56 @@ function playSoundBossDefeat(){
   });
 }
 
-// ─── LEADERBOARD ──────────────────────────────────────────
 // ─── FIREBASE LEADERBOARD ─────────────────────────────────
 const FB_URL='https://sky-vortex-default-rtdb.asia-southeast1.firebasedatabase.app';
 
+// Fetch dengan timeout agar APK tidak hang selamanya
+async function fbFetch(url,opts={},timeoutMs=8000){
+  const ctrl=new AbortController();
+  const tid=setTimeout(()=>ctrl.abort(),timeoutMs);
+  try{
+    const res=await fetch(url,{...opts,signal:ctrl.signal});
+    clearTimeout(tid);
+    return res;
+  }catch(e){clearTimeout(tid);throw e;}
+}
+
+// Retry helper: coba sampai maxTry kali dengan jeda
+async function fbRetry(fn,maxTry=3,delayMs=1000){
+  for(let i=0;i<maxTry;i++){
+    try{return await fn();}
+    catch(e){
+      if(i===maxTry-1)throw e;
+      await new Promise(r=>setTimeout(r,delayMs*(i+1)));
+    }
+  }
+}
+
 async function addToLeaderboard(name,sc,wv){
-  // Simpan lokal dulu
-  gameData.leaderboard.push({name,score:sc,wave:wv,date:Date.now()});
+  // Validasi dasar
+  if(!name||typeof sc!=='number'||sc<0)return;
+  const entry={name:String(name).slice(0,20),score:Math.floor(sc),wave:Math.floor(wv)||1,date:Date.now()};
+
+  // Simpan lokal dulu (langsung bisa dilihat walau offline)
+  gameData.leaderboard.push(entry);
   gameData.leaderboard.sort((a,b)=>b.score-a.score);
   if(gameData.leaderboard.length>20)gameData.leaderboard.length=20;
   saveData();
-  // Upload ke Firebase
+
+  // Upload ke Firebase dengan retry (penting untuk APK WebView)
   try{
-    const entry={name,score:sc,wave:wv,date:Date.now()};
-    await fetch(FB_URL+'/leaderboard.json',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(entry)
-    });
-  }catch(e){console.warn('[LB] Firebase error:',e);}
+    await fbRetry(async()=>{
+      const res=await fbFetch(FB_URL+'/leaderboard.json',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify(entry)
+      });
+      if(!res.ok)throw new Error('HTTP '+res.status);
+    },3,1200);
+    console.log('[LB] Score uploaded to Firebase ✓');
+  }catch(e){
+    console.warn('[LB] Firebase upload failed (score tersimpan lokal):',e.message);
+  }
 }
 
 function openLeaderboard(){
@@ -2790,16 +2822,30 @@ async function loadFirebaseLeaderboard(){
   const tbody=document.getElementById('lbBody');
   tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:rgba(0,245,255,0.4);letter-spacing:2px;font-size:9px;padding:16px;">⟳ MEMUAT...</td></tr>';
   try{
-    const res=await fetch(FB_URL+'/leaderboard.json');
+    const res=await fbFetch(FB_URL+'/leaderboard.json?orderBy="score"&limitToLast=50',{
+      headers:{'Accept':'application/json'}
+    },8000);
+    if(!res.ok)throw new Error('HTTP '+res.status);
     const raw=await res.json();
     if(!raw){renderLeaderboard([]);return;}
-    // Convert Firebase object to array
-    const arr=Object.values(raw);
-    arr.sort((a,b)=>b.score-a.score);
-    renderLeaderboard(arr.slice(0,20));
+
+    // Firebase POST menghasilkan object {key: entry}, ambil values-nya
+    const arr=Object.values(raw)
+      .filter(e=>e&&typeof e.score==='number'&&e.name) // buang entry corrupt
+      .sort((a,b)=>b.score-a.score);
+
+    // Dedup: per nama, hanya simpan skor tertinggi
+    const seen=new Map();
+    arr.forEach(e=>{
+      const key=String(e.name).toUpperCase();
+      if(!seen.has(key)||e.score>seen.get(key).score)seen.set(key,e);
+    });
+    const deduped=[...seen.values()].sort((a,b)=>b.score-a.score).slice(0,20);
+
+    renderLeaderboard(deduped);
+    console.log('[LB] Loaded from Firebase:',deduped.length,'entries');
   }catch(e){
-    console.warn('[LB] Load error:',e);
-    // Fallback ke data lokal
+    console.warn('[LB] Firebase load failed, pakai data lokal:',e.message);
     renderLeaderboard(gameData.leaderboard);
   }
 }
@@ -2810,8 +2856,7 @@ function renderLeaderboard(data){
   if(!list.length){tbody.innerHTML='<tr><td colspan="4" class="lb-empty">BELUM ADA SKOR</td></tr>';return;}
   tbody.innerHTML=list.slice(0,20).map((e,i)=>{
     const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}`;
-    const d=e.date?new Date(e.date).toLocaleDateString('id-ID',{day:'2-digit',month:'2-digit'}):'';
-    return`<tr><td class="lb-rank">${medal}</td><td>${e.name}</td><td>${(e.score||0).toLocaleString()}</td><td>${e.wave}</td></tr>`;
+    return`<tr><td class="lb-rank">${medal}</td><td>${(e.name||'?').toUpperCase()}</td><td>${(e.score||0).toLocaleString()}</td><td>${e.wave||'-'}</td></tr>`;
   }).join('');
 }
 
@@ -4160,10 +4205,26 @@ updateHUD();loop();
   }
   document.addEventListener('click',firstTouch);
   document.addEventListener('touchstart',firstTouch,{passive:true});
-  // Blokir pull-to-refresh di semua area
-  document.addEventListener('touchmove',e=>{
-    if(!e.target.closest('.panel-body'))e.preventDefault();
-  },{passive:false});
+  // Blokir pull-to-refresh total
+  document.addEventListener('touchmove', e => {
+    const pb = e.target.closest('.panel-body');
+    if (!pb) {
+      e.preventDefault();
+      return;
+    }
+    // Izinkan scroll di panel-body HANYA jika konten bisa discroll
+    const atTop = pb.scrollTop <= 0;
+    const atBottom = pb.scrollTop + pb.clientHeight >= pb.scrollHeight;
+    const scrollingUp = e.touches[0].clientY > (e._startY || e.touches[0].clientY);
+    if ((atTop && scrollingUp) || (atBottom && !scrollingUp)) {
+      e.preventDefault();
+    }
+  }, {passive: false});
+
+  // Track touch start Y untuk deteksi arah scroll
+  document.addEventListener('touchstart', e => {
+    if (e.touches[0]) e.touches[0]._startY = e.touches[0].clientY;
+  }, {passive: true});
 })();
 </script>
 </body>
