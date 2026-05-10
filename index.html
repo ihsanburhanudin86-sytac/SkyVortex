@@ -5893,6 +5893,7 @@ async function claimOneShip(id, shipId, shipName, isSecret){
     }
     if(btn){btn.textContent='✓ DIKLAIM';btn.style.color='#00ff99';btn.style.borderColor='#00ff99';}
     updateMailBadge(mailboxData.length);
+    setTimeout(()=>loadMailbox(true),500);
   }catch(e){
     if(btn){btn.disabled=false;btn.textContent='KLAIM';}
     alert('Gagal klaim: '+e.message);
@@ -5946,11 +5947,10 @@ async function claimOneMail(id, amount){
       item.style.opacity='0';item.style.transform='translateX(60px)';
       setTimeout(()=>item.remove(),400);
     }
-    // Update cache
+    // Refresh dari Supabase supaya data benar-benar sinkron
     mailboxData=mailboxData.filter(m=>String(m.id)!==String(id));
-    const name2=(myPlayerName||'').toUpperCase().trim();
-    setTimeout(()=>renderMailbox(name2),450);
     showPendingCoinNotif(claimedAmt);
+    setTimeout(()=>loadMailbox(true),500);
   }catch(e){
     if(btn){btn.disabled=false;btn.textContent='KLAIM';}
     console.warn('[Mailbox] claimOne error:',e);
