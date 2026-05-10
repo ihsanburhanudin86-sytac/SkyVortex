@@ -3559,28 +3559,64 @@ async function addToLeaderboard(name,sc,wv){
 
   showUploadToast('⏳ MENGUPLOAD SKOR...','rgba(0,245,255,0.7)');
 
-  // Upload ke Supabase (retry 3x) — pakai upsert agar tidak duplikat
-  for(let attempt=1;attempt<=3;attempt++){
+  // Upload ke Supabase (retry 5x, timeout lebih panjang untuk HP)
+  for(let attempt=1;attempt<=5;attempt++){
     try{
       const res=await sbFetch(SB_URL+'/rest/v1/leaderboard',{
         method:'POST',
         headers:{...SB_HDR,'Prefer':'return=minimal','Content-Type':'application/json'},
         body:JSON.stringify(entry)
-      },10000);
+      },15000);
       if(!res.ok){const t=await res.text();throw new Error('HTTP '+res.status+': '+t);}
       console.log('[LB] Score uploaded ✓ (attempt '+attempt+')');
       lastSubmittedScore=sc;
       lbLastRefresh=0;
       showUploadToast('✓ SKOR BERHASIL DIUPLOAD!','#00ff99');
+      // Hapus queue gagal jika ada
+      try{localStorage.removeItem('sv_lb_queue');}catch(e){}
       return;
     }catch(e){
       console.warn('[LB] Upload attempt '+attempt+' failed:',e.message);
-      if(attempt<3)await new Promise(r=>setTimeout(r,1500*attempt));
+      if(attempt<5)await new Promise(r=>setTimeout(r,2000*attempt));
     }
   }
-  console.warn('[LB] Upload gagal setelah 3x, score tersimpan lokal.');
-  showUploadToast('✕ UPLOAD GAGAL — CEK KONEKSI','#ff2266');
+  // Simpan ke queue untuk dicoba lagi nanti
+  try{
+    const queue=JSON.parse(localStorage.getItem('sv_lb_queue')||'[]');
+    queue.push(entry);
+    localStorage.setItem('sv_lb_queue',JSON.stringify(queue.slice(-5)));
+  }catch(e){}
+  console.warn('[LB] Upload gagal setelah 5x, score disimpan ke queue.');
+  showUploadToast('✕ UPLOAD GAGAL — AKAN DICOBA LAGI','#ff6600');
 }
+
+// ── RETRY QUEUE (coba upload skor yang gagal sebelumnya) ──
+async function retryLbQueue(){
+  try{
+    const queue=JSON.parse(localStorage.getItem('sv_lb_queue')||'[]');
+    if(!queue.length)return;
+    const success=[];
+    for(const entry of queue){
+      try{
+        const res=await sbFetch(SB_URL+'/rest/v1/leaderboard',{
+          method:'POST',
+          headers:{...SB_HDR,'Prefer':'return=minimal','Content-Type':'application/json'},
+          body:JSON.stringify(entry)
+        },15000);
+        if(res.ok){success.push(entry);console.log('[LB] Queue retry sukses:',entry.name);}
+      }catch(e){console.warn('[LB] Queue retry gagal:',e.message);}
+    }
+    if(success.length){
+      const remaining=queue.filter(e=>!success.includes(e));
+      localStorage.setItem('sv_lb_queue',JSON.stringify(remaining));
+      if(!remaining.length)localStorage.removeItem('sv_lb_queue');
+    }
+  }catch(e){}
+}
+// Coba retry queue tiap 60 detik
+setInterval(retryLbQueue,60000);
+// Coba retry saat halaman pertama load
+setTimeout(retryLbQueue,5000);
 
 
 // ─── GACHA ────────────────────────────────────────────────
@@ -5558,15 +5594,7 @@ async function adminQuickGiveShip(id,name,isSecret){
 
 
 // ── BAN TAB ───────────────────────────────────────────
-function saveBanList(){
-  localStorage.setItem('sv_admin_banlist',JSON.stringify(adminBanList));
-  // Sync ke Supabase ban_list (best effort)
-  sbFetch(SB_URL+'/rest/v1/ban_list',{
-    method:'POST',
-    headers:{...SB_HDR,'Prefer':'return=minimal'},
-    body:JSON.stringify(adminBanList.map(name=>({name})))
-  },5000).catch(e=>console.warn('[BAN] Gagal sync ban list ke Supabase:',e.message));
-}
+function saveBanList(){localStorage.setItem('sv_admin_banlist',JSON.stringify(adminBanList));}
 function renderAdminBanList(){
   const el=document.getElementById('adminBanList');
   if(!adminBanList.length){
@@ -5698,23 +5726,11 @@ function adminResetLocalData(){
 const _origAddToLB = addToLeaderboard;
 addToLeaderboard = async function(name,sc,wv){
   const upper=(name||'').toUpperCase().trim();
-  // Cek ban list lokal dulu (cepat)
+  // Cek ban list lokal saja (cepat, tidak blocking)
   if(adminBanList.includes(upper)){
-    console.warn('[ADMIN] Banned player blocked (local):',upper);
+    console.warn('[ADMIN] Banned player blocked:',upper);
     return;
   }
-  // Cek ban list dari Supabase (biar akurat & global)
-  try{
-    const res=await sbFetch(SB_URL+'/rest/v1/ban_list?name=eq.'+encodeURIComponent(upper),{headers:SB_HDR},5000);
-    if(res.ok){
-      const data=await res.json();
-      if(Array.isArray(data)&&data.length){
-        console.warn('[ADMIN] Banned player blocked (Supabase):',upper);
-        if(!adminBanList.includes(upper)){adminBanList.push(upper);localStorage.setItem('sv_admin_banlist',JSON.stringify(adminBanList));}
-        return;
-      }
-    }
-  }catch(e){console.warn('[BAN] Gagal cek ban list Supabase, lanjut upload:',e.message);}
   return _origAddToLB(name,sc,wv);
 };
 // ── END ADMIN PANEL ───────────────────────────────────
