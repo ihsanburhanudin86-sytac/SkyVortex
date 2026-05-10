@@ -1720,19 +1720,19 @@ function applySkillEffect(skillId){
     case'emp':enemyBullets=[];playSoundSkillActivate();explode(W/2,H/2,'#00f5ff',40);break;
     case'laser':laserActive=true;activeSkillEffects.push({type:'laser',ends:now+e.duration,damage:e.damage});playSoundSkillActivate();break;
     case'invincible':player.invincible=e.duration/16;activeSkillEffects.push({type:'invincible',ends:now+e.duration});playSoundSkillActivate();break;
-    case'nuke':{enemies.forEach(en=>{if(!en.dead){en.hp=0;en.dead=true;explode(en.x,en.y,en.bossType?en.bossType.color:'#ff4466',25);score+=100;}});
+    case'nuke':{enemies.forEach(en=>{if(!en.dead&&en.type!=='boss'){en.hp=0;en.dead=true;explode(en.x,en.y,'#ff4466',25);score+=100;}});
       updateHUD();playSoundSkillActivate();break;}
     case'power_bullet':powerBulletActive=true;activeSkillEffects.push({type:'power_bullet',ends:now+e.duration,size:e.size});playSoundSkillActivate();break;
     case'barrage':barrageActive=true;activeSkillEffects.push({type:'barrage',ends:now+e.duration,count:e.count,timer:0});playSoundSkillActivate();break;
     case'blackhole':{
       const cx=W/2,cy=H/2;
-      enemies.forEach(en=>{if(!en.dead){en.hp=0;en.dead=true;explode(en.x,en.y,'#8800ff',20);score+=80;}});
+      enemies.forEach(en=>{if(!en.dead&&en.type!=='boss'){en.hp=0;en.dead=true;explode(en.x,en.y,'#8800ff',20);score+=80;}});
       explode(cx,cy,'#cc44ff',60);enemyBullets=[];playSoundSkillActivate();updateHUD();break;}
     case'reflect':reflectActive=true;activeSkillEffects.push({type:'reflect',ends:now+e.duration});playSoundSkillActivate();break;
     case'overdrive':overdriveActive=true;rapidTimer=e.duration/16;activeSkillEffects.push({type:'overdrive',ends:now+e.duration});playSoundSkillActivate();break;
     case'divine':{enemies.forEach(en=>{if(!en.dead){en.hp=Math.max(0,en.hp-e.damage);if(en.hp<=0){en.dead=true;explode(en.x,en.y,'#ffdd00',30);score+=150;}}});
       updateHUD();playSoundSkillActivate();break;}
-    case'omega_blast':{enemies.forEach(en=>{if(!en.dead){en.hp=0;en.dead=true;explode(en.x,en.y,'#ff0044',35);score+=200;}});
+    case'omega_blast':{enemies.forEach(en=>{if(!en.dead&&en.type!=='boss'){en.hp=0;en.dead=true;explode(en.x,en.y,'#ff0044',35);score+=200;}});
       enemyBullets=[];playSoundSkillActivate();explode(W/2,H/2,'#ff4400',80);updateHUD();break;}
   }
 }
@@ -4794,13 +4794,22 @@ async function adminRefreshData(){
   document.getElementById('adminTableBody').innerHTML=
     '<tr><td colspan="5" style="text-align:center;color:rgba(255,34,102,0.4);padding:20px;font-size:9px;letter-spacing:2px;">MEMUAT...</td></tr>';
   try{
+    // Ambil semua data dengan limit besar, lalu dedup di sisi client
     const res=await sbFetch(
-      SB_URL+'/rest/v1/leaderboard?select=id,name,score,wave,date&order=score.desc&limit=500',
+      SB_URL+'/rest/v1/leaderboard?select=id,name,score,wave,date&order=score.desc&limit=5000',
       {headers:{...SB_HDR,'Prefer':''}}
     );
     if(!res.ok)throw new Error('HTTP '+res.status);
-    adminAllData=await res.json();
-    setAdminMsg('✓ '+adminAllData.length+' ENTRY DIMUAT','#00ff99');
+    const raw=await res.json();
+    // Dedup per nama: simpan skor tertinggi per pemain (id tetap asli untuk delete)
+    const seen=new Map();
+    raw.forEach(e=>{
+      const k=(e.name||'').toUpperCase().trim();
+      if(!k)return;
+      if(!seen.has(k)||e.score>seen.get(k).score)seen.set(k,e);
+    });
+    adminAllData=[...seen.values()].sort((a,b)=>b.score-a.score);
+    setAdminMsg('✓ '+adminAllData.length+' PEMAIN UNIK (dari '+raw.length+' entry)','#00ff99');
     renderAdminStats(adminAllData);
     filterAdminTable();
   }catch(e){
