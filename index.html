@@ -6,11 +6,11 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="SKY VORTEX v4.0">
+<meta name="apple-mobile-web-app-title" content="SKY VORTEX v5.0">
 <meta name="theme-color" content="#04080f">
-<meta name="description" content="SKY VORTEX v4.0 - 2D Arcade Shooter dengan Gacha Pesawat">
+<meta name="description" content="SKY VORTEX v5.0 - 2D Arcade Shooter dengan Gacha Pesawat">
 <link rel="manifest" href="manifest.json">
-<title>SKY VORTEX v4.0</title>
+<title>SKY VORTEX v5.0</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -713,7 +713,7 @@
 
 <script>
 // ── SERVICE WORKER: Auto-Update tanpa download ulang ──────
-const APP_VERSION = 'v4.0';
+const APP_VERSION = 'v5.0';
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
@@ -809,7 +809,7 @@ document.head.appendChild(st);
   <div id="eggToast"></div>
   <div id="ghostOverlay"></div>
   <div id="hiddenBossWarning">⚠ ??? TELAH TERBANGUN ⚠<br><span style="font-size:10px;color:#ff88ff;letter-spacing:6px;">BOSS TERSEMBUNYI</span></div>
-  <div id="footer"><span>SKY VORTEX v4.0</span><span id="footerMode">ANALOG: BEBAS</span></div>
+  <div id="footer"><span>SKY VORTEX v5.0</span><span id="footerMode">ANALOG: BEBAS</span></div>
 
   <!-- MAIN MENU (RETRO ARCADE) -->
   <div class="panel show" id="menuPanel" style="justify-content:flex-start;padding:16px 0 12px;gap:8px;">
@@ -1304,19 +1304,28 @@ document.head.appendChild(st);
 
       <div class="admin-section-title" style="margin-top:12px;">✈️ BERI PESAWAT KE PEMAIN</div>
       <div style="font-size:8px;letter-spacing:1px;color:rgba(0,200,255,0.45);margin-bottom:8px;width:100%;">Kirim pesawat ke pemain lain lewat server — mereka terima otomatis saat buka game</div>
-      <div style="width:90%;display:flex;align-items:center;gap:4px;margin-bottom:8px;">
-        <span style="font-size:9px;letter-spacing:2px;color:rgba(0,200,255,0.5);white-space:nowrap;">NAMA</span>
-        <input class="admin-input" id="giveShipName" type="text" placeholder="NAMA PEMAIN TUJUAN..." maxlength="20" style="flex:1;text-transform:uppercase;margin:0;border-color:rgba(0,200,255,0.4);color:#00ccff;">
-        <button class="admin-action-btn" style="border-color:rgba(0,245,255,0.5);color:#00f5ff;font-size:9px;padding:6px 8px;" onclick="adminSearchShipName()" title="Cari nama di leaderboard">🔍</button>
+      <div style="width:90%;display:flex;flex-direction:column;gap:6px;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:4px;">
+          <span style="font-size:9px;letter-spacing:2px;color:rgba(0,200,255,0.5);white-space:nowrap;">NAMA</span>
+          <input class="admin-input" id="giveShipName" type="text" placeholder="NAMA PEMAIN TUJUAN..." maxlength="20" style="flex:1;text-transform:uppercase;margin:0;border-color:rgba(0,200,255,0.4);color:#00ccff;">
+          <button class="admin-action-btn" style="border-color:rgba(0,245,255,0.5);color:#00f5ff;font-size:9px;padding:6px 8px;" onclick="adminSearchShipName()" title="Cari nama di leaderboard">🔍</button>
+        </div>
+        <div id="adminShipNameSuggestions" style="width:100%;display:flex;flex-wrap:wrap;gap:4px;min-height:0;"></div>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <span style="font-size:9px;letter-spacing:2px;color:rgba(0,200,255,0.5);white-space:nowrap;">SHIP</span>
+          <select class="admin-input" id="giveShipSelect" style="flex:1;margin:0;border-color:rgba(0,200,255,0.4);color:#00ccff;background:rgba(0,10,30,0.8);cursor:pointer;"></select>
+          <button class="admin-action-btn" style="border-color:#00ccff;color:#00ccff;font-size:9px;padding:6px 8px;" onclick="adminGiveShipBySelect()">✈️ KIRIM</button>
+        </div>
       </div>
-      <div id="adminShipNameSuggestions" style="width:90%;display:flex;flex-wrap:wrap;gap:4px;min-height:0;margin-bottom:6px;"></div>
       <div style="font-size:9px;letter-spacing:2px;color:rgba(0,200,255,0.5);width:100%;margin-bottom:4px;">REGULAR SHIPS</div>
       <div style="width:100%;display:grid;grid-template-columns:1fr 1fr;gap:6px;" id="adminShipGrid"></div>
       <div style="margin-top:8px;font-size:9px;letter-spacing:2px;color:rgba(255,34,102,0.4);width:100%;">SECRET SHIPS</div>
       <div style="width:100%;display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;" id="adminSecretShipGrid"></div>
       <div id="adminShipMsg" class="admin-msg" style="color:#00f5ff;margin-top:6px;"></div>
+
       <button class="glow-btn" style="width:90%;border-color:#00f5ff;color:#00f5ff;font-size:10px;padding:9px;margin-top:8px;" onclick="adminGiveAllShips()">✈️ UNLOCK SEMUA (DIRI SENDIRI)</button>
     </div>
+
 
     <!-- ═══ TAB: BAN ═══ -->
     <div id="adminTab-ban" style="display:none;">
@@ -5308,6 +5317,13 @@ async function adminGiveCoins(){
   }catch(e){setAdminTabMsg('adminCoinsMsg','✕ GAGAL: '+e.message,'#ff2244');}
 }
 function renderAdminShipGrid(){
+  // Populate select dropdown
+  const sel=document.getElementById('giveShipSelect');
+  if(sel){
+    const regularOpts=SHIPS.filter(s=>s.id!=='falcon').map(s=>`<option value="${s.id}|${s.name}|false">${s.name} (${s.rarity.toUpperCase()})</option>`).join('');
+    const secretOpts=SECRET_SHIPS.map(s=>`<option value="${s.id}|${s.name}|true">⭐ ${s.name} (TIER ${s.tier})</option>`).join('');
+    sel.innerHTML='<option value="">-- PILIH PESAWAT --</option>'+regularOpts+'<optgroup label="SECRET SHIPS">'+secretOpts+'</optgroup>';
+  }
   // Regular ships
   const grid=document.getElementById('adminShipGrid');
   grid.innerHTML=SHIPS.filter(s=>s.id!=='falcon').map(s=>{
@@ -5329,6 +5345,14 @@ function renderAdminShipGrid(){
       <div class="ship-rarity" style="color:rgba(255,34,102,0.7);">TIER ${s.tier}</div>
     </button>`;
   }).join('');
+}
+async function adminGiveShipBySelect(){
+  const sel=document.getElementById('giveShipSelect');
+  const val=(sel&&sel.value)||'';
+  if(!val){setAdminTabMsg('adminShipMsg','⚠ PILIH PESAWAT DULU','#ff6600');return;}
+  const [id,name,isSecretStr]=val.split('|');
+  const isSecret=isSecretStr==='true';
+  await adminGiveShip(id,name,isSecret);
 }
 async function adminGiveShip(id,name,isSecret){
   const targetName=(document.getElementById('giveShipName').value||'').trim().toUpperCase();
@@ -5386,6 +5410,121 @@ function adminGiveAllShips(){
   playSoundAdminShip();
   setAdminTabMsg('adminShipMsg','✓ SEMUA PESAWAT DIUNLOCK!','#00f5ff');
 }
+
+// ── KIRIM TAB ─────────────────────────────────────────
+async function adminSearchMailName(){
+  const q=(document.getElementById('mailTargetName').value||'').trim().toUpperCase();
+  const sug=document.getElementById('adminMailNameSuggestions');
+  if(!q){sug.innerHTML='';return;}
+  try{
+    const res=await sbFetch(SB_URL+'/rest/v1/leaderboard?select=name&order=score.desc&limit=200',{headers:SB_HDR});
+    if(!res.ok){sug.innerHTML='';return;}
+    const rows=await res.json();
+    const names=[...new Set(rows.map(r=>r.name).filter(n=>n&&n.toUpperCase().includes(q)))].slice(0,6);
+    sug.innerHTML=names.map(n=>`<button onclick="document.getElementById('mailTargetName').value='${n}';document.getElementById('adminMailNameSuggestions').innerHTML='';setAdminTabMsg('adminMailMsg','✓ NAMA: ${n}','#00e5ff');" style="background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.4);color:#00e5ff;font-family:'Share Tech Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;letter-spacing:1px;">${n}</button>`).join('');
+  }catch(e){sug.innerHTML='';}
+}
+async function adminSendMail(){
+  const targetRaw=(document.getElementById('mailTargetName').value||'').trim().toUpperCase();
+  const coins=parseInt(document.getElementById('mailCoinsAmt').value)||0;
+  const subject=(document.getElementById('mailSubject').value||'').trim()||'PESAN DARI ADMIN';
+  const body=(document.getElementById('mailBody').value||'').trim()||'Pesan dari Admin Sky Vortex!';
+  if(!targetRaw){setAdminTabMsg('adminMailMsg','⚠ MASUKKAN NAMA PEMAIN','#ff6600');return;}
+  setAdminTabMsg('adminMailMsg','⏳ MENGIRIM PESAN → '+targetRaw+'...','rgba(0,229,255,0.5)');
+  try{
+    const res=await sbFetch(SB_URL+'/rest/v1/pending_coins',{
+      method:'POST',
+      headers:{...SB_HDR,'Prefer':'return=minimal'},
+      body:JSON.stringify({name:targetRaw,amount:coins,message:'['+subject+'] '+body,sent_at:Date.now()})
+    });
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    setAdminTabMsg('adminMailMsg','✓ PESAN DIKIRIM → '+targetRaw,'#00e5ff');
+    document.getElementById('mailTargetName').value='';
+    document.getElementById('mailCoinsAmt').value='0';
+    document.getElementById('mailSubject').value='';
+    document.getElementById('mailBody').value='';
+    document.getElementById('adminMailNameSuggestions').innerHTML='';
+  }catch(e){setAdminTabMsg('adminMailMsg','✕ GAGAL: '+e.message,'#ff2244');}
+}
+async function adminSendBroadcast(){
+  const coins=parseInt(document.getElementById('broadcastCoins').value)||0;
+  const subject=(document.getElementById('broadcastSubject').value||'').trim()||'PESAN DARI ADMIN';
+  const body=(document.getElementById('broadcastBody').value||'').trim()||'Pesan broadcast dari Admin Sky Vortex!';
+  const prevEl=document.getElementById('broadcastPreview');
+  if(!subject&&!body){setAdminTabMsg('adminBroadcastMsg','⚠ ISI PESAN TIDAK BOLEH KOSONG','#ff6600');return;}
+  setAdminTabMsg('adminBroadcastMsg','⏳ MENGAMBIL DAFTAR PEMAIN...','rgba(255,200,0,0.5)');
+  try{
+    const res=await sbFetch(SB_URL+'/rest/v1/leaderboard?select=name&order=score.desc&limit=100',{headers:SB_HDR});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const rows=await res.json();
+    const names=[...new Set(rows.map(r=>(r.name||'').toUpperCase().trim()).filter(Boolean))];
+    if(!names.length){setAdminTabMsg('adminBroadcastMsg','⚠ TIDAK ADA PEMAIN DI LEADERBOARD','#ff6600');return;}
+    prevEl.textContent='AKAN DIKIRIM KE '+names.length+' PEMAIN...';
+    setAdminTabMsg('adminBroadcastMsg','⏳ MENGIRIM KE '+names.length+' PEMAIN...','rgba(255,200,0,0.5)');
+    let sent=0,failed=0;
+    for(const name of names){
+      try{
+        const r=await sbFetch(SB_URL+'/rest/v1/pending_coins',{
+          method:'POST',
+          headers:{...SB_HDR,'Prefer':'return=minimal'},
+          body:JSON.stringify({name,amount:coins,message:'['+subject+'] '+body,sent_at:Date.now()})
+        });
+        if(r.ok)sent++;else failed++;
+      }catch{failed++;}
+      setAdminTabMsg('adminBroadcastMsg','⏳ MENGIRIM... ('+sent+'/'+names.length+')','rgba(255,200,0,0.5)');
+    }
+    setAdminTabMsg('adminBroadcastMsg','✓ BROADCAST SELESAI: '+sent+' TERKIRIM'+(failed?' · '+failed+' GAGAL':''),'#00ff99');
+    prevEl.textContent='';
+    document.getElementById('broadcastCoins').value='0';
+    document.getElementById('broadcastSubject').value='';
+    document.getElementById('broadcastBody').value='';
+  }catch(e){setAdminTabMsg('adminBroadcastMsg','✕ GAGAL: '+e.message,'#ff2244');prevEl.textContent='';}
+}
+function renderQuickShipGrid(){
+  const grid=document.getElementById('quickShipGrid');
+  if(!grid)return;
+  const topShips=SHIPS.filter(s=>s.id!=='falcon').slice(0,6);
+  grid.innerHTML=topShips.map(s=>{
+    const rarityColor={common:'#88ff88',rare:'#4488ff',epic:'#cc44ff',legendary:'#ffd700'}[s.rarity]||'#aaa';
+    return '<button class="admin-ship-btn" onclick="adminQuickGiveShip(\''+s.id+'\',\''+s.name+'\',false)" style="border-color:rgba(0,200,255,0.25);">'+
+      '<div style="width:100%;height:3px;background:'+s.color+';margin-bottom:4px;border-radius:1px;"></div>'+
+      '<div class="ship-name" style="color:'+s.color+';">'+s.name+'</div>'+
+      '<div class="ship-rarity" style="color:'+rarityColor+';">'+s.rarity.toUpperCase()+'</div>'+
+      '</button>';
+  }).join('');
+}
+async function adminSearchQuickShip(){
+  const q=(document.getElementById('quickShipTarget').value||'').trim().toUpperCase();
+  const sug=document.getElementById('adminQuickShipSuggestions');
+  if(!q){sug.innerHTML='';return;}
+  try{
+    const res=await sbFetch(SB_URL+'/rest/v1/leaderboard?select=name&order=score.desc&limit=200',{headers:SB_HDR});
+    if(!res.ok){sug.innerHTML='';return;}
+    const rows=await res.json();
+    const names=[...new Set(rows.map(r=>r.name).filter(n=>n&&n.toUpperCase().includes(q)))].slice(0,6);
+    sug.innerHTML=names.map(n=>`<button onclick="document.getElementById('quickShipTarget').value='${n}';document.getElementById('adminQuickShipSuggestions').innerHTML='';setAdminTabMsg('adminQuickShipMsg','✓ NAMA: ${n}','#00f5ff');" style="background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.4);color:#00ccff;font-family:'Share Tech Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;letter-spacing:1px;">${n}</button>`).join('');
+  }catch(e){sug.innerHTML='';}
+}
+async function adminQuickGiveShip(id,name,isSecret){
+  const targetName=(document.getElementById('quickShipTarget').value||'').trim().toUpperCase();
+  if(!targetName){
+    setAdminTabMsg('adminQuickShipMsg','⚠ MASUKKAN NAMA PEMAIN TUJUAN','#ff6600');return;
+  }
+  setAdminTabMsg('adminQuickShipMsg','⏳ MENGIRIM '+name+' → '+targetName+'...','rgba(0,200,255,0.5)');
+  try{
+    const res=await sbFetch(SB_URL+'/rest/v1/pending_ships',{
+      method:'POST',
+      headers:{...SB_HDR,'Prefer':'return=minimal'},
+      body:JSON.stringify({name:targetName,ship_id:id,ship_name:name,is_secret:isSecret})
+    });
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    playSoundAdminShip();
+    setAdminTabMsg('adminQuickShipMsg','✓ '+name+' DIKIRIM → '+targetName,'#00f5ff');
+    document.getElementById('quickShipTarget').value='';
+    document.getElementById('adminQuickShipSuggestions').innerHTML='';
+  }catch(e){setAdminTabMsg('adminQuickShipMsg','✕ GAGAL: '+e.message,'#ff2244');}
+}
+
 
 // ── BAN TAB ───────────────────────────────────────────
 function saveBanList(){localStorage.setItem('sv_admin_banlist',JSON.stringify(adminBanList));}
@@ -5537,6 +5676,8 @@ function openMailbox(){
   playSoundMenuClick();
   document.getElementById('menuPanel').classList.remove('show');
   document.getElementById('mailboxPanel').classList.add('show');
+  // Langsung cek pending coins saat mailbox dibuka (tidak tunggu 20 detik)
+  claimPendingCoins();
   loadMailbox();
   // Auto-refresh tiap 5 detik saat mailbox terbuka
   mailboxPollTimer=setInterval(()=>loadMailbox(true),5000);
@@ -5557,25 +5698,37 @@ async function loadMailbox(silent=false){
     sub.textContent='MASUK DULU';
     return;
   }
-  // Kalau silent (auto-refresh), jangan reset UI supaya tidak kedip
   if(!silent){
     body.innerHTML='<div class="mail-empty" id="mailboxLoading">⏳ MEMUAT PESAN...</div>';
   }
   try{
-    // Coba dengan kolom lengkap dulu, fallback ke minimal kalau kolom belum ada
+    // Fetch pending_coins
     let res=await sbFetch(
       SB_URL+'/rest/v1/pending_coins?name=eq.'+encodeURIComponent(name)+'&claimed=eq.false&select=id,amount,message,sent_at&order=id.desc&limit=50',
       {headers:SB_HDR}
     );
     if(res.status===400){
-      // Kolom message/sent_at belum ada, pakai select minimal
       res=await sbFetch(
         SB_URL+'/rest/v1/pending_coins?name=eq.'+encodeURIComponent(name)+'&claimed=eq.false&select=id,amount&order=id.desc&limit=50',
         {headers:SB_HDR}
       );
     }
     if(!res.ok)throw new Error('HTTP '+res.status);
-    mailboxData=await res.json()||[];
+    const coins=await res.json()||[];
+    mailboxData=coins.map(m=>({...m,_type:'coin'}));
+
+    // Fetch pending_ships
+    try{
+      const sres=await sbFetch(
+        SB_URL+'/rest/v1/pending_ships?name=eq.'+encodeURIComponent(name)+'&select=id,ship_id,ship_name,is_secret',
+        {headers:SB_HDR}
+      );
+      if(sres.ok){
+        const ships=await sres.json()||[];
+        ships.forEach(s=>mailboxData.push({...s,_type:'ship'}));
+      }
+    }catch(e){}
+
     renderMailbox(name);
   }catch(e){
     body.innerHTML='<div class="mail-empty">✕ GAGAL MEMUAT<br><span style="font-size:8px;color:rgba(255,100,100,0.4);">'+e.message+'</span></div>';
@@ -5586,29 +5739,29 @@ async function loadMailbox(silent=false){
 function renderMailbox(name){
   const body=document.getElementById('mailboxBody');
   const sub=document.getElementById('mailboxSub');
-  const totalKoin=mailboxData.reduce((s,m)=>s+(m.amount||0),0);
+  const coinItems=mailboxData.filter(m=>m._type==='coin');
+  const shipItems=mailboxData.filter(m=>m._type==='ship');
+  const totalKoin=coinItems.reduce((s,m)=>s+(m.amount||0),0);
   const count=mailboxData.length;
 
-  // Update badge & sub
   mailboxUnread=count;
   updateMailBadge(count);
-  sub.textContent=count>0?(count+' PESAN BELUM DIKLAIM · '+totalKoin.toLocaleString('id-ID')+' 🪙'):'TIDAK ADA PESAN BARU';
+  sub.textContent=count>0?(count+' PESAN BELUM DIKLAIM'+(totalKoin>0?' · '+totalKoin.toLocaleString('id-ID')+' 🪙':'')):'TIDAK ADA PESAN BARU';
 
   if(!count){
     body.innerHTML='<div class="mail-empty">📭 INBOX KOSONG<br><span style="font-size:8px;color:rgba(0,229,255,0.25);letter-spacing:2px;">BELUM ADA HADIAH MASUK</span></div>';
     return;
   }
 
-  // Tombol claim all
-  const claimAllBtn=count>1
+  const claimAllBtn=coinItems.length>1
     ? `<button onclick="claimAllMail()" style="width:92%;background:rgba(255,215,0,0.1);border:1px solid #ffd700;color:#ffd700;
         font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;padding:10px;cursor:pointer;
         transition:all .2s;" onmouseover="this.style.background='rgba(255,215,0,0.25)'" onmouseout="this.style.background='rgba(255,215,0,0.1)'">
-        💰 KLAIM SEMUA (${count} PESAN · +${totalKoin.toLocaleString('id-ID')} 🪙)
+        💰 KLAIM SEMUA KOIN (${coinItems.length} PESAN · +${totalKoin.toLocaleString('id-ID')} 🪙)
       </button>`
     : '';
 
-  const items=mailboxData.map(m=>{
+  const coinHtml=coinItems.map(m=>{
     const timeStr=m.sent_at?formatMailTime(m.sent_at):'';
     const msg=(m.message||'Hadiah dari Admin!');
     const amt=(m.amount||0).toLocaleString('id-ID');
@@ -5627,7 +5780,24 @@ function renderMailbox(name){
     </div>`;
   }).join('');
 
-  body.innerHTML=claimAllBtn+items;
+  const shipHtml=shipItems.map(s=>{
+    const rarityColor=s.is_secret?'#ff44aa':'#00ccff';
+    const label=s.is_secret?'SECRET SHIP':'REGULAR SHIP';
+    return `<div class="mail-item unread" id="mailItem_ship_${s.id}" style="border-color:rgba(0,200,255,0.5);background:rgba(0,200,255,0.06);">
+      <div class="mail-item-header">
+        <div class="mail-dot" style="background:#00ccff;box-shadow:0 0 6px #00ccff;"></div>
+        <div class="mail-from" style="color:rgba(0,200,255,0.6);">✈️ DARI ADMIN</div>
+      </div>
+      <div class="mail-subject" style="color:#00ccff;">PESAWAT BARU!</div>
+      <div class="mail-body" style="color:rgba(0,200,255,0.7);">Kamu mendapatkan pesawat <b style="color:#fff;">${s.ship_name}</b><br><span style="font-size:8px;color:${rarityColor};">${label}</span></div>
+      <div class="mail-reward" style="border-color:rgba(0,200,255,0.2);background:rgba(0,200,255,0.05);">
+        <div class="mail-reward-text" style="color:#00ccff;font-size:16px;">✈️ ${s.ship_name}</div>
+        <button class="mail-claim-btn" id="claimShipBtn_${s.id}" onclick="claimOneShip('${s.id}','${s.ship_id}','${s.ship_name}',${s.is_secret})" style="border-color:#00ccff;color:#00ccff;">KLAIM</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  body.innerHTML=claimAllBtn+shipHtml+coinHtml;
 }
 
 function formatMailTime(ts){
@@ -5642,6 +5812,39 @@ function formatMailTime(ts){
   return Math.floor(diff/86400000)+' HARI LALU';
 }
 
+async function claimOneShip(id, shipId, shipName, isSecret){
+  const name=(myPlayerName||localStorage.getItem('sv_player_name')||'').toUpperCase().trim();
+  const btn=document.getElementById('claimShipBtn_'+id);
+  if(btn){btn.disabled=true;btn.textContent='⏳';}
+  try{
+    const delRes=await sbFetch(
+      SB_URL+'/rest/v1/pending_ships?id=eq.'+encodeURIComponent(id)+'&name=eq.'+encodeURIComponent(name),
+      {method:'DELETE',headers:{...SB_HDR,'Prefer':'return=minimal'}}
+    );
+    if(!delRes.ok)throw new Error('HTTP '+delRes.status);
+    // Tambah ke lokal
+    if(!gameData.ownedShips)gameData.ownedShips=['falcon'];
+    if(!gameData.unlockedSecrets)gameData.unlockedSecrets=[];
+    if(isSecret){
+      if(!gameData.unlockedSecrets.includes(shipId))gameData.unlockedSecrets.push(shipId);
+    }else{
+      if(!gameData.ownedShips.includes(shipId))gameData.ownedShips.push(shipId);
+    }
+    saveData();
+    // Hapus dari mailboxData dan re-render
+    mailboxData=mailboxData.filter(m=>!(m._type==='ship'&&String(m.id)===String(id)));
+    const item=document.getElementById('mailItem_ship_'+id);
+    if(item){
+      item.style.transition='opacity .4s';item.style.opacity='0';
+      setTimeout(()=>{item.remove();},400);
+    }
+    if(btn){btn.textContent='✓ DIKLAIM';btn.style.color='#00ff99';btn.style.borderColor='#00ff99';}
+    updateMailBadge(mailboxData.length);
+  }catch(e){
+    if(btn){btn.disabled=false;btn.textContent='KLAIM';}
+    alert('Gagal klaim: '+e.message);
+  }
+}
 async function claimOneMail(id, amount){
   const name=(myPlayerName||localStorage.getItem('sv_player_name')||'').toUpperCase().trim();
   const btn=document.getElementById('claimBtn_'+id);
@@ -5655,11 +5858,25 @@ async function claimOneMail(id, amount){
     );
     if(!claimRes.ok)throw new Error('HTTP '+claimRes.status);
     const updated=await claimRes.json();
-    if(!updated||!updated.length){
-      if(btn){btn.textContent='SUDAH DIKLAIM';btn.className='mail-claim-btn claimed';}
-      return;
+    // Kalau RLS aktif, Supabase bisa return [] meski PATCH berhasil.
+    // Cek dulu apakah row sudah benar-benar di-update via GET.
+    let claimedAmt=amount;
+    if(updated&&updated.length){
+      claimedAmt=updated[0].amount||amount;
+    } else {
+      // Verifikasi via GET: kalau claimed=true sudah tersimpan, lanjut klaim
+      const checkRes=await sbFetch(
+        SB_URL+'/rest/v1/pending_coins?id=eq.'+encodeURIComponent(id)+'&claimed=eq.true&select=id,amount',
+        {headers:SB_HDR}
+      );
+      const checkData=checkRes.ok?await checkRes.json():[];
+      if(!checkData||!checkData.length){
+        // Benar-benar belum diklaim atau gagal
+        if(btn){btn.textContent='SUDAH DIKLAIM';btn.className='mail-claim-btn claimed';}
+        return;
+      }
+      claimedAmt=checkData[0].amount||amount;
     }
-    const claimedAmt=updated[0].amount||amount;
     // DELETE
     await sbFetch(
       SB_URL+'/rest/v1/pending_coins?id=eq.'+encodeURIComponent(id),
@@ -5703,9 +5920,19 @@ async function claimAllMail(){
        body:JSON.stringify({claimed:true})}
     );
     if(!claimRes.ok)throw new Error('HTTP '+claimRes.status);
-    const updated=await claimRes.json();
+    let updated=await claimRes.json();
+    // Kalau RLS return [] meski PATCH berhasil, fallback GET verifikasi
+    if(!updated||!updated.length){
+      const checkRes=await sbFetch(
+        SB_URL+'/rest/v1/pending_coins?id=in.('+ids.join(',')+')'+'&claimed=eq.true&select=id,amount',
+        {headers:SB_HDR}
+      );
+      updated=checkRes.ok?await checkRes.json():[];
+    }
     if(!updated||!updated.length)return;
-    const total=updated.reduce((s,r)=>s+(r.amount||0),0);
+    const total=updated.length
+      ? updated.reduce((s,r)=>s+(r.amount||0),0)
+      : mailboxData.reduce((s,m)=>s+(m.amount||0),0);
     const claimedIds=updated.map(r=>r.id);
     await sbFetch(
       SB_URL+'/rest/v1/pending_coins?id=in.('+claimedIds.join(',')+')',
