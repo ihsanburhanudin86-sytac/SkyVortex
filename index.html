@@ -33,26 +33,45 @@
   .panel{position:absolute;top:36px;left:0;width:480px;height:600px;display:none;flex-direction:column;align-items:center;justify-content:center;background:var(--panel);z-index:20;gap:14px;overflow-y:auto;}
   .panel.show{display:flex;}
 
-  /* MAIN MENU */
-  #menuPanel h1{font-size:38px;font-weight:900;letter-spacing:6px;color:var(--cyan);text-shadow:0 0 30px var(--cyan),0 0 60px rgba(0,245,255,0.4);line-height:1;text-align:center;}
-  .sub{font-size:10px;letter-spacing:4px;color:rgba(0,245,255,0.5);}
-  .score-display{font-size:13px;letter-spacing:3px;color:var(--orange);}
-  .score-big{font-size:36px;font-weight:900;color:#fff;text-shadow:0 0 20px var(--orange);}
-
-  .glow-btn{padding:13px 36px;background:transparent;border:2px solid var(--cyan);color:var(--cyan);font-family:'Orbitron',monospace;font-size:12px;font-weight:700;letter-spacing:4px;cursor:pointer;position:relative;overflow:hidden;transition:all .3s;text-transform:uppercase;min-width:210px;text-align:center;}
-  .glow-btn::before{content:'';position:absolute;inset:0;background:var(--cyan);transform:scaleX(0);transform-origin:left;transition:transform .3s;z-index:-1;}
-  .glow-btn:hover::before{transform:scaleX(1);}
-  .glow-btn:hover{color:var(--dark);box-shadow:0 0 25px var(--cyan);}
-  .glow-btn.orange{border-color:var(--orange);color:var(--orange);}
-  .glow-btn.orange::before{background:var(--orange);}
-  .glow-btn.orange:hover{color:#fff;box-shadow:0 0 25px var(--orange);}
-  .glow-btn.gold{border-color:var(--gold);color:var(--gold);}
-  .glow-btn.gold::before{background:var(--gold);}
-  .glow-btn.gold:hover{color:var(--dark);box-shadow:0 0 25px var(--gold);}
-  .glow-btn.purple{border-color:var(--purple);color:var(--purple);}
-  .glow-btn.purple::before{background:var(--purple);}
-  .glow-btn.purple:hover{color:#fff;box-shadow:0 0 25px var(--purple);}
-  #controlsHint{font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(0,245,255,0.35);letter-spacing:2px;text-align:center;line-height:2;}
+  /* ═══════ RETRO ARCADE MAIN MENU ═══════ */
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+  #menuPanel{background:radial-gradient(ellipse at top,#0a001a 0%,#000000 100%) !important;image-rendering:pixelated;border:4px solid #ff00ff !important;box-shadow:0 0 0 2px #000,0 0 0 4px #ff00ff,0 0 40px #ff00ff88 !important;}
+  #menuPanel h1{font-family:'Press Start 2P',monospace !important;font-size:22px !important;font-weight:400 !important;letter-spacing:2px !important;color:#ffff00 !important;text-shadow:3px 3px 0 #ff8800,-1px -1px 0 #ff4400,0 0 20px #ffff00 !important;line-height:1.4 !important;text-align:center !important;animation:titleBlink 1.2s step-end infinite;}
+  @keyframes titleBlink{0%,100%{opacity:1;}50%{opacity:0.85;}}
+  @keyframes scanline{0%{background-position:0 0;}100%{background-position:0 4px;}}
+  #menuPanel::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.15) 2px,rgba(0,0,0,0.15) 4px);pointer-events:none;z-index:999;animation:scanline 0.1s linear infinite;}
+  .sub{font-family:'Press Start 2P',monospace !important;font-size:7px !important;letter-spacing:2px !important;color:#ff00ff !important;text-shadow:1px 1px 0 #880088 !important;}
+  .score-display{font-family:'Press Start 2P',monospace;font-size:8px;letter-spacing:1px;color:#00ff00;}
+  .score-big{font-family:'Press Start 2P',monospace;font-size:20px;font-weight:400;color:#ffff00;text-shadow:2px 2px 0 #ff8800;}
+  /* RETRO PIXEL BUTTONS */
+  .glow-btn{
+    padding:10px 8px;background:#000088;
+    border:0 !important;
+    outline:3px solid #8888ff;
+    outline-offset:-3px;
+    box-shadow:3px 3px 0 #000044, inset 0 0 0 2px rgba(255,255,255,0.1);
+    color:#ffffff !important;
+    font-family:'Press Start 2P',monospace !important;
+    font-size:7px !important;font-weight:400 !important;letter-spacing:1px !important;
+    cursor:pointer;position:relative;overflow:hidden;
+    transition:transform .08s,box-shadow .08s;
+    text-transform:uppercase;min-width:0 !important;
+    text-align:center;image-rendering:pixelated;
+  }
+  .glow-btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #000044,inset 0 0 0 2px rgba(255,255,255,0.2);}
+  .glow-btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #000044;}
+  .glow-btn#startBtn{background:#006600 !important;outline-color:#00ff44 !important;color:#00ff44 !important;font-size:8px !important;box-shadow:3px 3px 0 #003300,0 0 12px #00ff4444;}
+  .glow-btn#startBtn:hover{background:#008800 !important;box-shadow:4px 4px 0 #003300,0 0 20px #00ff4466;}
+  .glow-btn.gold{background:#553300 !important;outline-color:#ffaa00 !important;color:#ffdd00 !important;}
+  .glow-btn.orange{background:#552200 !important;outline-color:#ff6600 !important;color:#ff8800 !important;}
+  .glow-btn.purple{background:#330055 !important;outline-color:#aa44ff !important;color:#cc88ff !important;}
+  .glow-btn.secret{background:#440000 !important;outline-color:#ff2244 !important;color:#ff4466 !important;}
+  #controlsHint{font-family:'Press Start 2P',monospace !important;font-size:6px !important;color:#666699 !important;letter-spacing:1px !important;text-align:center !important;line-height:2.2 !important;}
+  /* GRID LAYOUT for menu buttons */
+  #menuBtnGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:92%;padding:0 4px;}
+  #menuBtnGrid .glow-btn{width:100%;}
+  #menuPlayerBar{background:rgba(255,0,255,0.08) !important;border:2px solid #ff00ff !important;image-rendering:pixelated;}
+  #menuPlayerName{font-family:'Press Start 2P',monospace !important;font-size:8px !important;color:#ff88ff !important;}
 
   /* COIN REWARD */
   #coinReward{display:none;flex-direction:column;align-items:center;gap:6px;padding:12px 20px;border:1px solid rgba(255,215,0,0.3);background:rgba(255,215,0,0.05);margin:4px 0;}
@@ -488,6 +507,7 @@
   .konami-flash{animation:konamiFlash 0.6s ease forwards;}
 
   /* ── ADMIN PANEL ── */
+  #adminPanel{position:fixed !important;top:0 !important;left:50% !important;transform:translateX(-50%) !important;width:480px !important;height:100vh !important;max-height:100vh !important;z-index:50 !important;overflow:hidden !important;}
   #adminPanel .panel-header h2{color:#ff2266;}
   #adminLoginPanel .panel-header h2{color:#ff2266;}
   .admin-input{width:90%;background:rgba(255,34,102,0.08);border:1px solid rgba(255,34,102,0.4);color:#ff8899;font-family:'Share Tech Mono',monospace;font-size:13px;letter-spacing:2px;padding:10px 14px;outline:none;box-sizing:border-box;margin:4px 0;}
@@ -641,16 +661,16 @@ document.head.appendChild(st);
   <div id="hiddenBossWarning">⚠ ??? TELAH TERBANGUN ⚠<br><span style="font-size:10px;color:#ff88ff;letter-spacing:6px;">BOSS TERSEMBUNYI</span></div>
   <div id="footer"><span>SKY VORTEX v3.0</span><span id="footerMode">ANALOG: BEBAS</span></div>
 
-  <!-- MAIN MENU -->
-  <div class="panel show" id="menuPanel">
-    <div class="sub">— ARCADE SHOOTER —</div>
-    <div id="menuPlayerBar" style="display:flex;align-items:center;gap:8px;background:rgba(0,245,255,0.05);border:1px solid rgba(0,245,255,0.15);padding:6px 14px;width:88%;box-sizing:border-box;cursor:pointer;" onclick="openChangeNameModal()" title="Klik untuk ganti nama">
-      <span style="font-size:13px;">👤</span>
+  <!-- MAIN MENU (RETRO ARCADE) -->
+  <div class="panel show" id="menuPanel" style="justify-content:flex-start;padding:16px 0 12px;gap:8px;">
+    <div class="sub">★ INSERT COIN TO PLAY ★</div>
+    <div id="menuPlayerBar" style="display:flex;align-items:center;gap:8px;padding:6px 14px;width:88%;box-sizing:border-box;cursor:pointer;" onclick="openChangeNameModal()" title="Klik untuk ganti nama">
+      <span style="font-size:13px;">👾</span>
       <div style="flex:1;min-width:0;">
-        <div id="menuPlayerName" style="font-size:11px;letter-spacing:3px;color:#00f5ff;font-family:'Share Tech Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">–</div>
-        <div style="font-size:7px;letter-spacing:2px;color:rgba(0,245,255,0.3);">TAP UNTUK GANTI NAMA</div>
+        <div id="menuPlayerName" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">–</div>
+        <div style="font-family:'Press Start 2P',monospace;font-size:6px;letter-spacing:1px;color:rgba(255,136,255,0.4);">TAP UNTUK GANTI NAMA</div>
       </div>
-      <div style="font-size:9px;color:rgba(0,245,255,0.3);">✏</div>
+      <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:rgba(255,0,255,0.5);">▶</div>
     </div>
     <h1 id="menuTitle">SKY<br>VORTEX</h1>
     <div id="gameOverScore" style="display:none;flex-direction:column;align-items:center;gap:4px;">
@@ -662,16 +682,22 @@ document.head.appendChild(st);
       <div class="coin-earned" id="coinsEarned">+0 🪙</div>
       <div class="coin-label" id="totalCoinsLabel">TOTAL: 0 🪙</div>
     </div>
-    <button class="glow-btn" id="startBtn" onclick="startGame()">▶ MULAI GAME</button>
-    <button class="glow-btn gold" onclick="openGacha()">🎰 GACHA PESAWAT</button>
-    <button class="glow-btn" style="border-color:#00ff99;color:#00ff99;" onclick="openShop()">🛒 SKILL SHOP</button>
-    <button class="glow-btn" style="border-color:#ff88ff;color:#ff88ff;" onclick="openSkillMenu()">⚡ SKILL MENU</button>
-    <button class="glow-btn secret" onclick="openSecretHangar()">🔐 SECRET HANGAR</button>
-    <button class="glow-btn" style="border-color:#00ff99;color:#00ff99;" onclick="openSavePanel()">💾 SAVE DATA</button>
-    <button class="glow-btn purple" onclick="openLeaderboard()">🏆 LEADERBOARD</button>
-    <button class="glow-btn orange" onclick="openSettings()">⚙ PENGATURAN</button>
-    <button class="glow-btn" style="border-color:#ff2266;color:#ff2266;font-size:9px;padding:8px;" onclick="openAdminLogin()">🛡 ADMIN PANEL</button>
-    <div id="controlsHint">WASD / ARROW — GERAK &nbsp;|&nbsp; SPACE — TEMBAK<br>📱 GESER layar untuk joystick · tembak otomatis</div>
+    <!-- START BUTTON full width -->
+    <div style="width:92%;padding:0 4px;">
+      <button class="glow-btn" id="startBtn" onclick="startGame()" style="width:100%;padding:14px 8px;font-size:10px !important;">▶ START GAME</button>
+    </div>
+    <!-- 2-column grid buttons -->
+    <div id="menuBtnGrid">
+      <button class="glow-btn gold" onclick="openGacha()">🎰 GACHA</button>
+      <button class="glow-btn" style="background:#004455;outline-color:#00ccff;color:#00ffff;" onclick="openShop()">🛒 SKILL SHOP</button>
+      <button class="glow-btn" style="background:#330044;outline-color:#ff88ff;color:#ff88ff;" onclick="openSkillMenu()">⚡ SKILL MENU</button>
+      <button class="glow-btn secret" onclick="openSecretHangar()">🔐 HANGAR</button>
+      <button class="glow-btn" style="background:#004422;outline-color:#00ff99;color:#00ff99;" onclick="openSavePanel()">💾 SAVE</button>
+      <button class="glow-btn purple" onclick="openLeaderboard()">🏆 RANKING</button>
+      <button class="glow-btn orange" onclick="openSettings()">⚙ SETTING</button>
+      <button class="glow-btn" style="background:#440011;outline-color:#ff2266;color:#ff4466;" onclick="openAdminLogin()">🛡 ADMIN</button>
+    </div>
+    <div id="controlsHint">WASD/ARROW:GERAK | SPACE:TEMBAK<br>📱 GESER=JOYSTICK · AUTO TEMBAK</div>
   </div>
 
   <!-- GACHA PANEL -->
@@ -893,6 +919,7 @@ document.head.appendChild(st);
             <button class="radio-opt" id="opt-free" onclick="setAnalogMode('free')"><span class="opt-icon">👆</span>BEBAS<div class="opt-desc">Analog muncul<br>di titik sentuh</div></button>
             <button class="radio-opt" id="opt-fixed" onclick="setAnalogMode('fixed')"><span class="opt-icon">📍</span>DIAM<div class="opt-desc">Analog diam<br>di tempat tetap</div></button>
             <button class="radio-opt" id="opt-custom" onclick="setAnalogMode('custom')"><span class="opt-icon">✏️</span>CUSTOM<div class="opt-desc">Atur sendiri<br>posisi analog</div></button>
+            <button class="radio-opt" id="opt-finger" onclick="setAnalogMode('finger')"><span class="opt-icon">☝️</span>JARI<div class="opt-desc">Pesawat ikut<br>posisi jari</div></button>
           </div>
         </div>
         <div id="fixedSideWrap" style="display:none;">
@@ -991,9 +1018,9 @@ document.head.appendChild(st);
     <div style="font-size:8px;letter-spacing:2px;color:rgba(255,34,102,0.35);text-align:center;">MASUKKAN PASSWORD ADMIN UNTUK MELANJUTKAN</div>
     <input class="admin-input" type="password" id="adminPassInput" placeholder="PASSWORD ADMIN..." maxlength="32" onkeydown="if(event.key==='Enter')submitAdminLogin()">
     <div id="adminLoginMsg" class="admin-msg" style="color:#ff2266;"></div>
-    <div style="display:flex;gap:10px;width:90%;">
-      <button class="glow-btn" style="flex:1;border-color:#555;color:#aaa;font-size:10px;padding:10px;" onclick="closeAdminLogin()">✕ BATAL</button>
-      <button class="glow-btn" style="flex:1;border-color:#ff2266;color:#ff2266;font-size:10px;padding:10px;" onclick="submitAdminLogin()">🔓 LOGIN</button>
+    <div style="display:flex;flex-direction:column;gap:8px;width:90%;">
+      <button class="glow-btn" style="width:100%;border-color:#ff2266;color:#ff2266;font-size:11px;padding:12px;letter-spacing:3px;" onclick="submitAdminLogin()">🔓 LOGIN</button>
+      <button class="glow-btn" style="width:100%;border-color:#555;color:#aaa;font-size:10px;padding:10px;letter-spacing:3px;" onclick="closeAdminLogin()">✕ BATAL</button>
     </div>
   </div>
 </div>
@@ -2283,10 +2310,22 @@ function advanceAfterWave(){
 
 function spawnBossEnemy(bossIdx,stg){
   const bt=BOSS_TYPES[bossIdx%BOSS_TYPES.length];
-  const hpBase=120+stg*40;
+  // Boss 4-5 mendapat boost HP, speed, dan shoot rate yang signifikan
+  let hpBase=120+stg*40;
+  let bossSpeed=1;
+  let bossShootTimer=40;
+  if(stg===4){
+    hpBase=Math.round(hpBase*1.8);   // HP x1.8 (jauh lebih tebal)
+    bossSpeed=1.6;                    // Gerak 60% lebih cepat
+    bossShootTimer=22;               // Tembak lebih sering (tiap 22 frame vs 40)
+  } else if(stg===5){
+    hpBase=Math.round(hpBase*2.5);   // HP x2.5 (sangat tebal)
+    bossSpeed=2.2;                    // Gerak 120% lebih cepat
+    bossShootTimer=14;               // Tembak sangat sering (tiap 14 frame)
+  }
   const hp=Math.round(hpBase*bt.hpMult);
   const e={x:W/2,y:-60,type:'boss',hp,maxHp:hp,
-    speed:1,shootTimer:40,phase:0,dead:false,flash:0,bossType:bt};
+    speed:bossSpeed,shootTimer:bossShootTimer,phase:0,dead:false,flash:0,bossType:bt};
   bossActive=true;currentBossType=bt;bossThemeActive=true;
   showBossWarning(bt);showBossHBar(true);
   enemies.push(e);
@@ -2325,30 +2364,48 @@ function updateEnemies(){
     if(e.flash>0)e.flash--;
     e.shootTimer--;
     if(e.shootTimer<=0){
-      const rate=e.type==='boss'?28:(e.type==='bomber'?60:Math.max(20,90-wave*5));
-      e.shootTimer=rate;
+      // Boss stage 4-5: shoot timer sudah di-set saat spawn, pertahankan
+      if(e.type==='boss') e.shootTimer=(stage===5?14:(stage===4?22:28));
+      else e.shootTimer=(e.type==='bomber'?60:Math.max(20,90-wave*5));
       if(e.type==='boss'){
         // Unique bullet patterns per boss type
         const bt=e.bossType||BOSS_TYPES[0];
         const bc=bt.bulletColor||'#ff4466';
+        // Boss stage 4-5: peluru lebih cepat dan lebih banyak
+        const bSpeedMult=(stage===5?1.7:(stage===4?1.35:1.0));
         if(bt.bulletPattern==='spread'){
-          for(let a=-.4;a<=.4;a+=.13)enemyBullets.push({x:e.x,y:e.y+32,vx:Math.sin(a)*3.5,vy:Math.cos(a)*3,dead:false,color:bc});
+          const step=(stage>=4?0.09:0.13);
+          for(let a=-.4;a<=.4;a+=step)enemyBullets.push({x:e.x,y:e.y+32,vx:Math.sin(a)*3.5*bSpeedMult,vy:Math.cos(a)*3*bSpeedMult,dead:false,color:bc});
+          if(stage>=4&&player){const dx=player.x-e.x,dy=player.y-e.y,dist=Math.hypot(dx,dy)||1;
+            enemyBullets.push({x:e.x,y:e.y+20,vx:(dx/dist)*4.5*bSpeedMult,vy:(dy/dist)*4.5*bSpeedMult,dead:false,color:'#ffffff'});}
         } else if(bt.bulletPattern==='burst'){
-          for(let a=0;a<Math.PI*2;a+=Math.PI/4)enemyBullets.push({x:e.x,y:e.y+20,vx:Math.cos(a)*2.5,vy:Math.sin(a)*2.5+1,dead:false,color:bc});
+          const step=(stage>=4?Math.PI/5:Math.PI/4);
+          for(let a=0;a<Math.PI*2;a+=step)enemyBullets.push({x:e.x,y:e.y+20,vx:Math.cos(a)*2.5*bSpeedMult,vy:Math.sin(a)*2.5*bSpeedMult+1,dead:false,color:bc});
+          if(stage===5){const s2=Math.PI/5+0.05;for(let a=0.2;a<Math.PI*2;a+=s2)enemyBullets.push({x:e.x,y:e.y+20,vx:Math.cos(a)*1.8*bSpeedMult,vy:Math.sin(a)*1.8*bSpeedMult+0.8,dead:false,color:'#aaffff'});}
         } else if(bt.bulletPattern==='orbit'){
           const ang=Date.now()*.003;
-          for(let i=0;i<6;i++){const a=ang+i*(Math.PI/3);enemyBullets.push({x:e.x+Math.cos(a)*30,y:e.y+Math.sin(a)*20,vx:Math.cos(a+Math.PI/2)*3,vy:Math.sin(a+Math.PI/2)*3+1,dead:false,color:bc});}
+          const orbCount=(stage>=4?9:6);
+          for(let i=0;i<orbCount;i++){const a=ang+i*(Math.PI*2/orbCount);enemyBullets.push({x:e.x+Math.cos(a)*30,y:e.y+Math.sin(a)*20,vx:Math.cos(a+Math.PI/2)*3*bSpeedMult,vy:Math.sin(a+Math.PI/2)*3*bSpeedMult+1,dead:false,color:bc});}
+          if(stage>=4&&player){const dx=player.x-e.x,dy=player.y-e.y,dist=Math.hypot(dx,dy)||1;enemyBullets.push({x:e.x,y:e.y,vx:(dx/dist)*5*bSpeedMult,vy:(dy/dist)*5*bSpeedMult,dead:false,color:'#ff88ff'});}
         } else if(bt.bulletPattern==='lightning'){
-          for(let a=-.5;a<=.5;a+=.25)enemyBullets.push({x:e.x+Math.random()*40-20,y:e.y+28,vx:Math.sin(a)*4+Math.random()*.8-.4,vy:Math.cos(a)*3.5,dead:false,color:bc});
+          const step=(stage>=4?0.18:0.25);
+          for(let a=-.5;a<=.5;a+=step)enemyBullets.push({x:e.x+Math.random()*40-20,y:e.y+28,vx:Math.sin(a)*4*bSpeedMult+Math.random()*.8-.4,vy:Math.cos(a)*3.5*bSpeedMult,dead:false,color:bc});
+          if(stage>=4){const ang2=Date.now()*.002;for(let i=0;i<4;i++){const a=ang2+i*(Math.PI/2);enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*3.5*bSpeedMult,vy:Math.sin(a)*3.5*bSpeedMult+1,dead:false,color:'#ffffaa'});}}
         } else if(bt.bulletPattern==='ring'){
-          for(let i=0;i<12;i++){const a=(Math.PI*2/12)*i;enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*3,vy:Math.sin(a)*3,dead:false,color:bc});}
+          const ringCount=(stage>=4?16:12);
+          for(let i=0;i<ringCount;i++){const a=(Math.PI*2/ringCount)*i;enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*3*bSpeedMult,vy:Math.sin(a)*3*bSpeedMult,dead:false,color:bc});}
+          if(stage===5){for(let i=0;i<8;i++){const a=(Math.PI*2/8)*i+(Math.PI/8);enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*5.5*bSpeedMult,vy:Math.sin(a)*5.5*bSpeedMult,dead:false,color:'#aaffaa'});}}
         } else if(bt.bulletPattern==='chaos'){
           // Hidden boss: random spiral + aimed shots at player
           const ang=Date.now()*.004;
-          for(let i=0;i<8;i++){const a=ang+i*(Math.PI/4);enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*4,vy:Math.sin(a)*4,dead:false,color:bc});}
+          const chaosCount=(stage>=4?12:8);
+          for(let i=0;i<chaosCount;i++){const a=ang+i*(Math.PI*2/chaosCount);enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*4*bSpeedMult,vy:Math.sin(a)*4*bSpeedMult,dead:false,color:bc});}
           // Aimed at player
           if(player){const dx=player.x-e.x,dy=player.y-e.y,dist=Math.hypot(dx,dy)||1;
-            enemyBullets.push({x:e.x,y:e.y,vx:(dx/dist)*5,vy:(dy/dist)*5,dead:false,color:'#ffffff'});}
+            enemyBullets.push({x:e.x,y:e.y,vx:(dx/dist)*5*bSpeedMult,vy:(dy/dist)*5*bSpeedMult,dead:false,color:'#ffffff'});
+            if(stage===5){
+              enemyBullets.push({x:e.x,y:e.y,vx:(dx/dist)*5.5*bSpeedMult+1.5,vy:(dy/dist)*5.5*bSpeedMult,dead:false,color:'#ff44ff'});
+              enemyBullets.push({x:e.x,y:e.y,vx:(dx/dist)*5.5*bSpeedMult-1.5,vy:(dy/dist)*5.5*bSpeedMult,dead:false,color:'#ff44ff'});}}
         }
       } else {
         enemyBullets.push({x:e.x,y:e.y+20,vx:0,vy:3+wave*.2,dead:false,color:'#ff4466'});
@@ -2447,6 +2504,18 @@ function drawJoyBase(cx,cy,knob,alpha){
   ctx.restore();
 }
 function drawJoystick(){
+  if(settings.analogMode==='finger'){
+    // Mode jari: tampilkan lingkaran kecil di posisi jari saat disentuh
+    if(touch.active){
+      ctx.save();ctx.globalAlpha=0.35;
+      ctx.beginPath();ctx.arc(touch.curX,touch.curY,28,0,Math.PI*2);
+      ctx.strokeStyle='#00f5ff';ctx.lineWidth=2;ctx.stroke();
+      ctx.beginPath();ctx.arc(touch.curX,touch.curY,6,0,Math.PI*2);
+      ctx.fillStyle='rgba(0,245,255,0.5)';ctx.fill();
+      ctx.restore();
+    }
+    return;
+  }
   if(touch.active){const cx=touch.startX,cy=touch.startY,maxR=62;const dx=touch.curX-cx,dy=touch.curY-cy;const dist=Math.min(Math.hypot(dx,dy),maxR);const angle=Math.atan2(dy,dx);drawJoyBase(cx,cy,{kx:cx+Math.cos(angle)*dist,ky:cy+Math.sin(angle)*dist,dist},1);}
   else if(settings.analogMode==='fixed'||settings.analogMode==='custom'){const jc=getJoyCenter();drawJoyBase(jc.x,jc.y,null,0.22);}
 }
@@ -3569,7 +3638,7 @@ function closeGachaOverlay(){
 function openSettings(){if(gameRunning)gameRunning=false;playSoundMenuClick();document.getElementById('menuPanel').classList.remove('show');document.getElementById('settingsPanel').classList.add('show');refreshSettingsUI();}
 function closeSettings(){saveSettings();updateFooter();playSoundMenuBack();document.getElementById('settingsPanel').classList.remove('show');document.getElementById('menuPanel').classList.add('show');}
 function refreshSettingsUI(){
-  ['free','fixed','custom'].forEach(m=>document.getElementById('opt-'+m).classList.toggle('active',settings.analogMode===m));
+  ['free','fixed','custom','finger'].forEach(m=>document.getElementById('opt-'+m).classList.toggle('active',settings.analogMode===m));
   ['left','right'].forEach(s=>document.getElementById('opt-'+s).classList.toggle('active',settings.fixedSide===s));
   document.getElementById('fixedSideWrap').style.display=settings.analogMode==='fixed'?'block':'none';
   document.getElementById('customPickerWrap').style.display=settings.analogMode==='custom'?'block':'none';
@@ -3588,7 +3657,7 @@ function updatePickerDot(){
   dot.style.left=Math.max(16,Math.min(pw-16,px))+'px';dot.style.top=Math.max(16,Math.min(ph-16,py))+'px';
   document.getElementById('pickerHint').style.opacity='0';
 }
-function updateFooter(){const map={'free':'ANALOG: BEBAS','fixed':'ANALOG: DIAM','custom':'ANALOG: CUSTOM'};document.getElementById('footerMode').textContent=map[settings.analogMode];}
+function updateFooter(){const map={'free':'ANALOG: BEBAS','fixed':'ANALOG: DIAM','custom':'ANALOG: CUSTOM','finger':'MODE: IKUT JARI'};document.getElementById('footerMode').textContent=map[settings.analogMode]||'ANALOG: BEBAS';}
 updateFooter();
 
 const picker=document.getElementById('analogPicker');let pickerDragging=false;
@@ -3643,12 +3712,29 @@ canvas.addEventListener('touchstart',e=>{
   const slot=skillHitTest(tx,ty);
   if(slot>=0){useEquippedSkill(slot);return;}
   touch.active=true;touch.id=t.identifier;touch.curX=tx;touch.curY=ty;touchAutoShoot=true;useMouseX=false;
-  if(settings.analogMode==='free'){touch.startX=tx;touch.startY=ty;}
+  if(settings.analogMode==='finger'){
+    // Langsung gerakkan pesawat ke posisi jari
+    player.x=Math.max(18,Math.min(W-18,tx));
+    player.y=Math.max(26,Math.min(H-26,ty));
+    player.vx=0;player.vy=0;
+  } else if(settings.analogMode==='free'){touch.startX=tx;touch.startY=ty;}
   else{const jc=getJoyCenter();touch.startX=jc.x;touch.startY=jc.y;}
 },{passive:false});
 canvas.addEventListener('touchmove',e=>{
   e.preventDefault();
-  for(const t of e.changedTouches){if(t.identifier!==touch.id)continue;const rect=canvas.getBoundingClientRect();const sx=W/rect.width,sy=H/rect.height;touch.curX=(t.clientX-rect.left)*sx;touch.curY=(t.clientY-rect.top)*sy;if(settings.analogMode!=='free'){const jc=getJoyCenter();touch.startX=jc.x;touch.startY=jc.y;}}
+  for(const t of e.changedTouches){
+    if(t.identifier!==touch.id)continue;
+    const rect=canvas.getBoundingClientRect();const sx=W/rect.width,sy=H/rect.height;
+    touch.curX=(t.clientX-rect.left)*sx;touch.curY=(t.clientY-rect.top)*sy;
+    if(settings.analogMode==='finger'){
+      // Pesawat langsung ikut jari
+      player.x=Math.max(18,Math.min(W-18,touch.curX));
+      player.y=Math.max(26,Math.min(H-26,touch.curY));
+      player.vx=0;player.vy=0;
+    } else if(settings.analogMode!=='free'){
+      const jc=getJoyCenter();touch.startX=jc.x;touch.startY=jc.y;
+    }
+  }
 },{passive:false});
 canvas.addEventListener('touchend',e=>{e.preventDefault();for(const t of e.changedTouches){if(t.identifier===touch.id){touch.active=false;touch.id=null;touchAutoShoot=false;}}},{passive:false});
 canvas.addEventListener('touchcancel',()=>{touch.active=false;touch.id=null;touchAutoShoot=false;},{passive:false});
@@ -4624,7 +4710,7 @@ function checkSpecialName(name){
 // 🛡 ADMIN PANEL v2 — Sky Vortex
 // Password: SKYVORTEX_ADMIN_2026
 // ══════════════════════════════════════════════════════
-const ADMIN_PASSWORD = 'SKYVORTEX_ADMIN_2026';
+const ADMIN_PASSWORD = 'sannmewing';
 let adminAuthenticated = false;
 let adminAllData = [];
 let adminBanList = JSON.parse(localStorage.getItem('sv_admin_banlist')||'[]');
@@ -5001,7 +5087,7 @@ addToLeaderboard = async function(name,sc,wv){
 };
 // ── END ADMIN PANEL ───────────────────────────────────
 
-// ── CLAIM PENDING COINS ───────────────────────────────
+
 async function claimPendingCoins(){
   const name=(myPlayerName||localStorage.getItem('sv_player_name')||'').toUpperCase().trim();
   if(!name)return;
