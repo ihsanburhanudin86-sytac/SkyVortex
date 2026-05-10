@@ -3547,19 +3547,31 @@ async function addToLeaderboard(name,sc,wv){
   // Anti-cheat dasar: skor tidak masuk akal di-skip
   if(sc>999999){console.warn('[LB] Score terlalu tinggi, tidak diupload');return;}
 
-  // Upload ke Supabase (retry 3x)
+  // Tampilkan status upload
+  function showUploadToast(msg,color){
+    let t=document.getElementById('_lbUploadToast');
+    if(!t){t=document.createElement('div');t.id='_lbUploadToast';
+      t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(4,8,15,0.95);border:1px solid;padding:8px 18px;font-family:Orbitron,monospace;font-size:9px;letter-spacing:2px;z-index:9999;border-radius:2px;text-align:center;transition:opacity 0.5s;';
+      document.body.appendChild(t);}
+    t.textContent=msg;t.style.color=color;t.style.borderColor=color;t.style.opacity='1';
+    clearTimeout(t._tid);t._tid=setTimeout(()=>{t.style.opacity='0';},3500);
+  }
+
+  showUploadToast('⏳ MENGUPLOAD SKOR...','rgba(0,245,255,0.7)');
+
+  // Upload ke Supabase (retry 3x) — pakai upsert agar tidak duplikat
   for(let attempt=1;attempt<=3;attempt++){
     try{
       const res=await sbFetch(SB_URL+'/rest/v1/leaderboard',{
         method:'POST',
-        headers:{...SB_HDR,'Prefer':'return=minimal'},
+        headers:{...SB_HDR,'Prefer':'return=minimal','Content-Type':'application/json'},
         body:JSON.stringify(entry)
       },10000);
       if(!res.ok){const t=await res.text();throw new Error('HTTP '+res.status+': '+t);}
       console.log('[LB] Score uploaded ✓ (attempt '+attempt+')');
       lastSubmittedScore=sc;
-      // Invalidate cache supaya refresh berikutnya ambil data terbaru
       lbLastRefresh=0;
+      showUploadToast('✓ SKOR BERHASIL DIUPLOAD!','#00ff99');
       return;
     }catch(e){
       console.warn('[LB] Upload attempt '+attempt+' failed:',e.message);
@@ -3567,6 +3579,7 @@ async function addToLeaderboard(name,sc,wv){
     }
   }
   console.warn('[LB] Upload gagal setelah 3x, score tersimpan lokal.');
+  showUploadToast('✕ UPLOAD GAGAL — CEK KONEKSI','#ff2266');
 }
 
 
@@ -5382,9 +5395,9 @@ async function adminGiveShip(id,name,isSecret){
       const res=await sbFetch(SB_URL+'/rest/v1/pending_ships',{
         method:'POST',
         headers:{...SB_HDR,'Prefer':'return=minimal'},
-        body:JSON.stringify({name:targetName,ship_id:id,ship_name:name,is_secret:isSecret})
+        body:JSON.stringify({name:targetName,ship_id:id,ship_name:name,is_secret:isSecret===true||isSecret==='true'})
       });
-      if(!res.ok)throw new Error('HTTP '+res.status);
+      if(!res.ok){const errBody=await res.text();throw new Error('HTTP '+res.status+': '+errBody);}
       playSoundAdminShip();
       setAdminTabMsg('adminShipMsg','✓ '+name+' DIKIRIM → '+targetName,'#00f5ff');
     }catch(e){setAdminTabMsg('adminShipMsg','✕ GAGAL: '+e.message,'#ff2244');}
@@ -5533,9 +5546,9 @@ async function adminQuickGiveShip(id,name,isSecret){
     const res=await sbFetch(SB_URL+'/rest/v1/pending_ships',{
       method:'POST',
       headers:{...SB_HDR,'Prefer':'return=minimal'},
-      body:JSON.stringify({name:targetName,ship_id:id,ship_name:name,is_secret:isSecret})
+      body:JSON.stringify({name:targetName,ship_id:id,ship_name:name,is_secret:isSecret===true||isSecret==='true'})
     });
-    if(!res.ok)throw new Error('HTTP '+res.status);
+    if(!res.ok){const errText=await res.text();throw new Error('HTTP '+res.status+': '+errText);}
     playSoundAdminShip();
     setAdminTabMsg('adminQuickShipMsg','✓ '+name+' DIKIRIM → '+targetName,'#00f5ff');
     document.getElementById('quickShipTarget').value='';
@@ -5545,7 +5558,15 @@ async function adminQuickGiveShip(id,name,isSecret){
 
 
 // ── BAN TAB ───────────────────────────────────────────
-function saveBanList(){localStorage.setItem('sv_admin_banlist',JSON.stringify(adminBanList));}
+function saveBanList(){
+  localStorage.setItem('sv_admin_banlist',JSON.stringify(adminBanList));
+  // Sync ke Supabase ban_list (best effort)
+  sbFetch(SB_URL+'/rest/v1/ban_list',{
+    method:'POST',
+    headers:{...SB_HDR,'Prefer':'return=minimal'},
+    body:JSON.stringify(adminBanList.map(name=>({name})))
+  },5000).catch(e=>console.warn('[BAN] Gagal sync ban list ke Supabase:',e.message));
+}
 function renderAdminBanList(){
   const el=document.getElementById('adminBanList');
   if(!adminBanList.length){
@@ -5677,7 +5698,23 @@ function adminResetLocalData(){
 const _origAddToLB = addToLeaderboard;
 addToLeaderboard = async function(name,sc,wv){
   const upper=(name||'').toUpperCase().trim();
-  if(adminBanList.includes(upper)){console.warn('[ADMIN] Banned player blocked:',upper);return;}
+  // Cek ban list lokal dulu (cepat)
+  if(adminBanList.includes(upper)){
+    console.warn('[ADMIN] Banned player blocked (local):',upper);
+    return;
+  }
+  // Cek ban list dari Supabase (biar akurat & global)
+  try{
+    const res=await sbFetch(SB_URL+'/rest/v1/ban_list?name=eq.'+encodeURIComponent(upper),{headers:SB_HDR},5000);
+    if(res.ok){
+      const data=await res.json();
+      if(Array.isArray(data)&&data.length){
+        console.warn('[ADMIN] Banned player blocked (Supabase):',upper);
+        if(!adminBanList.includes(upper)){adminBanList.push(upper);localStorage.setItem('sv_admin_banlist',JSON.stringify(adminBanList));}
+        return;
+      }
+    }
+  }catch(e){console.warn('[BAN] Gagal cek ban list Supabase, lanjut upload:',e.message);}
   return _origAddToLB(name,sc,wv);
 };
 // ── END ADMIN PANEL ───────────────────────────────────
@@ -5694,8 +5731,6 @@ function openMailbox(){
   playSoundMenuClick();
   document.getElementById('menuPanel').classList.remove('show');
   document.getElementById('mailboxPanel').classList.add('show');
-  // Langsung cek pending coins saat mailbox dibuka (tidak tunggu 20 detik)
-  claimPendingCoins();
   loadMailbox();
   // Auto-refresh tiap 5 detik saat mailbox terbuka
   mailboxPollTimer=setInterval(()=>loadMailbox(true),5000);
@@ -6043,7 +6078,7 @@ async function claimPendingCoins(){
 
 // ── POLLING PENDING (cek tiap 20 detik saat game aktif) ────
 setInterval(()=>{
-  claimPendingCoins();
+  // Hanya update badge — tidak auto-claim supaya notif tidak muncul terus
   checkMailBadge();
 },20000);
 
@@ -6140,7 +6175,7 @@ function showPendingCoinNotif(total){
 initStars();particles=[];powerups=[];bullets=[];enemyBullets=[];enemies=[];
 updateHUD();loop();
 // Cek pending koin dari admin saat game dibuka
-setTimeout(()=>{claimPendingCoins();checkMailBadge();},2000);
+setTimeout(()=>{checkMailBadge();},2000);
 
 // Inject mute button into HUD
 (function(){
