@@ -3165,8 +3165,9 @@ function setLbStatus(online,text){
 // ── FETCH GLOBAL DATA ──────────────────────────────────────
 async function fetchGlobalLeaderboard(){
   try{
+    // Limit besar agar semua pemain unik bisa muncul setelah dedup
     const res=await sbFetch(
-      SB_URL+'/rest/v1/leaderboard?select=name,score,wave,date&order=score.desc&limit=100',
+      SB_URL+'/rest/v1/leaderboard?select=name,score,wave,date&order=score.desc&limit=5000',
       {headers:{...SB_HDR,'Prefer':''}}
     );
     if(!res.ok)throw new Error('HTTP '+res.status);
