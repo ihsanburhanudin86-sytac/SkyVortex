@@ -46,32 +46,149 @@
   .sub{font-family:'Press Start 2P',monospace !important;font-size:7px !important;letter-spacing:2px !important;color:#ff00ff !important;text-shadow:1px 1px 0 #880088 !important;}
   .score-display{font-family:'Press Start 2P',monospace;font-size:8px;letter-spacing:1px;color:#00ff00;}
   .score-big{font-family:'Press Start 2P',monospace;font-size:20px;font-weight:400;color:#ffff00;text-shadow:2px 2px 0 #ff8800;}
-  /* RETRO PIXEL BUTTONS */
+  /* ═══ AESTHETIC SCI-FI MENU BUTTONS ═══ */
+  @keyframes shimmer{0%{transform:translateX(-100%) skewX(-15deg);}100%{transform:translateX(250%) skewX(-15deg);}}
+  @keyframes pulseGlow{0%,100%{opacity:0.6;}50%{opacity:1;}}
+  @keyframes borderPulse{0%,100%{box-shadow:0 0 8px currentColor,inset 0 0 8px rgba(255,255,255,0.03);}50%{box-shadow:0 0 18px currentColor,0 0 35px rgba(255,255,255,0.05),inset 0 0 12px rgba(255,255,255,0.06);}}
+
   .glow-btn{
-    padding:10px 8px;background:#000088;
-    border:0 !important;
-    outline:3px solid #8888ff;
-    outline-offset:-3px;
-    box-shadow:3px 3px 0 #000044, inset 0 0 0 2px rgba(255,255,255,0.1);
-    color:#ffffff !important;
-    font-family:'Press Start 2P',monospace !important;
-    font-size:7px !important;font-weight:400 !important;letter-spacing:1px !important;
+    padding:11px 8px;
+    background:rgba(10,14,40,0.75) !important;
+    border:1px solid rgba(140,160,255,0.35) !important;
+    border-top-color:rgba(200,215,255,0.5) !important;
+    border-left-color:rgba(180,200,255,0.45) !important;
+    border-radius:6px;
+    backdrop-filter:blur(10px);
+    color:rgba(180,200,255,0.9) !important;
+    font-family:'Orbitron',monospace !important;
+    font-size:8px !important;font-weight:700 !important;letter-spacing:1.5px !important;
     cursor:pointer;position:relative;overflow:hidden;
-    transition:transform .08s,box-shadow .08s;
+    transition:all .2s cubic-bezier(0.2,0.8,0.3,1);
     text-transform:uppercase;min-width:0 !important;
-    text-align:center;image-rendering:pixelated;
+    text-align:center;
+    box-shadow:0 0 8px rgba(120,140,255,0.25), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 20px rgba(80,100,200,0.08);
   }
-  .glow-btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #000044,inset 0 0 0 2px rgba(255,255,255,0.2);}
-  .glow-btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #000044;}
-  .glow-btn#startBtn{background:#006600 !important;outline-color:#00ff44 !important;color:#00ff44 !important;font-size:8px !important;box-shadow:3px 3px 0 #003300,0 0 12px #00ff4444;}
-  .glow-btn#startBtn:hover{background:#008800 !important;box-shadow:4px 4px 0 #003300,0 0 20px #00ff4466;}
-  .glow-btn.gold{background:#553300 !important;outline-color:#ffaa00 !important;color:#ffdd00 !important;}
-  .glow-btn.orange{background:#552200 !important;outline-color:#ff6600 !important;color:#ff8800 !important;}
-  .glow-btn.purple{background:#330055 !important;outline-color:#aa44ff !important;color:#cc88ff !important;}
-  .glow-btn.secret{background:#440000 !important;outline-color:#ff2244 !important;color:#ff4466 !important;}
+  .glow-btn::before{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(135deg,rgba(255,255,255,0.06) 0%,transparent 50%,rgba(255,255,255,0.02) 100%);
+    pointer-events:none;
+  }
+  .glow-btn::after{
+    content:'';position:absolute;top:0;left:-100%;width:45%;height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);
+    transform:skewX(-15deg);pointer-events:none;
+    transition:none;opacity:0;
+  }
+  .glow-btn:hover::after{animation:shimmer 0.55s ease forwards;}
+  .glow-btn:hover{
+    background:rgba(20,28,70,0.9) !important;
+    border-color:rgba(160,185,255,0.7) !important;
+    border-top-color:rgba(220,235,255,0.85) !important;
+    color:#fff !important;
+    transform:translateY(-2px) scale(1.02);
+    box-shadow:0 6px 20px rgba(80,110,255,0.3), 0 0 20px rgba(120,150,255,0.2), inset 0 1px 0 rgba(255,255,255,0.15);
+  }
+  .glow-btn:active{transform:translateY(1px) scale(0.98);box-shadow:0 1px 6px rgba(80,110,255,0.2),inset 0 1px 0 rgba(255,255,255,0.05);}
+
+  /* START BUTTON — hero style */
+  .glow-btn#startBtn{
+    background:linear-gradient(135deg,rgba(0,60,20,0.9) 0%,rgba(0,100,30,0.85) 50%,rgba(0,70,15,0.9) 100%) !important;
+    border:1px solid rgba(0,255,100,0.5) !important;
+    border-top-color:rgba(100,255,160,0.75) !important;
+    color:#00ff88 !important;
+    font-size:11px !important;letter-spacing:3px !important;
+    box-shadow:0 0 15px rgba(0,255,100,0.25), 0 0 35px rgba(0,200,80,0.1), inset 0 1px 0 rgba(100,255,150,0.2);
+    animation:borderPulse 2.5s ease-in-out infinite;
+  }
+  .glow-btn#startBtn:hover{
+    background:linear-gradient(135deg,rgba(0,80,25,0.95) 0%,rgba(0,140,45,0.9) 50%,rgba(0,90,20,0.95) 100%) !important;
+    box-shadow:0 8px 25px rgba(0,255,100,0.4), 0 0 50px rgba(0,200,80,0.2), inset 0 1px 0 rgba(150,255,180,0.25) !important;
+    transform:translateY(-3px) scale(1.015);
+    color:#88ffcc !important;
+  }
+
+  /* GOLD — Gacha */
+  .glow-btn.gold{
+    background:linear-gradient(135deg,rgba(40,22,0,0.85) 0%,rgba(60,35,0,0.8) 100%) !important;
+    border-color:rgba(255,180,0,0.4) !important;
+    border-top-color:rgba(255,220,80,0.65) !important;
+    color:#ffd060 !important;
+    box-shadow:0 0 10px rgba(255,170,0,0.2), inset 0 1px 0 rgba(255,220,100,0.15);
+  }
+  .glow-btn.gold:hover{border-color:rgba(255,210,0,0.75) !important;color:#ffe080 !important;box-shadow:0 6px 20px rgba(255,170,0,0.35), 0 0 25px rgba(255,200,0,0.15), inset 0 1px 0 rgba(255,230,120,0.2) !important;}
+
+  /* ORANGE — Settings */
+  .glow-btn.orange{
+    background:linear-gradient(135deg,rgba(40,14,0,0.85) 0%,rgba(60,22,0,0.8) 100%) !important;
+    border-color:rgba(255,110,0,0.4) !important;
+    border-top-color:rgba(255,160,60,0.65) !important;
+    color:#ff9040 !important;
+    box-shadow:0 0 10px rgba(255,100,0,0.2), inset 0 1px 0 rgba(255,150,60,0.12);
+  }
+  .glow-btn.orange:hover{border-color:rgba(255,130,0,0.75) !important;color:#ffb060 !important;box-shadow:0 6px 20px rgba(255,110,0,0.35), 0 0 25px rgba(255,130,0,0.15), inset 0 1px 0 rgba(255,160,80,0.18) !important;}
+
+  /* PURPLE — Ranking */
+  .glow-btn.purple{
+    background:linear-gradient(135deg,rgba(25,0,50,0.85) 0%,rgba(40,0,75,0.8) 100%) !important;
+    border-color:rgba(180,80,255,0.4) !important;
+    border-top-color:rgba(210,130,255,0.6) !important;
+    color:#c878ff !important;
+    box-shadow:0 0 10px rgba(160,60,255,0.2), inset 0 1px 0 rgba(200,120,255,0.12);
+  }
+  .glow-btn.purple:hover{border-color:rgba(200,100,255,0.75) !important;color:#e0aaff !important;box-shadow:0 6px 20px rgba(180,80,255,0.35), 0 0 25px rgba(160,60,255,0.15), inset 0 1px 0 rgba(220,140,255,0.2) !important;}
+
+  /* SECRET — Hangar */
+  .glow-btn.secret{
+    background:linear-gradient(135deg,rgba(40,0,8,0.85) 0%,rgba(60,0,15,0.8) 100%) !important;
+    border-color:rgba(255,40,80,0.4) !important;
+    border-top-color:rgba(255,80,110,0.6) !important;
+    color:#ff5070 !important;
+    box-shadow:0 0 10px rgba(255,30,60,0.2), inset 0 1px 0 rgba(255,80,100,0.12);
+  }
+  .glow-btn.secret:hover{border-color:rgba(255,60,90,0.75) !important;color:#ff8090 !important;box-shadow:0 6px 20px rgba(255,40,70,0.35), 0 0 25px rgba(255,30,60,0.15), inset 0 1px 0 rgba(255,100,120,0.2) !important;}
+
+  /* CYAN — Skill Shop, Mailbox */
+  .glow-btn.btn-cyan{
+    background:linear-gradient(135deg,rgba(0,30,45,0.85) 0%,rgba(0,50,70,0.8) 100%) !important;
+    border-color:rgba(0,210,255,0.4) !important;
+    border-top-color:rgba(80,235,255,0.65) !important;
+    color:#00e8ff !important;
+    box-shadow:0 0 10px rgba(0,200,255,0.2), inset 0 1px 0 rgba(80,235,255,0.12);
+  }
+  .glow-btn.btn-cyan:hover{border-color:rgba(0,230,255,0.75) !important;color:#80f4ff !important;box-shadow:0 6px 20px rgba(0,210,255,0.35), 0 0 25px rgba(0,200,255,0.15), inset 0 1px 0 rgba(100,245,255,0.2) !important;}
+
+  /* PINK — Skill Menu */
+  .glow-btn.btn-pink{
+    background:linear-gradient(135deg,rgba(35,0,50,0.85) 0%,rgba(55,0,75,0.8) 100%) !important;
+    border-color:rgba(255,100,220,0.4) !important;
+    border-top-color:rgba(255,150,240,0.6) !important;
+    color:#ff88ee !important;
+    box-shadow:0 0 10px rgba(255,80,200,0.2), inset 0 1px 0 rgba(255,140,230,0.12);
+  }
+  .glow-btn.btn-pink:hover{border-color:rgba(255,130,240,0.75) !important;color:#ffaaff !important;box-shadow:0 6px 20px rgba(255,100,220,0.35), 0 0 25px rgba(255,80,200,0.15), inset 0 1px 0 rgba(255,160,245,0.2) !important;}
+
+  /* GREEN — Save */
+  .glow-btn.btn-green{
+    background:linear-gradient(135deg,rgba(0,35,20,0.85) 0%,rgba(0,55,30,0.8) 100%) !important;
+    border-color:rgba(0,230,130,0.4) !important;
+    border-top-color:rgba(80,255,170,0.65) !important;
+    color:#00ee88 !important;
+    box-shadow:0 0 10px rgba(0,200,120,0.2), inset 0 1px 0 rgba(80,255,160,0.12);
+  }
+  .glow-btn.btn-green:hover{border-color:rgba(0,255,150,0.75) !important;color:#80ffcc !important;box-shadow:0 6px 20px rgba(0,230,130,0.35), 0 0 25px rgba(0,200,120,0.15), inset 0 1px 0 rgba(100,255,180,0.2) !important;}
+
+  /* DANGER — Admin */
+  .glow-btn.btn-danger{
+    background:linear-gradient(135deg,rgba(40,0,12,0.85) 0%,rgba(60,0,18,0.8) 100%) !important;
+    border-color:rgba(255,30,80,0.35) !important;
+    border-top-color:rgba(255,70,110,0.55) !important;
+    color:#ff3366 !important;
+    box-shadow:0 0 10px rgba(255,20,60,0.18), inset 0 1px 0 rgba(255,70,100,0.1);
+  }
+  .glow-btn.btn-danger:hover{border-color:rgba(255,50,90,0.7) !important;color:#ff7090 !important;box-shadow:0 6px 20px rgba(255,30,70,0.32), 0 0 25px rgba(255,20,60,0.15), inset 0 1px 0 rgba(255,90,120,0.18) !important;}
   #controlsHint{font-family:'Press Start 2P',monospace !important;font-size:6px !important;color:#666699 !important;letter-spacing:1px !important;text-align:center !important;line-height:2.2 !important;}
   /* GRID LAYOUT for menu buttons */
-  #menuBtnGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:92%;padding:0 4px;}
+  #menuBtnGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;width:92%;padding:0 4px;}
   #menuBtnGrid .glow-btn{width:100%;}
   #menuPlayerBar{background:rgba(255,0,255,0.08) !important;border:2px solid #ff00ff !important;image-rendering:pixelated;}
   #menuPlayerName{font-family:'Press Start 2P',monospace !important;font-size:8px !important;color:#ff88ff !important;}
@@ -367,9 +484,6 @@
   #gachaParticleCanvas{position:absolute;inset:0;pointer-events:none;z-index:1;}
 
   /* ── SECRET HANGAR ── */
-  .glow-btn.secret{border-color:#ff2266;color:#ff2266;}
-  .glow-btn.secret::before{background:#ff2266;}
-  .glow-btn.secret:hover{color:#fff;box-shadow:0 0 25px #ff2266;}
   #secretPanel .panel-header h2{color:#ff2266;}
   .secret-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;margin-bottom:10px;}
   .secret-card{border:1.5px solid rgba(255,34,102,0.2);padding:8px 5px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:all .25s;position:relative;background:rgba(10,0,15,0.7);}
@@ -509,6 +623,39 @@
   @keyframes konamiFlash{0%{background:#ffd70022;}50%{background:#ffd70055;}100%{background:transparent;}}
   .konami-flash{animation:konamiFlash 0.6s ease forwards;}
 
+  /* ── MAILBOX PANEL ── */
+  #mailboxPanel{background:radial-gradient(ellipse at top,#000d1a 0%,#000000 100%) !important;}
+  #mailboxPanel .panel-header h2{color:#00e5ff;}
+  .mail-item{width:92%;background:rgba(0,229,255,0.05);border:1px solid rgba(0,229,255,0.2);
+    padding:12px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:5px;
+    transition:all .2s;cursor:default;}
+  .mail-item.unread{border-color:rgba(0,229,255,0.5);background:rgba(0,229,255,0.09);}
+  .mail-item-header{display:flex;align-items:center;gap:8px;}
+  .mail-dot{width:7px;height:7px;border-radius:50%;background:#00e5ff;flex-shrink:0;box-shadow:0 0 6px #00e5ff;}
+  .mail-dot.read{background:rgba(0,229,255,0.2);box-shadow:none;}
+  .mail-from{font-size:8px;letter-spacing:2px;color:rgba(0,229,255,0.5);flex:1;}
+  .mail-time{font-size:7px;color:rgba(0,229,255,0.3);letter-spacing:1px;}
+  .mail-subject{font-size:11px;letter-spacing:2px;color:#00e5ff;font-weight:700;}
+  .mail-item.unread .mail-subject{color:#fff;text-shadow:0 0 8px #00e5ff;}
+  .mail-body{font-size:9px;letter-spacing:1px;color:rgba(0,229,255,0.6);line-height:1.6;}
+  .mail-reward{display:flex;align-items:center;gap:8px;margin-top:4px;padding:8px 10px;
+    background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);}
+  .mail-reward-text{font-size:13px;font-weight:900;color:#ffd700;text-shadow:0 0 10px #ffd700;flex:1;}
+  .mail-claim-btn{background:transparent;border:1px solid #ffd700;color:#ffd700;
+    font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;
+    padding:6px 12px;cursor:pointer;transition:all .2s;}
+  .mail-claim-btn:hover{background:#ffd700;color:#000;}
+  .mail-claim-btn:disabled{opacity:0.3;cursor:default;}
+  .mail-claim-btn.claimed{border-color:rgba(0,255,136,0.4);color:#00ff99;cursor:default;}
+  .mail-empty{text-align:center;padding:40px 20px;font-size:9px;letter-spacing:3px;
+    color:rgba(0,229,255,0.25);}
+  /* Badge notif di tombol menu */
+  .mail-badge{position:absolute;top:-4px;right:-4px;background:#ff2266;color:#fff;
+    font-family:'Share Tech Mono',monospace;font-size:8px;font-weight:700;
+    min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;
+    justify-content:center;padding:0 3px;box-shadow:0 0 8px #ff2266;
+    animation:badgePulse 1s ease-in-out infinite;}
+  @keyframes badgePulse{0%,100%{box-shadow:0 0 8px #ff2266;}50%{box-shadow:0 0 16px #ff2266,0 0 4px #ff88aa;}}
   /* ── ADMIN PANEL ── */
   #adminPanel{position:fixed !important;top:0 !important;left:50% !important;transform:translateX(-50%) !important;width:480px !important;height:100vh !important;max-height:100vh !important;z-index:50 !important;overflow:hidden !important;}
   #adminPanel .panel-header h2{color:#ff2266;}
@@ -692,15 +839,31 @@ document.head.appendChild(st);
     <!-- 2-column grid buttons -->
     <div id="menuBtnGrid">
       <button class="glow-btn gold" onclick="openGacha()">🎰 GACHA</button>
-      <button class="glow-btn" style="background:#004455;outline-color:#00ccff;color:#00ffff;" onclick="openShop()">🛒 SKILL SHOP</button>
-      <button class="glow-btn" style="background:#330044;outline-color:#ff88ff;color:#ff88ff;" onclick="openSkillMenu()">⚡ SKILL MENU</button>
+      <button class="glow-btn btn-cyan" onclick="openShop()">🛒 SKILL SHOP</button>
+      <button class="glow-btn btn-pink" onclick="openSkillMenu()">⚡ SKILL MENU</button>
       <button class="glow-btn secret" onclick="openSecretHangar()">🔐 HANGAR</button>
-      <button class="glow-btn" style="background:#004422;outline-color:#00ff99;color:#00ff99;" onclick="openSavePanel()">💾 SAVE</button>
       <button class="glow-btn purple" onclick="openLeaderboard()">🏆 RANKING</button>
       <button class="glow-btn orange" onclick="openSettings()">⚙ SETTING</button>
-      <button class="glow-btn" style="background:#440011;outline-color:#ff2266;color:#ff4466;" onclick="openAdminLogin()">🛡 ADMIN</button>
+      <button class="glow-btn btn-cyan" style="position:relative;" onclick="openMailbox()" id="mailboxMenuBtn">📬 MAILBOX<span class="mail-badge" id="mailBadge" style="display:none;">0</span></button>
+      <button class="glow-btn btn-danger" onclick="openAdminLogin()">🛡 ADMIN</button>
     </div>
     <div id="controlsHint">WASD/ARROW:GERAK | SPACE:TEMBAK<br>📱 GESER=JOYSTICK · AUTO TEMBAK</div>
+  </div>
+
+  <!-- MAILBOX PANEL -->
+  <div class="panel" id="mailboxPanel">
+    <div class="panel-header">
+      <button class="home-btn" onclick="closeMailbox()" title="Kembali ke Menu">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </button>
+      <div>
+        <h2>📬 MAILBOX</h2>
+        <div class="panel-sub" id="mailboxSub">MEMUAT...</div>
+      </div>
+    </div>
+    <div class="panel-body" id="mailboxBody" style="gap:8px;align-items:center;">
+      <div class="mail-empty" id="mailboxLoading">⏳ MEMUAT PESAN...</div>
+    </div>
   </div>
 
   <!-- GACHA PANEL -->
@@ -967,6 +1130,50 @@ document.head.appendChild(st);
           </div>
           <div id="damageDesc" style="font-size:8px;letter-spacing:2px;color:rgba(255,255,255,0.4);text-align:center;margin-top:4px;"></div>
         </div>
+
+        <div class="settings-divider"></div>
+
+        <!-- SAVE DATA SECTION IN SETTINGS -->
+        <div style="width:100%;">
+          <div class="setting-label">💾 SAVE DATA</div>
+          <div id="settingsSaveStatus" style="width:100%;text-align:center;font-size:8px;letter-spacing:1.5px;color:#00ff99;margin-bottom:10px;padding:8px;background:rgba(0,255,153,0.05);border:1px solid rgba(0,255,153,0.15);border-radius:4px;line-height:1.8;"></div>
+
+          <div style="font-size:8px;letter-spacing:2px;color:rgba(0,255,153,0.5);margin-bottom:6px;">📤 EXPORT</div>
+          <div style="display:flex;gap:6px;margin-bottom:10px;">
+            <button class="glow-btn btn-green" style="flex:1;font-size:8px;padding:9px 4px;" onclick="exportSaveFile()">💾 KE FILE</button>
+            <button class="glow-btn btn-green" style="flex:1;font-size:8px;padding:9px 4px;" onclick="exportSaveCode()">📋 COPY KODE</button>
+          </div>
+
+          <div style="font-size:8px;letter-spacing:2px;color:rgba(0,255,153,0.5);margin-bottom:6px;">📥 IMPORT</div>
+          <div style="display:flex;gap:6px;margin-bottom:8px;">
+            <label class="glow-btn btn-green" style="flex:1;font-size:8px;padding:9px 4px;text-align:center;cursor:pointer;">
+              📂 DARI FILE<input type="file" id="saveFileInput2" accept=".json,.txt" style="display:none" onchange="importSaveFile(event)">
+            </label>
+          </div>
+          <div style="font-size:8px;letter-spacing:1px;color:rgba(0,255,153,0.35);margin-bottom:5px;">ATAU PASTE KODE SAVE:</div>
+          <textarea id="saveCodeInput2" placeholder="Paste kode save di sini..." style="width:100%;height:55px;background:rgba(0,255,153,0.04);border:1px solid rgba(0,255,153,0.2);color:#00ff99;font-family:'Share Tech Mono',monospace;font-size:8px;padding:7px;resize:none;letter-spacing:1px;outline:none;box-sizing:border-box;border-radius:3px;"></textarea>
+          <button class="glow-btn btn-green" style="width:100%;font-size:9px;margin-top:5px;" onclick="importSaveCodeFromSettings()">✔ IMPORT KODE</button>
+
+          <div style="height:1px;background:rgba(255,40,40,0.2);margin:12px 0;"></div>
+          <div style="font-size:8px;letter-spacing:2px;color:rgba(255,60,60,0.45);margin-bottom:6px;">⚠ DANGER ZONE</div>
+          <button class="glow-btn btn-danger" style="width:100%;font-size:9px;" onclick="confirmResetData()">🗑 RESET SEMUA DATA</button>
+          <div id="settingsSaveMsg" style="width:100%;text-align:center;font-size:9px;letter-spacing:2px;min-height:20px;margin-top:8px;color:#00ff99;"></div>
+        </div>
+
+        <div class="settings-divider"></div>
+
+        <!-- REDEEM CODE SECTION -->
+        <div style="width:100%;">
+          <div class="setting-label">🎁 REDEEM CODE</div>
+          <div style="font-size:8px;letter-spacing:1.5px;color:rgba(0,245,255,0.4);margin-bottom:8px;">Masukkan kode untuk dapat reward koin atau pesawat</div>
+          <input id="redeemInput" type="text" placeholder="MASUKKAN KODE DI SINI..."
+            style="width:100%;padding:10px 12px;background:rgba(0,245,255,0.05);border:1px solid rgba(0,245,255,0.25);border-radius:4px;color:#00f5ff;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;outline:none;box-sizing:border-box;text-transform:uppercase;"
+            oninput="this.value=this.value.toUpperCase()"
+            onkeydown="if(event.key==='Enter')redeemCode()">
+          <button class="glow-btn" style="width:100%;margin-top:7px;font-size:9px;letter-spacing:2px;border-color:rgba(0,245,255,0.5);color:#00f5ff;background:rgba(0,30,50,0.8);" onclick="redeemCode()">✨ REDEEM</button>
+          <div id="redeemMsg" style="width:100%;text-align:center;font-size:9px;letter-spacing:2px;min-height:22px;margin-top:8px;"></div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -1086,6 +1293,10 @@ document.head.appendChild(st);
         <div style="display:flex;align-items:center;gap:4px;">
           <span style="font-size:9px;letter-spacing:2px;color:rgba(255,200,0,0.5);white-space:nowrap;">KOIN</span>
           <input class="admin-input" id="giveCoinsAmt" type="number" min="1" max="9999999" placeholder="JUMLAH KOIN..." style="flex:1;margin:0;">
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <span style="font-size:9px;letter-spacing:2px;color:rgba(255,200,0,0.5);white-space:nowrap;">PESAN</span>
+          <input class="admin-input" id="giveCoinsMsg" type="text" maxlength="80" placeholder="PESAN UNTUK PEMAIN... (opsional)" style="flex:1;margin:0;">
           <button class="admin-action-btn" style="border-color:#ffd700;color:#ffd700;font-size:9px;padding:6px 8px;" onclick="adminGiveCoins()">💰 KIRIM</button>
         </div>
       </div>
@@ -3647,8 +3858,174 @@ function closeGachaOverlay(){
 }
 
 // ─── SETTINGS UI ──────────────────────────────────────────
-function openSettings(){if(gameRunning)gameRunning=false;playSoundMenuClick();document.getElementById('menuPanel').classList.remove('show');document.getElementById('settingsPanel').classList.add('show');refreshSettingsUI();}
+function openSettings(){if(gameRunning)gameRunning=false;playSoundMenuClick();document.getElementById('menuPanel').classList.remove('show');document.getElementById('settingsPanel').classList.add('show');refreshSettingsUI();updateSettingsSaveStatus();}
 function closeSettings(){saveSettings();updateFooter();playSoundMenuBack();document.getElementById('settingsPanel').classList.remove('show');document.getElementById('menuPanel').classList.add('show');}
+function updateSettingsSaveStatus(){
+  const el=document.getElementById('settingsSaveStatus');
+  if(!el)return;
+  const d=gameData;
+  const ships=(d.ownedShips||[]).length;
+  const secrets=(d.unlockedSecrets||[]).length;
+  const hypers=(d.unlockedHypers||[]).length;
+  el.innerHTML=`💾 AUTO-SAVE AKTIF<br>🪙 ${d.coins||0} KOIN &nbsp;·&nbsp; ✈ ${ships} PESAWAT &nbsp;·&nbsp; 🔐 ${secrets} SECRET &nbsp;·&nbsp; ⚡ ${hypers} HYPER`;
+}
+function importSaveCodeFromSettings(){
+  const input=document.getElementById('saveCodeInput2');
+  if(!input)return;
+  // reuse saveCodeInput temporarily
+  const orig=document.getElementById('saveCodeInput');
+  const origVal=orig?orig.value:'';
+  if(orig)orig.value=input.value;
+  importSaveCode();
+  if(orig)orig.value=origVal;
+  const msg=document.getElementById('settingsSaveMsg');
+  const srcMsg=document.getElementById('saveMsg');
+  if(msg&&srcMsg)msg.innerHTML=srcMsg.innerHTML;
+  updateSettingsSaveStatus();
+}
+
+// ══════════════════════════════════════════════════════
+// 🎁 REDEEM CODE SYSTEM
+// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// 🎁 SISTEM KODE MINGGUAN
+// Setiap minggu ada kode baru untuk koin & pesawat.
+// Kode HANYA berlaku di minggu tersebut — minggu lalu kadaluarsa.
+// Tambah entri baru tiap minggu di REDEEM_CODES_WEEKLY.
+// ══════════════════════════════════════════════════════
+
+function getWeekNumber(){
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 1);
+  const diff = now - start + (start.getTimezoneOffset() - now.getTimezoneOffset()) * 60000;
+  return Math.floor(diff / (7 * 24 * 60 * 60 * 1000)) + 1;
+}
+
+// FORMAT per minggu:
+// weekNumber: [
+//   { code:'KODENYA', type:'coins', amount:500, desc:'500 Koin' },
+//   { code:'KODENYA', type:'ship',  shipId:'storm',  desc:'Pesawat STORM' },
+//   { code:'KODENYA', type:'secret',shipId:'s_dragon',desc:'Secret: DRAGON' },
+// ]
+const REDEEM_CODES_WEEKLY = {
+  19: [
+    { code:'SVOPEN19',    type:'coins',  amount:500,              desc:'500 Koin' },
+    { code:'WEEK19KOIN',  type:'coins',  amount:300,              desc:'300 Koin' },
+    { code:'W19HORNET',   type:'ship',   shipId:'hornet',         desc:'Pesawat HORNET' },
+    { code:'W19VIPER',    type:'ship',   shipId:'viper',          desc:'Pesawat VIPER' },
+  ],
+  20: [
+    { code:'MINGGU20SV',  type:'coins',  amount:600,              desc:'600 Koin' },
+    { code:'KOIN20GRTS',  type:'coins',  amount:400,              desc:'400 Koin' },
+    { code:'W20PHANTOM',  type:'ship',   shipId:'phantom',        desc:'Pesawat PHANTOM' },
+    { code:'W20NOVA',     type:'ship',   shipId:'nova',           desc:'Pesawat NOVA' },
+  ],
+  21: [
+    { code:'HADIAH21SV',  type:'coins',  amount:700,              desc:'700 Koin' },
+    { code:'BONUS21KOIN', type:'coins',  amount:500,              desc:'500 Koin' },
+    { code:'W21STORM',    type:'ship',   shipId:'storm',          desc:'Pesawat STORM' },
+    { code:'W21APEX',     type:'ship',   shipId:'apex',           desc:'Pesawat APEX' },
+  ],
+  22: [
+    { code:'GIFT22SV',    type:'coins',  amount:800,              desc:'800 Koin' },
+    { code:'KOIN22FREE',  type:'coins',  amount:500,              desc:'500 Koin' },
+    { code:'W22VOID',     type:'ship',   shipId:'void',           desc:'Pesawat VOID' },
+    { code:'W22AURORA',   type:'ship',   shipId:'aurora',         desc:'Pesawat AURORA' },
+    { code:'W22DRAGON',   type:'secret', shipId:'s_dragon',       desc:'Secret: DRAGON' },
+  ],
+  23: [
+    { code:'SVWEEK23',    type:'coins',  amount:600,              desc:'600 Koin' },
+    { code:'W23KOIN',     type:'coins',  amount:400,              desc:'400 Koin' },
+    { code:'W23HORNET',   type:'ship',   shipId:'hornet',         desc:'Pesawat HORNET' },
+    { code:'W23PHOENIX',  type:'secret', shipId:'s_phoenix',      desc:'Secret: PHOENIX' },
+  ],
+  // ── Tambah minggu baru di sini ──
+  // 24: [
+  //   { code:'SVWEEK24',   type:'coins', amount:500,       desc:'500 Koin' },
+  //   { code:'W24VIPER',   type:'ship',  shipId:'viper',   desc:'Pesawat VIPER' },
+  // ],
+};
+
+// Hanya ambil kode minggu INI saja (kode minggu lalu kadaluarsa)
+function getAllRedeemCodes(){
+  const currentWeek = getWeekNumber();
+  const all = {};
+  const weekData = REDEEM_CODES_WEEKLY[currentWeek];
+  if(weekData){
+    weekData.forEach(r => {
+      all[r.code] = { type:r.type, shipId:r.shipId, amount:r.amount, desc:r.desc };
+    });
+  }
+  return all;
+}
+
+function redeemCode(){
+  try {
+    const input = document.getElementById('redeemInput');
+    const msgEl = document.getElementById('redeemMsg');
+    if(!input||!msgEl) return;
+
+    const code = input.value.trim().toUpperCase();
+    if(!code){ showRedeemMsg('⚠ Masukkan kode dulu!', '#ffcc00'); return; }
+
+    // Cek kode sudah dipakai
+    let usedCodes = [];
+    try { usedCodes = JSON.parse(localStorage.getItem('sv_used_codes')||'[]'); } catch(e){ usedCodes = []; }
+    if(usedCodes.includes(code)){ showRedeemMsg('✖ Kode sudah pernah dipakai!', '#ff4466'); return; }
+
+    const reward = getAllRedeemCodes()[code];
+    if(!reward){ showRedeemMsg('✖ Kode tidak valid!', '#ff4466'); return; }
+
+    // Pastikan gameData siap
+    if(!gameData) { showRedeemMsg('✖ Game belum siap, coba lagi!', '#ff4466'); return; }
+
+    // Proses reward
+    if(reward.type === 'coins'){
+      gameData.coins = (gameData.coins||0) + reward.amount;
+      try{ localStorage.setItem('sv3_data', JSON.stringify(gameData)); }catch(e){}
+      const cd = document.getElementById('coinDisplay');
+      if(cd) cd.textContent = gameData.coins;
+      showRedeemMsg('✔ ' + reward.desc + ' berhasil didapat! 🪙', '#00ff99');
+
+    } else if(reward.type === 'ship'){
+      if(!gameData.ownedShips) gameData.ownedShips = [];
+      if(gameData.ownedShips.includes(reward.shipId)){
+        showRedeemMsg('⚠ Pesawat sudah dimiliki!', '#ffcc00'); return;
+      }
+      gameData.ownedShips.push(reward.shipId);
+      try{ localStorage.setItem('sv3_data', JSON.stringify(gameData)); }catch(e){}
+      showRedeemMsg('✔ ' + reward.desc + ' berhasil di-unlock! ✈', '#00ff99');
+
+    } else if(reward.type === 'secret'){
+      if(!gameData.unlockedSecrets) gameData.unlockedSecrets = [];
+      if(gameData.unlockedSecrets.includes(reward.shipId)){
+        showRedeemMsg('⚠ Pesawat secret sudah dimiliki!', '#ffcc00'); return;
+      }
+      gameData.unlockedSecrets.push(reward.shipId);
+      try{ localStorage.setItem('sv3_data', JSON.stringify(gameData)); }catch(e){}
+      showRedeemMsg('✔ ' + reward.desc + ' berhasil di-unlock! 🔐', '#ff88ff');
+    }
+
+    // Tandai kode sudah dipakai
+    usedCodes.push(code);
+    try{ localStorage.setItem('sv_used_codes', JSON.stringify(usedCodes)); }catch(e){}
+    input.value = '';
+    updateSettingsSaveStatus();
+
+  } catch(err) {
+    showRedeemMsg('✖ Error: ' + err.message, '#ff4466');
+  }
+}
+
+function showRedeemMsg(text, color){
+  const el = document.getElementById('redeemMsg');
+  if(!el) return;
+  el.textContent = text;
+  el.style.color = color;
+  clearTimeout(el._t);
+  el._t = setTimeout(()=>{ el.textContent=''; }, 3500);
+}
+
 function refreshSettingsUI(){
   ['free','fixed','custom','finger'].forEach(m=>document.getElementById('opt-'+m).classList.toggle('active',settings.analogMode===m));
   ['left','right'].forEach(s=>document.getElementById('opt-'+s).classList.toggle('active',settings.fixedSide===s));
@@ -4904,20 +5281,29 @@ async function adminSearchPlayerName(){
 async function adminGiveCoins(){
   const nameRaw=(document.getElementById('giveCoinsName').value||'').trim().toUpperCase();
   const amt=parseInt(document.getElementById('giveCoinsAmt').value)||0;
+  const msgRaw=(document.getElementById('giveCoinsMsg')||{}).value||'';
   if(!nameRaw){setAdminTabMsg('adminCoinsMsg','⚠ MASUKKAN NAMA PEMAIN TUJUAN','#ff6600');return;}
   if(amt<=0||amt>9999999){setAdminTabMsg('adminCoinsMsg','⚠ JUMLAH TIDAK VALID (1-9999999)','#ff6600');return;}
   setAdminTabMsg('adminCoinsMsg','⏳ MENGIRIM...','rgba(255,215,0,0.5)');
+  const payload={
+    name:nameRaw,
+    amount:amt,
+    claimed:false,
+    message:msgRaw.slice(0,100)||'Hadiah dari Admin!',
+    sent_at:Date.now()
+  };
   try{
     const res=await sbFetch(SB_URL+'/rest/v1/pending_coins',{
       method:'POST',
       headers:{...SB_HDR,'Prefer':'return=minimal'},
-      body:JSON.stringify({name:nameRaw,amount:amt,claimed:false})
+      body:JSON.stringify(payload)
     });
     if(!res.ok)throw new Error('HTTP '+res.status);
     playSoundAdminCoin();
     setAdminTabMsg('adminCoinsMsg','✓ +'+amt.toLocaleString('id-ID')+' KOIN DIKIRIM → '+nameRaw,'#ffd700');
     document.getElementById('giveCoinsAmt').value='';
     document.getElementById('giveCoinsName').value='';
+    if(document.getElementById('giveCoinsMsg'))document.getElementById('giveCoinsMsg').value='';
     document.getElementById('adminNameSuggestions').innerHTML='';
   }catch(e){setAdminTabMsg('adminCoinsMsg','✕ GAGAL: '+e.message,'#ff2244');}
 }
@@ -5139,6 +5525,234 @@ addToLeaderboard = async function(name,sc,wv){
 };
 // ── END ADMIN PANEL ───────────────────────────────────
 
+// ─────────────────────────────────────────────────────────
+// ── MAILBOX SYSTEM ───────────────────────────────────────
+// ─────────────────────────────────────────────────────────
+
+let mailboxData = [];       // cache pesan
+let mailboxUnread = 0;
+
+let mailboxPollTimer=null;
+function openMailbox(){
+  playSoundMenuClick();
+  document.getElementById('menuPanel').classList.remove('show');
+  document.getElementById('mailboxPanel').classList.add('show');
+  loadMailbox();
+  // Auto-refresh tiap 5 detik saat mailbox terbuka
+  mailboxPollTimer=setInterval(()=>loadMailbox(true),5000);
+}
+function closeMailbox(){
+  playSoundMenuBack();
+  if(mailboxPollTimer){clearInterval(mailboxPollTimer);mailboxPollTimer=null;}
+  document.getElementById('mailboxPanel').classList.remove('show');
+  document.getElementById('menuPanel').classList.add('show');
+}
+
+async function loadMailbox(silent=false){
+  const name=(myPlayerName||localStorage.getItem('sv_player_name')||'').toUpperCase().trim();
+  const body=document.getElementById('mailboxBody');
+  const sub=document.getElementById('mailboxSub');
+  if(!name){
+    body.innerHTML='<div class="mail-empty">⚠ BELUM ADA NAMA PEMAIN<br><span style="font-size:8px;color:rgba(0,229,255,0.3);">MAIN SEKALI DULU UNTUK MENDAFTAR</span></div>';
+    sub.textContent='MASUK DULU';
+    return;
+  }
+  // Kalau silent (auto-refresh), jangan reset UI supaya tidak kedip
+  if(!silent){
+    body.innerHTML='<div class="mail-empty" id="mailboxLoading">⏳ MEMUAT PESAN...</div>';
+  }
+  try{
+    // Coba dengan kolom lengkap dulu, fallback ke minimal kalau kolom belum ada
+    let res=await sbFetch(
+      SB_URL+'/rest/v1/pending_coins?name=eq.'+encodeURIComponent(name)+'&claimed=eq.false&select=id,amount,message,sent_at&order=id.desc&limit=50',
+      {headers:SB_HDR}
+    );
+    if(res.status===400){
+      // Kolom message/sent_at belum ada, pakai select minimal
+      res=await sbFetch(
+        SB_URL+'/rest/v1/pending_coins?name=eq.'+encodeURIComponent(name)+'&claimed=eq.false&select=id,amount&order=id.desc&limit=50',
+        {headers:SB_HDR}
+      );
+    }
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    mailboxData=await res.json()||[];
+    renderMailbox(name);
+  }catch(e){
+    body.innerHTML='<div class="mail-empty">✕ GAGAL MEMUAT<br><span style="font-size:8px;color:rgba(255,100,100,0.4);">'+e.message+'</span></div>';
+    sub.textContent='ERROR';
+  }
+}
+
+function renderMailbox(name){
+  const body=document.getElementById('mailboxBody');
+  const sub=document.getElementById('mailboxSub');
+  const totalKoin=mailboxData.reduce((s,m)=>s+(m.amount||0),0);
+  const count=mailboxData.length;
+
+  // Update badge & sub
+  mailboxUnread=count;
+  updateMailBadge(count);
+  sub.textContent=count>0?(count+' PESAN BELUM DIKLAIM · '+totalKoin.toLocaleString('id-ID')+' 🪙'):'TIDAK ADA PESAN BARU';
+
+  if(!count){
+    body.innerHTML='<div class="mail-empty">📭 INBOX KOSONG<br><span style="font-size:8px;color:rgba(0,229,255,0.25);letter-spacing:2px;">BELUM ADA HADIAH MASUK</span></div>';
+    return;
+  }
+
+  // Tombol claim all
+  const claimAllBtn=count>1
+    ? `<button onclick="claimAllMail()" style="width:92%;background:rgba(255,215,0,0.1);border:1px solid #ffd700;color:#ffd700;
+        font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;padding:10px;cursor:pointer;
+        transition:all .2s;" onmouseover="this.style.background='rgba(255,215,0,0.25)'" onmouseout="this.style.background='rgba(255,215,0,0.1)'">
+        💰 KLAIM SEMUA (${count} PESAN · +${totalKoin.toLocaleString('id-ID')} 🪙)
+      </button>`
+    : '';
+
+  const items=mailboxData.map(m=>{
+    const timeStr=m.sent_at?formatMailTime(m.sent_at):'';
+    const msg=(m.message||'Hadiah dari Admin!');
+    const amt=(m.amount||0).toLocaleString('id-ID');
+    return `<div class="mail-item unread" id="mailItem_${m.id}">
+      <div class="mail-item-header">
+        <div class="mail-dot" id="mailDot_${m.id}"></div>
+        <div class="mail-from">📬 DARI ADMIN</div>
+        <div class="mail-time">${timeStr}</div>
+      </div>
+      <div class="mail-subject">HADIAH KOIN</div>
+      <div class="mail-body">${msg}</div>
+      <div class="mail-reward">
+        <div class="mail-reward-text">+${amt} 🪙</div>
+        <button class="mail-claim-btn" id="claimBtn_${m.id}" onclick="claimOneMail('${m.id}',${m.amount||0})">KLAIM</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  body.innerHTML=claimAllBtn+items;
+}
+
+function formatMailTime(ts){
+  if(!ts)return '';
+  const d=new Date(typeof ts==='number'?ts:Number(ts));
+  if(isNaN(d.getTime()))return '';
+  const now=Date.now();
+  const diff=now-d.getTime();
+  if(diff<60000)return 'BARU SAJA';
+  if(diff<3600000)return Math.floor(diff/60000)+' MENIT LALU';
+  if(diff<86400000)return Math.floor(diff/3600000)+' JAM LALU';
+  return Math.floor(diff/86400000)+' HARI LALU';
+}
+
+async function claimOneMail(id, amount){
+  const name=(myPlayerName||localStorage.getItem('sv_player_name')||'').toUpperCase().trim();
+  const btn=document.getElementById('claimBtn_'+id);
+  if(btn){btn.disabled=true;btn.textContent='⏳';}
+  try{
+    // Atomic PATCH claimed=true
+    const claimRes=await sbFetch(
+      SB_URL+'/rest/v1/pending_coins?id=eq.'+encodeURIComponent(id)+'&name=eq.'+encodeURIComponent(name)+'&claimed=eq.false',
+      {method:'PATCH',headers:{...SB_HDR,'Prefer':'return=representation'},
+       body:JSON.stringify({claimed:true})}
+    );
+    if(!claimRes.ok)throw new Error('HTTP '+claimRes.status);
+    const updated=await claimRes.json();
+    if(!updated||!updated.length){
+      if(btn){btn.textContent='SUDAH DIKLAIM';btn.className='mail-claim-btn claimed';}
+      return;
+    }
+    const claimedAmt=updated[0].amount||amount;
+    // DELETE
+    await sbFetch(
+      SB_URL+'/rest/v1/pending_coins?id=eq.'+encodeURIComponent(id),
+      {method:'DELETE',headers:{...SB_HDR,'Prefer':'return=minimal'}}
+    );
+    // Tambah ke lokal
+    gameData.coins=(gameData.coins||0)+claimedAmt;
+    saveData();updateHUD();
+    playSoundAdminCoin();
+    // Animasi item
+    const item=document.getElementById('mailItem_'+id);
+    if(item){
+      item.style.transition='opacity .4s,transform .4s';
+      item.style.opacity='0';item.style.transform='translateX(60px)';
+      setTimeout(()=>item.remove(),400);
+    }
+    // Update cache
+    mailboxData=mailboxData.filter(m=>String(m.id)!==String(id));
+    const name2=(myPlayerName||'').toUpperCase().trim();
+    setTimeout(()=>renderMailbox(name2),450);
+    showPendingCoinNotif(claimedAmt);
+  }catch(e){
+    if(btn){btn.disabled=false;btn.textContent='KLAIM';}
+    console.warn('[Mailbox] claimOne error:',e);
+  }
+}
+
+async function claimAllMail(){
+  const name=(myPlayerName||localStorage.getItem('sv_player_name')||'').toUpperCase().trim();
+  if(!mailboxData.length)return;
+  // Disable semua tombol
+  mailboxData.forEach(m=>{
+    const b=document.getElementById('claimBtn_'+m.id);
+    if(b){b.disabled=true;b.textContent='⏳';}
+  });
+  const ids=mailboxData.map(m=>m.id);
+  try{
+    const claimRes=await sbFetch(
+      SB_URL+'/rest/v1/pending_coins?id=in.('+ids.join(',')+')'+'&name=eq.'+encodeURIComponent(name)+'&claimed=eq.false',
+      {method:'PATCH',headers:{...SB_HDR,'Prefer':'return=representation'},
+       body:JSON.stringify({claimed:true})}
+    );
+    if(!claimRes.ok)throw new Error('HTTP '+claimRes.status);
+    const updated=await claimRes.json();
+    if(!updated||!updated.length)return;
+    const total=updated.reduce((s,r)=>s+(r.amount||0),0);
+    const claimedIds=updated.map(r=>r.id);
+    await sbFetch(
+      SB_URL+'/rest/v1/pending_coins?id=in.('+claimedIds.join(',')+')',
+      {method:'DELETE',headers:{...SB_HDR,'Prefer':'return=minimal'}}
+    );
+    gameData.coins=(gameData.coins||0)+total;
+    saveData();updateHUD();
+    playSoundAdminCoin();
+    mailboxData=[];
+    renderMailbox(name);
+    showPendingCoinNotif(total);
+  }catch(e){
+    console.warn('[Mailbox] claimAll error:',e);
+    mailboxData.forEach(m=>{
+      const b=document.getElementById('claimBtn_'+m.id);
+      if(b){b.disabled=false;b.textContent='KLAIM';}
+    });
+  }
+}
+
+function updateMailBadge(count){
+  const badge=document.getElementById('mailBadge');
+  if(!badge)return;
+  if(count>0){
+    badge.textContent=count>99?'99+':count;
+    badge.style.display='flex';
+  }else{
+    badge.style.display='none';
+  }
+}
+
+async function checkMailBadge(){
+  const name=(myPlayerName||localStorage.getItem('sv_player_name')||'').toUpperCase().trim();
+  if(!name)return;
+  try{
+    const res=await sbFetch(
+      SB_URL+'/rest/v1/pending_coins?name=eq.'+encodeURIComponent(name)+'&claimed=eq.false&select=id',
+      {headers:SB_HDR}
+    );
+    if(!res.ok)return;
+    const rows=await res.json();
+    updateMailBadge((rows||[]).length);
+  }catch(e){}
+}
+
+
+
 
 async function claimPendingCoins(){
   const name=(myPlayerName||localStorage.getItem('sv_player_name')||'').toUpperCase().trim();
@@ -5148,7 +5762,7 @@ async function claimPendingCoins(){
   try{
     // 1. Ambil semua pending koin untuk nama ini
     const res=await sbFetch(
-      SB_URL+'/rest/v1/pending_coins?name=eq.'+encodeURIComponent(name)+'&select=id,amount',
+      SB_URL+'/rest/v1/pending_coins?name=eq.'+encodeURIComponent(name)+'&select=id,amount&claimed=eq.false',
       {headers:SB_HDR}
     );
     if(!res.ok){claimPendingCoins._running=false;return;}
@@ -5156,21 +5770,38 @@ async function claimPendingCoins(){
     if(!rows||!rows.length){claimPendingCoins._running=false;return;}
     const total=rows.reduce((s,r)=>s+(r.amount||0),0);
     if(total<=0){claimPendingCoins._running=false;return;}
-    // 2. DELETE semua row sekaligus — kalau gagal, koin tidak ditambah
+    // 2. Tandai claimed=true dulu (atomic update) — cegah duplikat di multi-tab
     const ids=rows.map(r=>r.id);
-    const delRes=await sbFetch(
-      SB_URL+'/rest/v1/pending_coins?id=in.('+ids.join(',')+')&name=eq.'+encodeURIComponent(name),
+    const claimRes=await sbFetch(
+      SB_URL+'/rest/v1/pending_coins?id=in.('+ids.join(',')+')'+'&name=eq.'+encodeURIComponent(name)+'&claimed=eq.false',
+      {method:'PATCH',headers:{...SB_HDR,'Prefer':'return=representation'},
+       body:JSON.stringify({claimed:true})}
+    );
+    if(!claimRes.ok){claimPendingCoins._running=false;return;}
+    const updated=await claimRes.json();
+    // Hanya proses row yang benar-benar berhasil di-claim (bukan duplikat)
+    const claimedTotal=updated.reduce((s,r)=>s+(r.amount||0),0);
+    if(claimedTotal<=0){claimPendingCoins._running=false;return;}
+    // 3. DELETE row yang sudah di-claim
+    await sbFetch(
+      SB_URL+'/rest/v1/pending_coins?id=in.('+updated.map(r=>r.id).join(',')+')',
       {method:'DELETE',headers:{...SB_HDR,'Prefer':'return=minimal'}}
     );
-    if(!delRes.ok){claimPendingCoins._running=false;return;}
-    // 3. Baru tambah ke lokal setelah DB row terhapus
-    gameData.coins=(gameData.coins||0)+total;
+    // 4. Baru tambah ke lokal — hanya jumlah yang benar-benar di-claim
+    gameData.coins=(gameData.coins||0)+claimedTotal;
     saveData();updateHUD();
     playSoundAdminCoin();
-    showPendingCoinNotif(total);
+    showPendingCoinNotif(claimedTotal);
   }catch(e){console.warn('[PendingCoins] gagal:',e);}
   claimPendingCoins._running=false;
 }
+
+// ── POLLING PENDING (cek tiap 20 detik saat game aktif) ────
+setInterval(()=>{
+  claimPendingCoins();
+  claimPendingShips();
+  checkMailBadge();
+},20000);
 
 // ── CLAIM PENDING SHIPS ────────────────────────────────────
 async function claimPendingShips(){
@@ -5220,17 +5851,31 @@ function showPendingShipNotif(ships){
   setTimeout(()=>el.remove(),3500);
 }
 function showPendingCoinNotif(total){
-  // Buat popup notif koin masuk
+  // Hapus notif lama kalau masih ada
+  const old=document.getElementById('coinNotifPopup');
+  if(old)old.remove();
   const el=document.createElement('div');
-  el.style.cssText=`position:fixed;top:60px;left:50%;transform:translateX(-50%);
-    background:rgba(4,8,20,0.97);border:2px solid #ffd700;padding:14px 28px;
-    font-family:Orbitron,monospace;text-align:center;z-index:9999;
-    box-shadow:0 0 30px rgba(255,215,0,0.4);animation:fadeInDown .4s ease;`;
-  el.innerHTML=`<div style="font-size:11px;letter-spacing:3px;color:rgba(255,215,0,0.6);margin-bottom:4px;">KOIN DITERIMA!</div>
-    <div style="font-size:28px;font-weight:900;color:#ffd700;text-shadow:0 0 20px #ffd700;">+${total.toLocaleString('id-ID')} 🪙</div>
-    <div style="font-size:9px;letter-spacing:2px;color:rgba(255,215,0,0.4);margin-top:4px;">DARI ADMIN</div>`;
+  el.id='coinNotifPopup';
+  el.style.cssText=`position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);
+    background:rgba(4,8,20,0.98);border:2px solid #ffd700;padding:22px 40px;
+    font-family:Orbitron,monospace;text-align:center;z-index:99999;
+    box-shadow:0 0 60px rgba(255,215,0,0.6),0 0 120px rgba(255,215,0,0.2);
+    animation:coinNotifPop .35s cubic-bezier(.17,.67,.35,1.4) forwards;`;
+  el.innerHTML=`
+    <div style="font-size:10px;letter-spacing:4px;color:rgba(255,215,0,0.6);margin-bottom:8px;">💰 KOIN DITERIMA DARI ADMIN</div>
+    <div style="font-size:38px;font-weight:900;color:#ffd700;text-shadow:0 0 30px #ffd700,0 0 60px #ffa500;">+${total.toLocaleString('id-ID')}</div>
+    <div style="font-size:11px;letter-spacing:2px;color:#ffd700;margin-top:4px;">🪙 KOIN</div>
+    <div style="font-size:8px;letter-spacing:2px;color:rgba(255,215,0,0.35);margin-top:10px;">TAP UNTUK TUTUP</div>`;
+  el.onclick=()=>el.remove();
+  // Inject keyframe kalau belum ada
+  if(!document.getElementById('coinNotifStyle')){
+    const st=document.createElement('style');
+    st.id='coinNotifStyle';
+    st.textContent=`@keyframes coinNotifPop{0%{opacity:0;transform:translate(-50%,-50%) scale(0.7);}100%{opacity:1;transform:translate(-50%,-50%) scale(1);}}`;
+    document.head.appendChild(st);
+  }
   document.body.appendChild(el);
-  setTimeout(()=>el.remove(),3500);
+  setTimeout(()=>{if(el.parentNode)el.remove();},6000);
 }
 
 // ─── INIT ──────────────────────────────────────────────────
@@ -5251,7 +5896,7 @@ function showPendingCoinNotif(total){
 initStars();particles=[];powerups=[];bullets=[];enemyBullets=[];enemies=[];
 updateHUD();loop();
 // Cek pending koin dari admin saat game dibuka
-setTimeout(()=>{claimPendingCoins();claimPendingShips();},2000);
+setTimeout(()=>{claimPendingCoins();claimPendingShips();checkMailBadge();},2000);
 
 // Inject mute button into HUD
 (function(){
@@ -5281,26 +5926,21 @@ setTimeout(()=>{claimPendingCoins();claimPendingShips();},2000);
   }
   document.addEventListener('click',firstTouch);
   document.addEventListener('touchstart',firstTouch,{passive:true});
-  // Blokir pull-to-refresh total
+  // Blokir pull-to-refresh, izinkan scroll di panel-body
+  let _touchStartY = 0;
+  document.addEventListener('touchstart', e => {
+    if (e.touches[0]) _touchStartY = e.touches[0].clientY;
+  }, {passive: true});
   document.addEventListener('touchmove', e => {
     const pb = e.target.closest('.panel-body');
-    if (!pb) {
-      e.preventDefault();
-      return;
-    }
-    // Izinkan scroll di panel-body HANYA jika konten bisa discroll
+    if (!pb) { e.preventDefault(); return; }
     const atTop = pb.scrollTop <= 0;
-    const atBottom = pb.scrollTop + pb.clientHeight >= pb.scrollHeight;
-    const scrollingUp = e.touches[0].clientY > (e._startY || e.touches[0].clientY);
+    const atBottom = pb.scrollTop + pb.clientHeight >= pb.scrollHeight - 1;
+    const scrollingUp = e.touches[0].clientY > _touchStartY;
     if ((atTop && scrollingUp) || (atBottom && !scrollingUp)) {
       e.preventDefault();
     }
   }, {passive: false});
-
-  // Track touch start Y untuk deteksi arah scroll
-  document.addEventListener('touchstart', e => {
-    if (e.touches[0]) e.touches[0]._startY = e.touches[0].clientY;
-  }, {passive: true});
 })();
 </script>
 </body>
