@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/leaderboard.js": {
+      "runtime": "edge"
+    }
+  },
   "rewrites": [
     { "source": "/", "destination": "/index.html" }
   ],
