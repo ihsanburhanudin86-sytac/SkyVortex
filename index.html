@@ -1038,6 +1038,18 @@ document.head.appendChild(st);
         <div class="my-score" id="lbMyScore">0</div>
       </div>
 
+      <!-- Search -->
+      <div style="width:100%;display:flex;gap:6px;margin-bottom:4px;">
+        <input id="lbSearchInput" type="text" placeholder="🔍 CARI NAMA PEMAIN..." maxlength="20"
+          style="flex:1;background:rgba(0,245,255,0.05);border:1px solid rgba(0,245,255,0.2);color:#00f5ff;
+          font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;padding:7px 10px;
+          outline:none;text-transform:uppercase;"
+          oninput="filterLbSearch(this.value)">
+        <button onclick="filterLbSearch('');document.getElementById('lbSearchInput').value='';"
+          style="background:transparent;border:1px solid rgba(0,245,255,0.2);color:rgba(0,245,255,0.4);
+          font-family:'Share Tech Mono',monospace;font-size:9px;padding:7px 10px;cursor:pointer;letter-spacing:1px;">✕</button>
+      </div>
+
       <!-- Table -->
       <div id="lbSkeletons" style="width:100%;">
         <div class="lb-skeleton"></div><div class="lb-skeleton"></div><div class="lb-skeleton"></div>
@@ -3400,7 +3412,7 @@ async function fetchGlobalLeaderboard(){
       if(!k)return;
       if(!seen.has(k)||e.score>seen.get(k).score)seen.set(k,e);
     });
-    lbCache=[...seen.values()].sort((a,b)=>b.score-a.score).slice(0,50);
+    lbCache=[...seen.values()].sort((a,b)=>b.score-a.score).slice(0,100);
     lbLastRefresh=Date.now();
     setLbStatus(true,'ONLINE — GLOBAL');
     document.getElementById('lbCountBadge').textContent=lbCache.length+' PILOT';
@@ -3414,6 +3426,12 @@ async function fetchGlobalLeaderboard(){
 }
 
 // ── RENDER LEADERBOARD ─────────────────────────────────────
+function filterLbSearch(q){
+  const query=q.trim().toUpperCase();
+  if(!query){renderLeaderboard(lbCache);return;}
+  const filtered=(lbCache||[]).filter(e=>(e.name||'').toUpperCase().includes(query));
+  renderLeaderboard(filtered,query);
+}
 function renderLeaderboard(data, highlightName=''){
   const tbody=document.getElementById('lbBody');
   const table=document.getElementById('lbTable');
@@ -5968,13 +5986,13 @@ async function checkMailBadge(){
   const name=(myPlayerName||localStorage.getItem('sv_player_name')||'').toUpperCase().trim();
   if(!name)return;
   try{
-    const res=await sbFetch(
-      SB_URL+'/rest/v1/pending_coins?name=eq.'+encodeURIComponent(name)+'&claimed=eq.false&select=id',
-      {headers:SB_HDR}
-    );
-    if(!res.ok)return;
-    const rows=await res.json();
-    updateMailBadge((rows||[]).length);
+    const [r1,r2]=await Promise.all([
+      sbFetch(SB_URL+'/rest/v1/pending_coins?name=eq.'+encodeURIComponent(name)+'&claimed=eq.false&select=id',{headers:SB_HDR}),
+      sbFetch(SB_URL+'/rest/v1/pending_ships?name=eq.'+encodeURIComponent(name)+'&select=id',{headers:SB_HDR})
+    ]);
+    const coins=r1.ok?(await r1.json()||[]).length:0;
+    const ships=r2.ok?(await r2.json()||[]).length:0;
+    updateMailBadge(coins+ships);
   }catch(e){}
 }
 
@@ -6026,7 +6044,6 @@ async function claimPendingCoins(){
 // ── POLLING PENDING (cek tiap 20 detik saat game aktif) ────
 setInterval(()=>{
   claimPendingCoins();
-  claimPendingShips();
   checkMailBadge();
 },20000);
 
@@ -6123,7 +6140,7 @@ function showPendingCoinNotif(total){
 initStars();particles=[];powerups=[];bullets=[];enemyBullets=[];enemies=[];
 updateHUD();loop();
 // Cek pending koin dari admin saat game dibuka
-setTimeout(()=>{claimPendingCoins();claimPendingShips();checkMailBadge();},2000);
+setTimeout(()=>{claimPendingCoins();checkMailBadge();},2000);
 
 // Inject mute button into HUD
 (function(){
