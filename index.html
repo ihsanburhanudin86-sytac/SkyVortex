@@ -5091,32 +5091,39 @@ addToLeaderboard = async function(name,sc,wv){
 async function claimPendingCoins(){
   const name=(myPlayerName||localStorage.getItem('sv_player_name')||'').toUpperCase().trim();
   if(!name)return;
+  // Guard: hindari double-claim jika dipanggil berulang
+  if(claimPendingCoins._running)return;
+  claimPendingCoins._running=true;
   try{
     const res=await sbFetch(
       SB_URL+'/rest/v1/pending_coins?name=eq.'+encodeURIComponent(name)+'&claimed=eq.false&select=id,amount',
       {headers:SB_HDR}
     );
-    if(!res.ok)return;
+    if(!res.ok){claimPendingCoins._running=false;return;}
     const rows=await res.json();
-    if(!rows||!rows.length)return;
+    if(!rows||!rows.length){claimPendingCoins._running=false;return;}
     const total=rows.reduce((s,r)=>s+(r.amount||0),0);
-    if(total<=0)return;
-    // Mark semua sebagai claimed
+    if(total<=0){claimPendingCoins._running=false;return;}
+    // Mark semua sebagai claimed dulu — baru tambah ke lokal setelah semua berhasil
     const ids=rows.map(r=>r.id);
-    for(const id of ids){
-      await sbFetch(SB_URL+'/rest/v1/pending_coins?id=eq.'+id,{
+    const patchResults=await Promise.all(ids.map(id=>
+      sbFetch(SB_URL+'/rest/v1/pending_coins?id=eq.'+id,{
         method:'PATCH',
         headers:{...SB_HDR,'Prefer':'return=minimal'},
         body:JSON.stringify({claimed:true})
-      });
-    }
-    // Tambah ke koin lokal
-    gameData.coins=(gameData.coins||0)+total;
+      }).then(r=>r.ok).catch(()=>false)
+    ));
+    // Hanya tambah koin yang berhasil di-mark
+    const successRows=rows.filter((_,i)=>patchResults[i]);
+    const claimedTotal=successRows.reduce((s,r)=>s+(r.amount||0),0);
+    if(claimedTotal<=0){claimPendingCoins._running=false;return;}
+    // Tambah ke koin lokal hanya setelah DB berhasil diupdate
+    gameData.coins=(gameData.coins||0)+claimedTotal;
     saveData();updateHUD();
     playSoundAdminCoin();
-    // Tampilkan notif ke pemain
-    showPendingCoinNotif(total);
+    showPendingCoinNotif(claimedTotal);
   }catch(e){console.warn('[PendingCoins] gagal:',e);}
+  claimPendingCoins._running=false;
 }
 function showPendingCoinNotif(total){
   // Buat popup notif koin masuk
