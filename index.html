@@ -3153,6 +3153,15 @@ function endGame(){
 async function submitName(){
   const raw=document.getElementById('nameInput').value.trim().toUpperCase();
   const name=raw||'ANON';
+  // Cek apakah nama sudah ada di leaderboard dengan skor lebih tinggi (nama ganda)
+  if(lbCache&&lbCache.length){
+    const existing=lbCache.find(e=>(e.name||'').toUpperCase().trim()===name);
+    if(existing&&existing.score>pendingScore){
+      const hint=document.getElementById('nameSavedHint');
+      if(hint){hint.textContent='⚠ NAMA INI SUDAH DIPAKAI ORANG LAIN — PILIH NAMA LAIN!';hint.style.color='#ff6600';}
+      return; // jangan lanjut submit
+    }
+  }
   // Simpan nama untuk sesi berikutnya
   myPlayerName=name;
   localStorage.setItem('sv_player_name',name);
@@ -3464,13 +3473,23 @@ function renderLeaderboard(data, highlightName=''){
     </tr>`;
   }).join('');
 
-  // Update my banner
+  // Update my banner — hanya tampil kalau skor di leaderboard cocok dengan skor lokal kita
+  const myLocalHi=gameData&&gameData.leaderboard?gameData.leaderboard.reduce((m,e)=>e.name===myName?Math.max(m,e.score||0):m,0):0;
   if(myName&&myRank>0){
     const myEntry=list[myRank-1];
-    document.getElementById('lbMyBanner').style.display='flex';
-    document.getElementById('lbMyName').textContent=myName;
-    document.getElementById('lbMyRankText').textContent='RANK #'+myRank+' dari '+list.length;
-    document.getElementById('lbMyScore').textContent=(myEntry.score||0).toLocaleString('id-ID');
+    const lbScore=myEntry.score||0;
+    // Hanya tampilkan banner kalau skor di LB cocok dengan skor lokal kita (selisih wajar)
+    // Ini cegah nama ganda dimana orang lain punya nama sama tapi skor lebih tinggi
+    const isMyScore=myLocalHi>0&&Math.abs(lbScore-myLocalHi)/Math.max(lbScore,myLocalHi)<0.5||lbScore<=myLocalHi;
+    if(isMyScore||myLocalHi===0){
+      document.getElementById('lbMyBanner').style.display='flex';
+      document.getElementById('lbMyName').textContent=myName;
+      document.getElementById('lbMyRankText').textContent='RANK #'+myRank+' dari '+list.length;
+      document.getElementById('lbMyScore').textContent=lbScore.toLocaleString('id-ID');
+    } else {
+      // Nama sama tapi skor beda jauh — sembunyikan banner
+      document.getElementById('lbMyBanner').style.display='none';
+    }
   }
 }
 
