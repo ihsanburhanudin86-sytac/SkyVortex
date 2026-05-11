@@ -7541,10 +7541,15 @@ function claimDcReward(){
   const allDone=missions.every(m=>(dc.progress[m.id]||0)>=m.target);
   if(!allDone||dc.claimed)return;
   const bonus=missions.reduce((s,m)=>s+m.reward,0);
+  // Set claimed dan simpan DULU sebelum apapun
   dc.claimed=true;
   saveDcData(dc);
   gameData.coins+=bonus;
   saveData();
+  // Sembunyikan badge langsung via DOM (tidak tunggu re-render)
+  const badge=document.getElementById('dcBadge');
+  if(badge)badge.style.display='none';
+  // Update HUD dan render ulang panel
   updateHUD();
   updateDcBadge();
   renderDcPanel();
