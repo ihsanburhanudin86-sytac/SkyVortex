@@ -19,9 +19,9 @@
     --dark:#04080f;--mid:#0a1628;--panel:rgba(4,12,28,0.97);
   }
   html{overscroll-behavior:none;overscroll-behavior-y:none;overflow:hidden;position:fixed;width:100%;height:100%;}
-  body{background:var(--dark);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Orbitron',monospace;overflow:hidden;color:var(--cyan);touch-action:pan-x pan-y;overscroll-behavior:none;position:fixed;width:100%;height:100%;}
+  body{background:var(--dark);display:block;min-height:100vh;font-family:'Orbitron',monospace;overflow:hidden;color:var(--cyan);touch-action:pan-x pan-y;overscroll-behavior:none;position:fixed;width:100%;height:100%;}
   #wrapper{
-    position:relative;display:flex;flex-direction:column;align-items:center;overscroll-behavior:none;
+    position:absolute;display:flex;flex-direction:column;align-items:center;overscroll-behavior:none;
     transform-origin:top left;
   }
   #hud{display:flex;justify-content:space-between;align-items:center;width:480px;padding:7px 12px;background:rgba(0,245,255,0.05);border:1px solid rgba(0,245,255,0.2);border-bottom:none;font-size:11px;letter-spacing:2px;}
@@ -7577,16 +7577,25 @@ window.addEventListener('load',()=>{updateDcBadge();});
 (function scaleWrapper(){
   const wrap=document.getElementById('wrapper');
   function doScale(){
-    const sw=window.innerWidth,sh=window.innerHeight;
-    const scaleX=sw/480,scaleY=sh/672; // 672 = hud(36)+canvas(600)+footer(36)
-    const scale=Math.min(scaleX,scaleY,1); // max scale = 1 (never upscale past native)
-    window._gameScale=scale; // simpan global untuk touch handler
-    // transform-origin: top left, margin manual supaya center
-    const scaledW=480*scale, scaledH=672*scale;
+    // Pakai clientWidth/Height agar akurat di semua browser mobile
+    const sw=document.documentElement.clientWidth||window.innerWidth;
+    const sh=document.documentElement.clientHeight||window.innerHeight;
+    const scaleX=sw/480;
+    const scaleY=sh/672; // 672 = hud(36)+canvas(600)+footer(36)
+    // Selalu ambil scale terkecil supaya tidak ada yang terpotong
+    const scale=Math.min(scaleX,scaleY);
+    window._gameScale=scale;
+    const scaledW=480*scale;
+    const scaledH=672*scale;
+    // Center dengan left/top absolute — tidak pernah negatif
+    const offsetX=(sw-scaledW)/2;
+    const offsetY=(sh-scaledH)/2;
     wrap.style.transformOrigin='top left';
     wrap.style.transform='scale('+scale+')';
-    wrap.style.marginLeft=((sw-scaledW)/2)+'px';
-    wrap.style.marginTop=((sh-scaledH)/2)+'px';
+    wrap.style.left=offsetX+'px';
+    wrap.style.top=offsetY+'px';
+    wrap.style.marginLeft='';
+    wrap.style.marginTop='';
   }
   doScale();
   window.addEventListener('resize',doScale);
