@@ -228,6 +228,33 @@
 
   /* LEADERBOARD PANEL */
   #leaderboardPanel .panel-header h2{color:var(--cyan);}
+
+  /* LB TABS */
+  .lb-tabs{display:flex;width:100%;gap:0;margin-bottom:8px;border-bottom:1px solid rgba(0,245,255,0.15);}
+  .lb-tab-btn{flex:1;background:transparent;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,0.35);font-family:'Press Start 2P',monospace;font-size:7px;letter-spacing:1.5px;padding:8px 4px;cursor:pointer;transition:all .2s;text-align:center;}
+  .lb-tab-btn:hover{color:rgba(255,255,255,0.7);}
+  .lb-tab-btn.active-global{color:#00f5ff;border-bottom-color:#00f5ff;text-shadow:0 0 10px rgba(0,245,255,0.5);}
+  .lb-tab-btn.active-escort{color:#ff6600;border-bottom-color:#ff6600;text-shadow:0 0 10px rgba(255,102,0,0.5);}
+
+  /* ESCORT LB specific */
+  .lb-escort-section{display:none;width:100%;}
+  .lb-escort-section.active{display:block;}
+  .lb-global-section{display:none;width:100%;}
+  .lb-global-section.active{display:block;}
+  .lb-escort-header{display:flex;align-items:center;gap:6px;font-family:'Press Start 2P',monospace;font-size:7px;color:#ff6600;letter-spacing:2px;padding:4px 2px 8px;text-shadow:0 0 8px rgba(255,102,0,0.4);}
+  .lb-table.escort th{color:rgba(255,102,0,0.5)!important;border-bottom-color:rgba(255,102,0,0.15)!important;}
+  .lb-table.escort td{border-bottom-color:rgba(255,102,0,0.06)!important;}
+  .lb-table.escort tr:nth-child(1) td{color:var(--gold);text-shadow:0 0 12px rgba(255,215,0,.4);}
+  .lb-table.escort tr:nth-child(2) td{color:#c0c0c0;}
+  .lb-table.escort tr:nth-child(3) td{color:#cd7f32;}
+  .lb-me-escort td{background:rgba(255,102,0,0.08)!important;color:#ff8833!important;font-weight:700;}
+  .lb-me-escort td:first-child::before{content:'▶ ';font-size:8px;}
+  .lb-escort-target-badge{display:inline-block;font-size:8px;background:rgba(255,102,0,0.12);border:1px solid rgba(255,102,0,0.3);border-radius:2px;padding:1px 5px;color:#ff8833;margin-left:4px;}
+  .lb-escort-my-banner{display:none;width:100%;background:rgba(255,102,0,0.08);border:1px solid rgba(255,102,0,0.25);padding:8px 12px;margin-bottom:6px;flex-direction:row;align-items:center;justify-content:space-between;}
+  .lb-escort-my-banner.show{display:flex;}
+  .escort-filter-row{display:flex;gap:6px;margin-bottom:6px;width:100%;}
+  .escort-filter-btn{flex:1;background:transparent;border:1px solid rgba(255,102,0,0.25);color:rgba(255,102,0,0.5);font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 4px;cursor:pointer;letter-spacing:1px;transition:all .2s;}
+  .escort-filter-btn:hover,.escort-filter-btn.active{background:rgba(255,102,0,0.12);border-color:rgba(255,102,0,0.6);color:#ff8833;}
   .lb-table{width:100%;border-collapse:collapse;}
   .lb-table th{font-size:8px;letter-spacing:3px;color:rgba(0,245,255,0.4);padding:6px 10px;text-align:left;border-bottom:1px solid rgba(0,245,255,0.12);}
   .lb-table td{font-size:11px;letter-spacing:1.5px;padding:8px 10px;border-bottom:1px solid rgba(0,245,255,0.05);color:rgba(255,255,255,0.8);transition:background .3s;}
@@ -846,6 +873,7 @@ document.head.appendChild(st);
       <button class="glow-btn orange" onclick="openSettings()">⚙ SETTING</button>
       <button class="glow-btn btn-cyan" style="position:relative;" onclick="openMailbox()" id="mailboxMenuBtn">📬 MAILBOX<span class="mail-badge" id="mailBadge" style="display:none;">0</span></button>
       <button class="glow-btn btn-danger" onclick="openAdminLogin()">🛡 ADMIN</button>
+      <button class="glow-btn" style="background:linear-gradient(135deg,#ff6600,#cc2200);border-color:#ff6600;color:#fff;grid-column:span 2;font-size:9px;letter-spacing:2px;" onclick="startEscortMode()">🛡 ESCORT MODE</button>
     </div>
     <div id="controlsHint">WASD/ARROW:GERAK | SPACE:TEMBAK<br>📱 GESER=JOYSTICK · AUTO TEMBAK</div>
   </div>
@@ -1015,58 +1043,123 @@ document.head.appendChild(st);
       <div class="panel-sub">SKY VORTEX — GLOBAL ARENA</div>
     </div>
     <div class="panel-body">
-      <!-- Status bar -->
-      <div class="lb-statusbar" style="width:100%;">
-        <div id="lbOnlineStatus" style="display:flex;align-items:center;color:rgba(0,245,255,0.4);">
-          <span class="lb-offline-dot" id="lbDot"></span>
-          <span id="lbStatusText">MENGHUBUNGKAN...</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span class="lb-count-badge" id="lbCountBadge"></span>
-          <button class="lb-refresh-btn" id="lbRefreshBtn" onclick="refreshLeaderboard()" title="Refresh">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-          </button>
-        </div>
+
+      <!-- TABS -->
+      <div class="lb-tabs">
+        <button class="lb-tab-btn active-global" id="tabGlobal" onclick="switchLbTab('global')">🌐 GLOBAL</button>
+        <button class="lb-tab-btn" id="tabEscort" onclick="switchLbTab('escort')">🛡 ESCORT</button>
       </div>
 
-      <!-- My score banner (shown after submit) -->
-      <div class="lb-my-banner" id="lbMyBanner" style="display:none;">
-        <div>
-          <div class="my-name" id="lbMyName">PILOT</div>
-          <div class="my-rank" id="lbMyRankText">RANK #--</div>
+      <!-- ══════ TAB GLOBAL ══════ -->
+      <div class="lb-global-section active" id="sectionGlobal">
+        <!-- Status bar -->
+        <div class="lb-statusbar" style="width:100%;">
+          <div id="lbOnlineStatus" style="display:flex;align-items:center;color:rgba(0,245,255,0.4);">
+            <span class="lb-offline-dot" id="lbDot"></span>
+            <span id="lbStatusText">MENGHUBUNGKAN...</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="lb-count-badge" id="lbCountBadge"></span>
+            <button class="lb-refresh-btn" id="lbRefreshBtn" onclick="refreshLeaderboard()" title="Refresh">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            </button>
+          </div>
         </div>
-        <div class="my-score" id="lbMyScore">0</div>
+
+        <!-- My score banner -->
+        <div class="lb-my-banner" id="lbMyBanner" style="display:none;">
+          <div>
+            <div class="my-name" id="lbMyName">PILOT</div>
+            <div class="my-rank" id="lbMyRankText">RANK #--</div>
+          </div>
+          <div class="my-score" id="lbMyScore">0</div>
+        </div>
+
+        <!-- Search -->
+        <div style="width:100%;display:flex;gap:6px;margin-bottom:4px;">
+          <input id="lbSearchInput" type="text" placeholder="🔍 CARI NAMA PEMAIN..." maxlength="20"
+            style="flex:1;background:rgba(0,245,255,0.05);border:1px solid rgba(0,245,255,0.2);color:#00f5ff;
+            font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;padding:7px 10px;
+            outline:none;text-transform:uppercase;"
+            oninput="filterLbSearch(this.value)">
+          <button onclick="filterLbSearch('');document.getElementById('lbSearchInput').value='';"
+            style="background:transparent;border:1px solid rgba(0,245,255,0.2);color:rgba(0,245,255,0.4);
+            font-family:'Share Tech Mono',monospace;font-size:9px;padding:7px 10px;cursor:pointer;letter-spacing:1px;">✕</button>
+        </div>
+
+        <!-- Table Global -->
+        <div id="lbSkeletons" style="width:100%;">
+          <div class="lb-skeleton"></div><div class="lb-skeleton"></div><div class="lb-skeleton"></div>
+          <div class="lb-skeleton"></div><div class="lb-skeleton"></div>
+        </div>
+        <table class="lb-table" id="lbTable" style="display:none;width:100%;">
+          <thead>
+            <tr>
+              <th class="lb-rank">#</th>
+              <th>NAMA</th>
+              <th style="text-align:right;">SKOR</th>
+              <th style="text-align:center;">WAVE</th>
+            </tr>
+          </thead>
+          <tbody id="lbBody"></tbody>
+        </table>
+        <div id="lbEmptyMsg" style="display:none;" class="lb-empty">BELUM ADA SKOR GLOBAL</div>
       </div>
 
-      <!-- Search -->
-      <div style="width:100%;display:flex;gap:6px;margin-bottom:4px;">
-        <input id="lbSearchInput" type="text" placeholder="🔍 CARI NAMA PEMAIN..." maxlength="20"
-          style="flex:1;background:rgba(0,245,255,0.05);border:1px solid rgba(0,245,255,0.2);color:#00f5ff;
-          font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;padding:7px 10px;
-          outline:none;text-transform:uppercase;"
-          oninput="filterLbSearch(this.value)">
-        <button onclick="filterLbSearch('');document.getElementById('lbSearchInput').value='';"
-          style="background:transparent;border:1px solid rgba(0,245,255,0.2);color:rgba(0,245,255,0.4);
-          font-family:'Share Tech Mono',monospace;font-size:9px;padding:7px 10px;cursor:pointer;letter-spacing:1px;">✕</button>
+      <!-- ══════ TAB ESCORT ══════ -->
+      <div class="lb-escort-section" id="sectionEscort">
+        <!-- Status bar escort -->
+        <div class="lb-statusbar" style="width:100%;">
+          <div style="display:flex;align-items:center;color:rgba(255,102,0,0.55);">
+            <span class="lb-offline-dot" id="lbEscortDot" style="background:#ff6600;"></span>
+            <span id="lbEscortStatusText" style="font-size:8px;letter-spacing:2px;">MENGHUBUNGKAN...</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span id="lbEscortCountBadge" style="font-size:8px;letter-spacing:2px;color:rgba(255,102,0,0.5);"></span>
+            <button class="lb-refresh-btn" onclick="refreshEscortLeaderboard()" title="Refresh" style="border-color:rgba(255,102,0,0.4);color:#ff8833;">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- My escort banner -->
+        <div class="lb-escort-my-banner" id="lbEscortMyBanner">
+          <div>
+            <div style="font-family:Orbitron,monospace;font-size:10px;color:#ff8833;font-weight:700;" id="lbEscortMyName">PILOT</div>
+            <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:rgba(255,102,0,0.5);margin-top:2px;" id="lbEscortMyRankText">RANK #--</div>
+          </div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:16px;color:#ff8833;font-weight:700;" id="lbEscortMyScore">0</div>
+        </div>
+
+        <!-- Filter target -->
+        <div class="lb-escort-header">🛡 ESCORT MODE LEADERBOARD</div>
+        <div class="escort-filter-row">
+          <button class="escort-filter-btn active" id="efAll" onclick="filterEscortTarget('all')">ALL</button>
+          <button class="escort-filter-btn" id="efPlane" onclick="filterEscortTarget('plane')">✈ PESAWAT</button>
+          <button class="escort-filter-btn" id="efShip" onclick="filterEscortTarget('ship')">🚢 KAPAL</button>
+          <button class="escort-filter-btn" id="efBase" onclick="filterEscortTarget('base')">🏯 BASE</button>
+        </div>
+
+        <!-- Table Escort -->
+        <div id="lbEscortSkeletons" style="width:100%;">
+          <div class="lb-skeleton"></div><div class="lb-skeleton"></div><div class="lb-skeleton"></div>
+          <div class="lb-skeleton"></div><div class="lb-skeleton"></div>
+        </div>
+        <table class="lb-table escort" id="lbEscortTable" style="display:none;width:100%;">
+          <thead>
+            <tr>
+              <th class="lb-rank">#</th>
+              <th>NAMA</th>
+              <th style="text-align:center;">TARGET</th>
+              <th style="text-align:right;">SKOR</th>
+              <th style="text-align:center;">WAVE</th>
+            </tr>
+          </thead>
+          <tbody id="lbEscortBody"></tbody>
+        </table>
+        <div id="lbEscortEmptyMsg" style="display:none;" class="lb-empty" style="color:rgba(255,102,0,0.4);">BELUM ADA SKOR ESCORT</div>
       </div>
 
-      <!-- Table -->
-      <div id="lbSkeletons" style="width:100%;">
-        <div class="lb-skeleton"></div><div class="lb-skeleton"></div><div class="lb-skeleton"></div>
-        <div class="lb-skeleton"></div><div class="lb-skeleton"></div>
-      </div>
-      <table class="lb-table" id="lbTable" style="display:none;width:100%;">
-        <thead>
-          <tr>
-            <th class="lb-rank">#</th>
-            <th>NAMA</th>
-            <th style="text-align:right;">SKOR</th>
-            <th style="text-align:center;">WAVE</th>
-          </tr>
-        </thead>
-        <tbody id="lbBody"></tbody>
-      </table>
-      <div id="lbEmptyMsg" style="display:none;" class="lb-empty">BELUM ADA SKOR GLOBAL</div>
     </div>
   </div>
 
@@ -3528,12 +3621,28 @@ function stopLbAutoRefresh(){
 }
 
 // ── OPEN / CLOSE ───────────────────────────────────────────
+// ── TAB MANAGEMENT ─────────────────────────────────────────
+let activeLbTab = 'global';
+function switchLbTab(tab) {
+  activeLbTab = tab;
+  document.getElementById('sectionGlobal').classList.toggle('active', tab==='global');
+  document.getElementById('sectionEscort').classList.toggle('active', tab==='escort');
+  const tg = document.getElementById('tabGlobal');
+  const te = document.getElementById('tabEscort');
+  tg.className = 'lb-tab-btn' + (tab==='global' ? ' active-global' : '');
+  te.className = 'lb-tab-btn' + (tab==='escort' ? ' active-escort' : '');
+  if(tab==='escort') loadEscortLeaderboard();
+  else loadLeaderboard();
+}
+
 function openLeaderboard(){
   playSoundMenuClick();
   document.getElementById('menuPanel').classList.remove('show');
   document.getElementById('leaderboardPanel').classList.add('show');
   document.getElementById('lbMyBanner').style.display='none';
-  loadLeaderboard();
+  // Load aktif tab
+  if(activeLbTab==='escort') loadEscortLeaderboard();
+  else loadLeaderboard();
   startLbAutoRefresh();
 }
 function closeLeaderboard(){
@@ -3545,7 +3654,173 @@ function closeLeaderboard(){
 // alias legacy
 function loadFirebaseLeaderboard(){loadLeaderboard(true);}
 
-// ── UPLOAD SCORE ───────────────────────────────────────────
+// ─── ESCORT LEADERBOARD ────────────────────────────────────
+let escortLbCache = [];
+let escortLbLastRefresh = 0;
+let escortLbTargetFilter = 'all';
+
+const ESCORT_TARGET_ICONS = { plane:'✈', ship:'🚢', base:'🏯', all:'ALL' };
+
+async function fetchEscortLeaderboard(){
+  try{
+    const res = await sbFetch(
+      SB_URL+'/rest/v1/escort_leaderboard?select=name,score,wave,target,date&order=score.desc&limit=5000',
+      {headers:{...SB_HDR,'Prefer':''}}
+    );
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const arr = await res.json();
+    // Dedup: per nama+target, ambil skor tertinggi
+    const seen = new Map();
+    arr.forEach(e=>{
+      const k = ((e.name||'').toUpperCase().trim())+'|'+(e.target||'all');
+      if(!seen.has(k)||e.score>seen.get(k).score) seen.set(k,e);
+    });
+    escortLbCache = [...seen.values()].sort((a,b)=>b.score-a.score).slice(0,200);
+    escortLbLastRefresh = Date.now();
+    setEscortLbStatus(true,'ONLINE — ESCORT');
+    document.getElementById('lbEscortCountBadge').textContent = escortLbCache.length+' PILOT';
+    return escortLbCache;
+  }catch(e){
+    console.warn('[EscortLB] Fetch error:',e.message);
+    setEscortLbStatus(false,'OFFLINE');
+    document.getElementById('lbEscortCountBadge').textContent='';
+    return null;
+  }
+}
+
+function setEscortLbStatus(online,text){
+  const dot = document.getElementById('lbEscortDot');
+  const txt = document.getElementById('lbEscortStatusText');
+  if(!dot||!txt) return;
+  dot.style.background = online ? '#00ff88' : '#ff8800';
+  dot.style.boxShadow = online ? '0 0 6px #00ff88' : 'none';
+  txt.textContent = text;
+  txt.style.color = online ? 'rgba(0,255,136,0.7)' : 'rgba(255,136,0,0.6)';
+}
+
+function filterEscortTarget(target){
+  escortLbTargetFilter = target;
+  ['All','Plane','Ship','Base'].forEach(t=>{
+    const el = document.getElementById('ef'+t);
+    if(el) el.classList.toggle('active', t.toLowerCase()===(target==='all'?'all':target));
+  });
+  renderEscortLeaderboard(escortLbCache);
+}
+
+function renderEscortLeaderboard(data){
+  const tbody = document.getElementById('lbEscortBody');
+  const table = document.getElementById('lbEscortTable');
+  const skel  = document.getElementById('lbEscortSkeletons');
+  const empty = document.getElementById('lbEscortEmptyMsg');
+
+  skel.style.display = 'none';
+  let list = (data||[]);
+  // Filter by target
+  if(escortLbTargetFilter && escortLbTargetFilter!=='all'){
+    list = list.filter(e=>(e.target||'')===escortLbTargetFilter);
+  }
+  // Re-rank after filter
+  if(!list.length){
+    table.style.display='none'; empty.style.display='block'; return;
+  }
+  empty.style.display='none'; table.style.display='table';
+
+  const myName = (myPlayerName||'').toUpperCase().trim();
+  let myRank = -1;
+
+  tbody.innerHTML = list.map((e,i)=>{
+    const rank = i+1;
+    const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+    const isMe = myName && (e.name||'').toUpperCase().trim()===myName;
+    if(isMe && myRank<0) myRank=rank;
+    const rowCls = 'lb-row-anim'+(isMe?' lb-me-escort':'');
+    const delay = Math.min(i*35,400);
+    const score = (e.score||0).toLocaleString('id-ID');
+    const icon = ESCORT_TARGET_ICONS[e.target||'plane']||'🛡';
+    return `<tr class="${rowCls}" style="animation-delay:${delay}ms">
+      <td class="lb-rank">${medal}</td>
+      <td>${(e.name||'?').toUpperCase()}</td>
+      <td style="text-align:center;font-size:11px;">${icon}</td>
+      <td class="lb-score-col">${score}</td>
+      <td class="lb-wave-col">${e.wave||'-'}</td>
+    </tr>`;
+  }).join('');
+
+  // My banner
+  const banner = document.getElementById('lbEscortMyBanner');
+  if(myName && myRank>0){
+    const myEntry = list[myRank-1];
+    banner.classList.add('show');
+    document.getElementById('lbEscortMyName').textContent = myName;
+    document.getElementById('lbEscortMyRankText').textContent = 'RANK #'+myRank+' dari '+list.length+(escortLbTargetFilter!=='all'?' ('+escortLbTargetFilter.toUpperCase()+')':'');
+    document.getElementById('lbEscortMyScore').textContent = (myEntry.score||0).toLocaleString('id-ID');
+  } else {
+    banner.classList.remove('show');
+  }
+}
+
+async function loadEscortLeaderboard(force=false){
+  const skel  = document.getElementById('lbEscortSkeletons');
+  const table = document.getElementById('lbEscortTable');
+  if(!force && escortLbCache.length && Date.now()-escortLbLastRefresh<30000){
+    renderEscortLeaderboard(escortLbCache); return;
+  }
+  skel.style.display='block'; table.style.display='none';
+  const data = await fetchEscortLeaderboard();
+  renderEscortLeaderboard(data||[]);
+}
+
+async function refreshEscortLeaderboard(){
+  escortLbLastRefresh = 0;
+  await loadEscortLeaderboard(true);
+}
+
+// ── UPLOAD ESCORT SCORE ────────────────────────────────────
+async function addToEscortLeaderboard(name, sc, wv, target){
+  if(!name || typeof sc!=='number' || sc<=0) return;
+  const entry = {
+    name: String(name).slice(0,20).toUpperCase(),
+    score: Math.floor(sc),
+    wave: Math.floor(wv)||1,
+    target: target||'plane',
+    date: Date.now()
+  };
+
+  // Anti-cheat basic
+  if(sc>999999){ console.warn('[EscortLB] Score terlalu tinggi'); return; }
+
+  function showEscortToast(msg,color){
+    let t=document.getElementById('_escortLbToast');
+    if(!t){t=document.createElement('div');t.id='_escortLbToast';
+      t.style.cssText='position:fixed;bottom:115px;left:50%;transform:translateX(-50%);background:rgba(4,8,15,0.95);border:1px solid;padding:8px 18px;font-family:Orbitron,monospace;font-size:9px;letter-spacing:2px;z-index:9999;border-radius:2px;text-align:center;transition:opacity 0.5s;';
+      document.body.appendChild(t);}
+    t.textContent=msg;t.style.color=color;t.style.borderColor=color;t.style.opacity='1';
+    clearTimeout(t._tid);t._tid=setTimeout(()=>{t.style.opacity='0';},3500);
+  }
+
+  showEscortToast('🛡 UPLOAD SKOR ESCORT...','rgba(255,102,0,0.8)');
+
+  for(let attempt=1;attempt<=5;attempt++){
+    try{
+      const res = await sbFetch(SB_URL+'/rest/v1/escort_leaderboard',{
+        method:'POST',
+        headers:{...SB_HDR,'Prefer':'return=minimal','Content-Type':'application/json'},
+        body:JSON.stringify(entry)
+      },15000);
+      if(!res.ok){const t=await res.text();throw new Error('HTTP '+res.status+': '+t);}
+      console.log('[EscortLB] Uploaded ✓ attempt '+attempt);
+      escortLbLastRefresh=0;
+      showEscortToast('✓ SKOR ESCORT TERKIRIM!','#ff8833');
+      return;
+    }catch(e){
+      console.warn('[EscortLB] Attempt '+attempt+' failed:',e.message);
+      if(attempt<5) await new Promise(r=>setTimeout(r,2000*attempt));
+    }
+  }
+  showEscortToast('✕ UPLOAD ESCORT GAGAL','#ff4444');
+}
+
+
 async function addToLeaderboard(name,sc,wv){
   if(!name||typeof sc!=='number'||sc<=0)return;
   const entry={
@@ -6263,6 +6538,602 @@ setTimeout(()=>{checkMailBadge();},2000);
     }
   }, {passive: false});
 })();
+
+// ═══════════════════════════════════════════════════════
+// ESCORT / PROTECT MODE
+// ═══════════════════════════════════════════════════════
+let escortActive = false;
+let escortTarget = null;
+let escortWave = 0;
+let escortScore = 0;
+let escortEnemies = [];
+let escortBullets = [];
+let escortEnemyBullets = [];
+let escortParticles = [];
+let escortWaveClearDelay = 0;
+let escortTargetType = 'plane';
+let escortCombo = 0;
+let escortComboTimer = 0;
+
+const ESCORT_TARGET_DEFS = {
+  plane: { label:'PESAWAT BESAR', maxHp:120, color:'#00aaff', accentColor:'#88ddff', icon:'✈',
+    width:60, height:30, moves:true, speed:0.6, shootSelf:false },
+  ship:  { label:'KAPAL PERANG',  maxHp:200, color:'#44aa44', accentColor:'#88ff88', icon:'🚢',
+    width:70, height:40, moves:false, speed:0, shootSelf:false },
+  base:  { label:'PANGKALAN',     maxHp:80,  color:'#ffaa00', accentColor:'#ffdd88', icon:'🏯',
+    width:64, height:48, moves:false, speed:0, shootSelf:true },
+};
+
+function openEscortMenu() {
+  playSoundMenuClick();
+  gameRunning = false;
+  document.getElementById('menuPanel').classList.remove('show');
+  document.getElementById('escortMenuPanel').classList.add('show');
+}
+
+function closeEscortMenu() {
+  playSoundMenuClick();
+  document.getElementById('escortMenuPanel').classList.remove('show');
+  document.getElementById('menuPanel').classList.add('show');
+}
+
+function selectEscortTarget(type) {
+  escortTargetType = type;
+  document.getElementById('escortMenuPanel').classList.remove('show');
+  _launchEscortGame();
+}
+
+function startEscortMode() {
+  openEscortMenu();
+}
+
+function _launchEscortGame() {
+  escortActive = true;
+  escortWave = 0;
+  escortScore = 0;
+  escortEnemies = [];
+  escortBullets = [];
+  escortEnemyBullets = [];
+  escortParticles = [];
+  escortCombo = 0;
+  escortComboTimer = 0;
+  escortWaveClearDelay = 0;
+
+  score = 0; lives = 3; wave = 1;
+  enemies = []; bullets = []; enemyBullets = []; particles = []; powerups = [];
+  enemySpawnTimer = 999; shootCooldown = 0; bossActive = false; rapidTimer = 0;
+  bossThemeActive = false; currentBossType = null; showBossHBar(false);
+  skillCooldowns = [0,0,0]; resetSkillEffects();
+  ghostModeActive = false; ghostModeTimer = 0;
+  document.getElementById('ghostOverlay').classList.remove('active');
+  player = createPlayer();
+  player.y = H - 290;
+  initStars();
+
+  const def = ESCORT_TARGET_DEFS[escortTargetType];
+  escortTarget = {
+    type: escortTargetType,
+    def: def,
+    x: W / 2,
+    y: H - (escortTargetType === 'base' ? 160 : escortTargetType === 'ship' ? 155 : 160),
+    hp: def.maxHp,
+    maxHp: def.maxHp,
+    vx: def.moves ? def.speed : 0,
+    flash: 0,
+    turretTimer: 0,
+    baseGunAngle: -Math.PI / 2,
+    _spawnLeft: 0,
+    _spawnTimer: 0,
+    _spawnInterval: 60,
+  };
+
+  gameRunning = true;
+  stopMenuBGM();
+  playSoundStartGame();
+  document.getElementById('menuPanel').classList.remove('show');
+  updateHUD();
+
+  setTimeout(function() { spawnEscortWave(); }, 1800);
+  _showEscortWaveBanner(0, true);
+}
+
+function spawnEscortWave() {
+  if (!escortActive) return;
+  escortWave++;
+  escortWaveClearDelay = 0;
+  const count = 5 + escortWave * 3;
+  const interval = Math.max(18, 60 - escortWave * 3);
+  escortTarget._spawnLeft = count;
+  escortTarget._spawnTimer = 5;
+  escortTarget._spawnInterval = interval;
+  _showEscortWaveBanner(escortWave, false);
+}
+
+function _showEscortWaveBanner(wNum, isStart) {
+  let el = document.getElementById('waveBanner');
+  if (!el) {
+    el = document.createElement('div'); el.id = 'waveBanner';
+    el.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:Orbitron,monospace;font-size:15px;font-weight:900;letter-spacing:4px;text-align:center;pointer-events:none;z-index:55;transition:opacity 0.5s;';
+    document.getElementById('wrapper').appendChild(el);
+  }
+  const col = isStart ? '#ff8800' : '#00f5ff';
+  el.style.color = col; el.style.textShadow = '0 0 30px ' + col;
+  el.style.opacity = '1';
+  if (isStart) {
+    const def = ESCORT_TARGET_DEFS[escortTargetType];
+    el.innerHTML = '\uD83D\uDEE1 ESCORT MODE<br><span style="font-size:10px;color:' + def.color + ';">' + def.icon + ' ' + def.label + '</span>';
+  } else {
+    el.textContent = '\u2694 GELOMBANG ' + wNum;
+  }
+  clearTimeout(el._t); el._t = setTimeout(function() { el.style.opacity = '0'; }, 2500);
+}
+
+function spawnEscortEnemy() {
+  if (!escortActive || !escortTarget) return;
+  const w = escortWave;
+  const typeList = ['fighter', 'bomber', 'zigzag', 'diver'];
+  const weights = w < 3 ? [4, 2, 2, 2] : [3, 2, 2, 3];
+  const total = weights.reduce(function(a,b){return a+b;}, 0);
+  let r = Math.random() * total, type = 'fighter';
+  let acc = 0;
+  for (let i = 0; i < typeList.length; i++) { acc += weights[i]; if (r < acc) { type = typeList[i]; break; } }
+
+  const side = Math.random();
+  let x, y, vx = 0, vy = 0;
+  if (side < 0.7) { x = Math.random() * (W - 60) + 30; y = -40; vy = 1.2 + w * 0.15; }
+  else if (side < 0.85) { x = -40; y = Math.random() * (H * 0.5); vx = 1.5 + w * 0.1; vy = 0.8; }
+  else { x = W + 40; y = Math.random() * (H * 0.5); vx = -(1.5 + w * 0.1); vy = 0.8; }
+
+  const hp = type === 'bomber' ? 3 + Math.floor(w * 0.5) : 1 + Math.floor(w * 0.3);
+  escortEnemies.push({
+    x: x, y: y, vx: vx, vy: vy, type: type, hp: hp, maxHp: hp,
+    speed: 1.2 + w * 0.15 + Math.random() * 0.4,
+    shootTimer: 40 + Math.random() * 40,
+    phase: Math.random() * Math.PI * 2,
+    dead: false, flash: 0,
+    targetMode: (type === 'diver' || Math.random() < 0.35) ? 'target' : 'player',
+  });
+}
+
+function updateEscortMode() {
+  if (!escortActive || !gameRunning || !escortTarget) return;
+  var t = escortTarget;
+  var def = t.def;
+
+  // Move target
+  if (def.moves) {
+    t.x += t.vx;
+    if (t.x < 44) { t.x = 44; t.vx = Math.abs(t.vx); }
+    if (t.x > W - 44) { t.x = W - 44; t.vx = -Math.abs(t.vx); }
+  }
+  if (t.flash > 0) t.flash--;
+
+  // Base turret
+  if (def.shootSelf) {
+    t.turretTimer--;
+    if (t.turretTimer <= 0) {
+      t.turretTimer = Math.max(20, 50 - escortWave * 3);
+      var nearest = null, nearDist = Infinity;
+      for (var ei = 0; ei < escortEnemies.length; ei++) {
+        var ee = escortEnemies[ei];
+        if (ee.dead) continue;
+        var dd = Math.hypot(ee.x - t.x, ee.y - t.y);
+        if (dd < nearDist) { nearDist = dd; nearest = ee; }
+      }
+      if (nearest) {
+        var dx0 = nearest.x - t.x, dy0 = nearest.y - t.y;
+        var dist0 = Math.hypot(dx0, dy0) || 1;
+        t.baseGunAngle = Math.atan2(dy0, dx0);
+        escortBullets.push({ x: t.x, y: t.y - 20, vx: (dx0/dist0)*8, vy: (dy0/dist0)*8, dead: false });
+      }
+    }
+  }
+
+  // Spawn enemies
+  if (t._spawnLeft > 0) {
+    t._spawnTimer--;
+    if (t._spawnTimer <= 0) {
+      spawnEscortEnemy();
+      t._spawnLeft--;
+      t._spawnTimer = t._spawnInterval;
+    }
+  }
+
+  // Update escort enemies
+  for (var i = 0; i < escortEnemies.length; i++) {
+    var e = escortEnemies[i];
+    if (e.dead) continue;
+    var aimObj = (e.targetMode === 'target') ? t : player;
+
+    if (e.type === 'diver') {
+      var dxd = aimObj.x - e.x, dyd = aimObj.y - e.y;
+      var distd = Math.hypot(dxd, dyd) || 1;
+      e.x += (dxd / distd) * e.speed;
+      e.y += (dyd / distd) * e.speed;
+    } else if (e.type === 'zigzag') {
+      e.y += e.speed; e.x += Math.sin(e.phase + e.y * 0.06) * 3;
+    } else if (e.type === 'bomber') {
+      e.y += e.speed * 0.6;
+    } else {
+      e.y += e.speed;
+      if (e.vx !== 0) e.x += e.vx; else e.x += Math.sin(e.phase + e.y * 0.02) * 1.2;
+    }
+    if (e.flash > 0) e.flash--;
+
+    // Enemy shoots
+    e.shootTimer--;
+    if (e.shootTimer <= 0) {
+      e.shootTimer = Math.max(25, 80 - escortWave * 4);
+      var txe = aimObj.x - e.x, tye = aimObj.y - e.y;
+      var diste = Math.hypot(txe, tye) || 1;
+      var spd = 3 + escortWave * 0.2;
+      escortEnemyBullets.push({ x: e.x, y: e.y + 16, vx: (txe/diste)*spd, vy: (tye/diste)*spd, dead: false });
+      playSoundEnemyShoot();
+    }
+
+    // Enemy reaches escort target
+    var hitDist = def.width / 2 + 14;
+    if (Math.hypot(e.x - t.x, e.y - t.y) < hitDist) {
+      var dmg = e.type === 'bomber' ? 20 : e.type === 'diver' ? 15 : 8;
+      t.hp = Math.max(0, t.hp - dmg);
+      t.flash = 15;
+      e.dead = true;
+      _escortExplode(e.x, e.y, '#ff4400');
+      _escortExplode(t.x + (Math.random()-0.5)*30, t.y + (Math.random()-0.5)*20, '#ff6600');
+      if (t.hp <= 0) { endEscortMode(false); return; }
+    }
+    if (e.y > H + 80 || e.x < -100 || e.x > W + 100) e.dead = true;
+  }
+  escortEnemies = escortEnemies.filter(function(e){return !e.dead;});
+
+  // Player bullets hit escort enemies
+  for (var bi = bullets.length - 1; bi >= 0; bi--) {
+    var b = bullets[bi];
+    if (b.dead) continue;
+    for (var ei2 = 0; ei2 < escortEnemies.length; ei2++) {
+      var en = escortEnemies[ei2];
+      if (en.dead) continue;
+      if (Math.abs(b.x - en.x) < 16 && Math.abs(b.y - en.y) < 16) {
+        en.hp--; en.flash = 6; b.dead = true;
+        if (en.hp <= 0) {
+          en.dead = true;
+          escortScore += (10 + escortWave * 5) * (1 + Math.floor(escortCombo / 3));
+          escortCombo++; escortComboTimer = 120;
+          _escortExplode(en.x, en.y, '#ff6600');
+          spawnPowerup(en.x, en.y);
+        }
+        break;
+      }
+    }
+  }
+  bullets = bullets.filter(function(b){return !b.dead;});
+
+  // Base turret bullets
+  for (var tbi = escortBullets.length - 1; tbi >= 0; tbi--) {
+    var tb = escortBullets[tbi];
+    if (tb.dead) continue;
+    tb.x += tb.vx; tb.y += tb.vy;
+    if (tb.x < 0 || tb.x > W || tb.y < 0 || tb.y > H) { tb.dead = true; continue; }
+    for (var tei = 0; tei < escortEnemies.length; tei++) {
+      var ten = escortEnemies[tei];
+      if (ten.dead) continue;
+      if (Math.abs(tb.x - ten.x) < 14 && Math.abs(tb.y - ten.y) < 14) {
+        ten.hp -= 2; ten.flash = 4; tb.dead = true;
+        if (ten.hp <= 0) { ten.dead = true; escortScore += 8; _escortExplode(ten.x, ten.y, '#ffaa00'); }
+        break;
+      }
+    }
+  }
+  escortBullets = escortBullets.filter(function(b){return !b.dead;});
+
+  // Enemy bullets
+  for (var ebi = escortEnemyBullets.length - 1; ebi >= 0; ebi--) {
+    var eb = escortEnemyBullets[ebi];
+    if (eb.dead) continue;
+    eb.x += eb.vx; eb.y += eb.vy;
+    if (eb.x < 0 || eb.x > W || eb.y < 0 || eb.y > H) { eb.dead = true; continue; }
+    if (player && player.invincible <= 0 && Math.abs(eb.x - player.x) < 14 && Math.abs(eb.y - player.y) < 16) {
+      eb.dead = true; lives--; player.invincible = 90;
+      _escortExplode(player.x, player.y, '#ff2244');
+      updateHUD();
+      if (lives <= 0) { endEscortMode(false); return; }
+    }
+    if (Math.abs(eb.x - t.x) < def.width/2 + 4 && Math.abs(eb.y - t.y) < def.height/2 + 4) {
+      eb.dead = true; t.hp = Math.max(0, t.hp - 3); t.flash = 8;
+      if (t.hp <= 0) { endEscortMode(false); return; }
+    }
+  }
+  escortEnemyBullets = escortEnemyBullets.filter(function(b){return !b.dead;});
+
+  if (escortComboTimer > 0) { escortComboTimer--; if (escortComboTimer === 0) escortCombo = 0; }
+
+  // Wave clear check
+  if (escortTarget._spawnLeft === 0 && escortEnemies.filter(function(e){return !e.dead;}).length === 0 && escortWaveClearDelay === 0) {
+    escortWaveClearDelay = 1;
+    escortScore += 50 * escortWave;
+    t.hp = Math.min(t.maxHp, t.hp + Math.floor(t.maxHp * 0.12));
+    setTimeout(function() { if (escortActive) spawnEscortWave(); }, 2200);
+  }
+
+  score = escortScore; wave = escortWave; updateHUD();
+}
+
+function _escortExplode(x, y, color) {
+  for (var i = 0; i < 10; i++) {
+    var a = (Math.PI * 2 / 10) * i + Math.random() * 0.4;
+    var s = Math.random() * 3 + 1;
+    escortParticles.push({ x:x, y:y, vx:Math.cos(a)*s, vy:Math.sin(a)*s, life:1, decay:Math.random()*0.04+0.025, r:Math.random()*3+1, color:color });
+  }
+}
+
+function drawEscortMode() {
+  if (!escortActive || !escortTarget) return;
+  var t = escortTarget;
+  var def = t.def;
+
+  // Target HP bar
+  var barW = W * 0.7, barH = 10, barX = (W - barW) / 2, barY = 14;
+  ctx.save();
+  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  ctx.fillRect(barX - 2, barY - 2, barW + 4, barH + 4);
+  ctx.fillStyle = '#333';
+  ctx.fillRect(barX, barY, barW, barH);
+  var hpRatio = t.hp / t.maxHp;
+  var barColor = hpRatio > 0.5 ? '#00ff88' : hpRatio > 0.25 ? '#ffcc00' : '#ff2244';
+  ctx.fillStyle = barColor; ctx.shadowColor = barColor; ctx.shadowBlur = 8;
+  ctx.fillRect(barX, barY, barW * hpRatio, barH);
+  ctx.shadowBlur = 0;
+  ctx.font = 'bold 7px "Press Start 2P", monospace';
+  ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
+  ctx.fillText(def.icon + ' ' + def.label + '  HP: ' + t.hp + '/' + t.maxHp, W/2, barY + barH + 10);
+  ctx.restore();
+
+  // Draw escort target
+  ctx.save();
+  if (t.flash > 0) ctx.globalAlpha = 0.3 + Math.random() * 0.7;
+  ctx.translate(t.x, t.y);
+
+  if (t.type === 'plane') {
+    ctx.fillStyle = def.color; ctx.shadowColor = def.color; ctx.shadowBlur = 12;
+    ctx.beginPath(); ctx.ellipse(0, 0, 36, 14, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = def.accentColor;
+    ctx.beginPath(); ctx.moveTo(-8,-4); ctx.lineTo(-36,-20); ctx.lineTo(-36,-10); ctx.lineTo(-8,8); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(8,-4); ctx.lineTo(36,-20); ctx.lineTo(36,-10); ctx.lineTo(8,8); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = def.color;
+    ctx.beginPath(); ctx.moveTo(-28,-2); ctx.lineTo(-42,-16); ctx.lineTo(-36,-2); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    for (var wi = -12; wi <= 12; wi += 8) { ctx.beginPath(); ctx.arc(wi, 0, 3, 0, Math.PI*2); ctx.fill(); }
+
+  } else if (t.type === 'ship') {
+    ctx.fillStyle = def.color; ctx.shadowColor = def.color; ctx.shadowBlur = 15;
+    ctx.beginPath(); ctx.ellipse(0, 0, 40, 18, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = def.accentColor;
+    ctx.fillRect(-14, -10, 28, 20);
+    ctx.fillRect(-7, -18, 14, 8);
+    ctx.fillStyle = '#bbb';
+    ctx.fillRect(-22, -4, 14, 6); ctx.fillRect(8, -4, 14, 6);
+    ctx.globalAlpha = 0.3; ctx.strokeStyle = '#88ffff'; ctx.lineWidth = 2;
+    for (var si = 1; si <= 3; si++) { ctx.beginPath(); ctx.moveTo(32+si*8,-si*4); ctx.lineTo(32+si*8,si*4); ctx.stroke(); }
+
+  } else if (t.type === 'base') {
+    ctx.fillStyle = def.color; ctx.shadowColor = def.color; ctx.shadowBlur = 10;
+    ctx.fillRect(-30, -22, 60, 44);
+    ctx.fillStyle = def.accentColor;
+    for (var bti = -26; bti <= 26; bti += 13) { ctx.fillRect(bti-4, -30, 9, 10); }
+    ctx.fillStyle = '#ff6600'; ctx.shadowColor = '#ff6600'; ctx.shadowBlur = 10;
+    ctx.beginPath(); ctx.arc(0, 0, 10, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#ffcc00'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(Math.cos(t.baseGunAngle)*20, Math.sin(t.baseGunAngle)*20); ctx.stroke();
+  }
+  ctx.restore();
+
+  // Update base gun angle
+  if (t.type === 'base') {
+    var nearest2 = null, nd = Infinity;
+    for (var ni = 0; ni < escortEnemies.length; ni++) {
+      var ne = escortEnemies[ni];
+      if (ne.dead) continue;
+      var nd2 = Math.hypot(ne.x - t.x, ne.y - t.y);
+      if (nd2 < nd) { nd = nd2; nearest2 = ne; }
+    }
+    if (nearest2) t.baseGunAngle = Math.atan2(nearest2.y - t.y, nearest2.x - t.x);
+  }
+
+  // Draw escort enemies
+  for (var dri = 0; dri < escortEnemies.length; dri++) {
+    var de = escortEnemies[dri];
+    if (de.dead) continue;
+    ctx.save();
+    if (de.flash > 0) ctx.globalAlpha = 0.3 + Math.random() * 0.7;
+    ctx.translate(de.x, de.y);
+    if (de.type === 'diver') {
+      var dang = Math.atan2(t.y - de.y, t.x - de.x);
+      ctx.rotate(dang + Math.PI/2);
+      ctx.fillStyle = '#ff0044'; ctx.shadowColor = '#ff0044'; ctx.shadowBlur = 12;
+      ctx.beginPath(); ctx.moveTo(0,-16); ctx.lineTo(-10,10); ctx.lineTo(0,4); ctx.lineTo(10,10); ctx.closePath(); ctx.fill();
+    } else if (de.type === 'bomber') {
+      ctx.fillStyle = '#aa44ff'; ctx.shadowColor = '#aa44ff'; ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.ellipse(0,0,20,14,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#cc66ff'; ctx.beginPath(); ctx.arc(0,-2,6,0,Math.PI*2); ctx.fill();
+      if (de.maxHp > 1) {
+        ctx.fillStyle = '#333'; ctx.fillRect(-16, 18, 32, 4);
+        ctx.fillStyle = '#aa44ff'; ctx.fillRect(-16, 18, 32*(de.hp/de.maxHp), 4);
+      }
+    } else if (de.type === 'zigzag') {
+      ctx.fillStyle = '#ff8800'; ctx.shadowColor = '#ff8800'; ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.moveTo(0,-18); ctx.lineTo(-10,0); ctx.lineTo(-6,4); ctx.lineTo(0,-4); ctx.lineTo(6,4); ctx.lineTo(10,0); ctx.closePath(); ctx.fill();
+    } else {
+      ctx.fillStyle = '#ff2244'; ctx.shadowColor = '#ff2244'; ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.moveTo(0,20); ctx.lineTo(-14,-8); ctx.lineTo(-6,-12); ctx.lineTo(0,-6); ctx.lineTo(6,-12); ctx.lineTo(14,-8); ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // Draw turret bullets
+  for (var tdi = 0; tdi < escortBullets.length; tdi++) {
+    var tdb = escortBullets[tdi];
+    if (tdb.dead) continue;
+    ctx.save(); ctx.fillStyle = '#ffaa00'; ctx.shadowColor = '#ffaa00'; ctx.shadowBlur = 6;
+    ctx.beginPath(); ctx.arc(tdb.x, tdb.y, 4, 0, Math.PI*2); ctx.fill(); ctx.restore();
+  }
+
+  // Draw enemy bullets
+  for (var ebi2 = 0; ebi2 < escortEnemyBullets.length; ebi2++) {
+    var eb2 = escortEnemyBullets[ebi2];
+    if (eb2.dead) continue;
+    ctx.save(); ctx.fillStyle = '#ff4466'; ctx.shadowColor = '#ff4466'; ctx.shadowBlur = 8;
+    ctx.beginPath(); ctx.ellipse(eb2.x, eb2.y, 3, 7, 0, 0, Math.PI*2); ctx.fill(); ctx.restore();
+  }
+
+  // Combo text
+  if (escortCombo >= 3 && escortComboTimer > 0) {
+    ctx.save();
+    ctx.font = 'bold 10px "Press Start 2P", monospace';
+    var hue = (escortCombo * 20) % 360;
+    ctx.fillStyle = 'hsl(' + hue + ',100%,65%)';
+    ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = 10;
+    ctx.textAlign = 'center'; ctx.globalAlpha = Math.min(1, escortComboTimer / 30);
+    ctx.fillText(escortCombo + 'x COMBO!', W/2, H/2 - 60);
+    ctx.restore();
+  }
+
+  // Wave info
+  var aliveCount = 0;
+  for (var ac = 0; ac < escortEnemies.length; ac++) { if (!escortEnemies[ac].dead) aliveCount++; }
+  var leftCount = (escortTarget._spawnLeft || 0) + aliveCount;
+  ctx.save(); ctx.font = '8px "Press Start 2P", monospace';
+  ctx.fillStyle = 'rgba(0,245,255,0.6)'; ctx.textAlign = 'right';
+  ctx.fillText('WAVE ' + escortWave + ' | MUSUH: ' + leftCount, W - 8, H - 40);
+  ctx.restore();
+
+  // Escort particles
+  for (var pi = 0; pi < escortParticles.length; pi++) {
+    var pp = escortParticles[pi];
+    pp.x += pp.vx; pp.y += pp.vy; pp.vy += 0.05; pp.life -= pp.decay;
+    ctx.save(); ctx.globalAlpha = pp.life; ctx.fillStyle = pp.color;
+    ctx.shadowColor = pp.color; ctx.shadowBlur = 6;
+    ctx.beginPath(); ctx.arc(pp.x, pp.y, pp.r, 0, Math.PI*2); ctx.fill(); ctx.restore();
+  }
+  escortParticles = escortParticles.filter(function(p){return p.life > 0;});
+}
+
+function endEscortMode(victory) {
+  if (!escortActive) return;
+  escortActive = false;
+  gameRunning = false;
+
+  var earned = Math.floor(escortScore / 10) + escortWave * 5;
+  gameData.coins += earned; saveData();
+
+  document.getElementById('escortResultTitle').textContent = victory ? '\uD83C\uDFC6 MISI SUKSES!' : '\uD83D\uDCA5 MISI GAGAL!';
+  document.getElementById('escortResultTitle').style.color = victory ? '#00ff88' : '#ff2244';
+  document.getElementById('escortResultMsg').textContent = lives <= 0 ? 'Player habis nyawa!' : (ESCORT_TARGET_DEFS[escortTargetType].label + ' hancur!');
+  document.getElementById('escortResultScore').textContent = escortScore;
+  document.getElementById('escortResultCoins').textContent = earned;
+  document.getElementById('escortResultWaves').textContent = escortWave;
+  document.getElementById('escortResultModal').style.display = 'flex';
+  updateHUD();
+
+  // Auto-submit ke escort leaderboard kalau ada nama
+  var pName = myPlayerName || localStorage.getItem('sv_player_name') || '';
+  if(pName && escortScore > 0){
+    addToEscortLeaderboard(pName, escortScore, escortWave, escortTargetType);
+    // Invalidate escort LB cache supaya fresh saat dibuka
+    escortLbLastRefresh = 0;
+  }
+}
+
+function closeEscortResult() {
+  document.getElementById('escortResultModal').style.display = 'none';
+  escortActive = false;
+  openEscortMenu();
+}
+
+function openEscortLeaderboardFromResult() {
+  document.getElementById('escortResultModal').style.display = 'none';
+  escortActive = false;
+  // Buka leaderboard panel langsung ke tab escort
+  activeLbTab = 'escort';
+  document.getElementById('sectionGlobal').classList.remove('active');
+  document.getElementById('sectionEscort').classList.add('active');
+  document.getElementById('tabGlobal').className = 'lb-tab-btn';
+  document.getElementById('tabEscort').className = 'lb-tab-btn active-escort';
+  document.getElementById('leaderboardPanel').classList.add('show');
+  loadEscortLeaderboard(true);
+}
+
+function exitEscortToMenu() {
+  document.getElementById('escortResultModal').style.display = 'none';
+  escortActive = false;
+  document.getElementById('menuPanel').classList.add('show');
+  startMenuBGM();
+}
+
+// Hook into game loop
+(function() {
+  var _origUpdate = update;
+  update = function() {
+    _origUpdate();
+    if (escortActive) updateEscortMode();
+  };
+
+  var _origDraw = draw;
+  draw = function() {
+    _origDraw();
+    if (escortActive) drawEscortMode();
+  };
+})();
+
 </script>
+
+  <!-- ESCORT MODE PANEL -->
+  <div class="panel" id="escortMenuPanel" style="justify-content:flex-start;padding:16px 0 12px;gap:8px;">
+    <div class="sub">🛡 ESCORT / PROTECT MODE</div>
+
+    <div style="width:92%;padding:0 4px;text-align:center;">
+      <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:rgba(0,245,255,0.45);line-height:2;letter-spacing:1px;">
+        LINDUNGI TARGET DARI SERANGAN MUSUH!
+      </div>
+    </div>
+
+    <div style="width:92%;padding:0 4px;">
+      <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#ff8800;margin-bottom:10px;letter-spacing:1px;">PILIH TARGET :</div>
+
+      <button class="glow-btn" style="width:100%;padding:14px 8px;font-size:10px;margin-bottom:8px;" onclick="selectEscortTarget('plane')">
+        ✈ PESAWAT BESAR<br>
+        <span style="font-size:7px;color:rgba(255,255,255,0.4);font-weight:normal;">HP SEDANG · GERAK KANAN-KIRI</span>
+      </button>
+
+      <button class="glow-btn btn-cyan" style="width:100%;padding:14px 8px;font-size:10px;margin-bottom:8px;" onclick="selectEscortTarget('ship')">
+        🚢 KAPAL PERANG<br>
+        <span style="font-size:7px;color:rgba(255,255,255,0.4);font-weight:normal;">HP TEBAL · DIAM DI TEMPAT</span>
+      </button>
+
+      <button class="glow-btn btn-pink" style="width:100%;padding:14px 8px;font-size:10px;" onclick="selectEscortTarget('base')">
+        🏯 PANGKALAN<br>
+        <span style="font-size:7px;color:rgba(255,255,255,0.4);font-weight:normal;">HP RENDAH · BISA BALAS TEMBAK</span>
+      </button>
+    </div>
+
+    <div style="width:92%;padding:0 4px;margin-top:4px;">
+      <button class="glow-btn orange" style="width:100%;padding:10px 8px;font-size:9px;" onclick="closeEscortMenu()">← KEMBALI KE MENU</button>
+    </div>
+
+    <div id="controlsHint" style="margin-top:4px;">TAHAN LEBIH LAMA = SKOR MAKIN TINGGI<br>💰 KOIN BONUS TIAP GELOMBANG SELESAI</div>
+  </div>
+
+  </div>
+
+  <!-- ESCORT GAME OVER MODAL -->
+  <div id="escortResultModal" style="display:none;position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:12px;">
+    <div style="font-family:Orbitron,monospace;font-size:22px;font-weight:900;color:#ff2244;letter-spacing:4px;" id="escortResultTitle">MISI GAGAL</div>
+    <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#aaa;text-align:center;" id="escortResultMsg">Target dihancurkan!</div>
+    <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:#ffff00;">SKOR: <span id="escortResultScore">0</span></div>
+    <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:#ffcc00;">🪙 +<span id="escortResultCoins">0</span></div>
+    <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#00f5ff;">GELOMBANG SELESAI: <span id="escortResultWaves">0</span></div>
+    <button class="glow-btn" style="margin-top:8px;" onclick="closeEscortResult()">🔁 MAIN LAGI</button>
+    <button class="glow-btn" style="background:linear-gradient(135deg,#ff6600,#cc3300);border-color:#ff6600;color:#fff;font-size:8px;" onclick="openEscortLeaderboardFromResult()">🏆 LIHAT RANKING ESCORT</button>
+    <button class="glow-btn orange" onclick="exitEscortToMenu()">⬅ MENU</button>
+  </div>
 </body>
 </html>
