@@ -1191,6 +1191,7 @@ document.head.appendChild(st);
         <div class="prof-name-col">
           <div class="prof-name" id="profName">—</div>
           <div class="prof-sub">PILOT AKTIF</div>
+          <button onclick="openChangeNameModal()" style="margin-top:6px;background:transparent;border:1px solid rgba(0,245,255,0.4);color:#00f5ff;font-family:'Orbitron',monospace;font-size:7px;letter-spacing:2px;padding:4px 10px;cursor:pointer;border-radius:3px;">✏ GANTI NAMA</button>
           <div class="prof-coin-row">🪙 <span id="profCoins">0</span></div>
           <div class="prof-sub" id="profShipLabel" style="color:rgba(255,255,255,0.4);">—</div>
         </div>
@@ -3727,7 +3728,7 @@ async function submitName(){
   const isMyOwnName=(name===savedMyName);
   if(!isMyOwnName&&lbCache&&lbCache.length){
     const existing=lbCache.find(e=>(e.name||'').toUpperCase().trim()===name);
-    if(existing&&existing.score>pendingScore){
+    if(existing){
       const hint=document.getElementById('nameSavedHint');
       if(hint){hint.textContent='⚠ NAMA INI SUDAH DIPAKAI ORANG LAIN — PILIH NAMA LAIN!';hint.style.color='#ff6600';}
       return; // jangan lanjut submit
