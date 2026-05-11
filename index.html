@@ -190,8 +190,23 @@
   /* GRID LAYOUT for menu buttons */
   #menuBtnGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;width:92%;padding:0 4px;}
   #menuBtnGrid .glow-btn{width:100%;}
-  #menuPlayerBar{background:rgba(255,0,255,0.08) !important;border:2px solid #ff00ff !important;image-rendering:pixelated;}
-  #menuPlayerName{font-family:'Press Start 2P',monospace !important;font-size:8px !important;color:#ff88ff !important;}
+  #menuPlayerBar{
+    background:linear-gradient(135deg,rgba(0,20,40,0.9),rgba(0,35,60,0.85)) !important;
+    border:1.5px solid rgba(0,200,255,0.35) !important;
+    border-top-color:rgba(80,230,255,0.6) !important;
+    box-shadow:0 0 12px rgba(0,180,255,0.15),inset 0 1px 0 rgba(80,235,255,0.1) !important;
+    transition:all .2s !important;
+    image-rendering:auto !important;
+  }
+  #menuPlayerBar:hover{
+    background:linear-gradient(135deg,rgba(0,30,55,0.95),rgba(0,50,80,0.9)) !important;
+    border-color:rgba(0,230,255,0.65) !important;
+    box-shadow:0 0 20px rgba(0,200,255,0.25),inset 0 1px 0 rgba(120,245,255,0.15) !important;
+  }
+  #menuPlayerName{font-family:'Orbitron',monospace !important;font-size:13px !important;font-weight:900 !important;color:#fff !important;letter-spacing:2px !important;}
+  #menuPlayerBar .prof-bar-sub{font-size:7px;letter-spacing:3px;color:rgba(0,200,255,0.45);margin-top:2px;}
+  #menuPlayerBar .prof-bar-stats{font-size:7px;letter-spacing:1px;color:rgba(255,255,255,0.3);margin-top:1px;}
+  #menuPlayerBar .prof-bar-arrow{font-size:10px;color:rgba(0,200,255,0.4);}
 
   /* COIN REWARD */
   #coinReward{display:none;flex-direction:column;align-items:center;gap:6px;padding:12px 20px;border:1px solid rgba(255,215,0,0.3);background:rgba(255,215,0,0.05);margin:4px 0;}
@@ -512,6 +527,45 @@
 
   /* ── SECRET HANGAR ── */
   #secretPanel .panel-header h2{color:#ff2266;}
+  /* ═══ PROFILE PANEL ═══ */
+  #profilePanel .panel-header h2{color:#00f5ff;}
+  .prof-avatar-wrap{position:relative;width:90px;height:90px;cursor:pointer;flex-shrink:0;}
+  .prof-avatar-wrap:hover .prof-avatar-overlay{opacity:1;}
+  .prof-avatar-img{width:90px;height:90px;border-radius:50%;object-fit:cover;border:2px solid rgba(0,245,255,0.5);background:#0a1628;display:block;}
+  .prof-avatar-canvas{width:90px;height:90px;border-radius:50%;border:2px solid rgba(0,245,255,0.5);background:#0a1628;display:block;}
+  .prof-avatar-overlay{position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;font-size:20px;opacity:0;transition:opacity .2s;}
+  #profAvatarInput{display:none;}
+  .prof-header-row{display:flex;gap:14px;align-items:center;width:92%;padding:8px 0;}
+  .prof-name-col{display:flex;flex-direction:column;gap:6px;flex:1;}
+  .prof-name{font-size:14px;font-weight:900;letter-spacing:3px;color:#fff;}
+  .prof-sub{font-size:8px;letter-spacing:3px;color:rgba(0,245,255,0.4);}
+  .prof-coin-row{display:flex;align-items:center;gap:6px;font-size:11px;color:#ffd700;letter-spacing:2px;}
+  .prof-section{width:92%;display:flex;flex-direction:column;gap:6px;}
+  .prof-section-title{font-size:8px;letter-spacing:4px;color:rgba(0,245,255,0.35);border-bottom:1px solid rgba(0,245,255,0.1);padding-bottom:4px;margin-bottom:2px;}
+  .prof-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .prof-stat-box{background:rgba(0,245,255,0.04);border:1px solid rgba(0,245,255,0.12);padding:8px 10px;display:flex;flex-direction:column;gap:3px;}
+  .prof-stat-val{font-size:16px;font-weight:900;color:#fff;font-family:'Share Tech Mono',monospace;letter-spacing:1px;}
+  .prof-stat-lbl{font-size:7px;letter-spacing:2px;color:rgba(0,245,255,0.35);}
+  .prof-hiscore-list{display:flex;flex-direction:column;gap:4px;}
+  .prof-hiscore-row{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.08);}
+  .prof-hiscore-row:nth-child(1){border-color:rgba(255,215,0,0.3);background:rgba(255,215,0,0.05);}
+  .prof-hiscore-row:nth-child(2){border-color:rgba(192,192,192,0.25);}
+  .prof-hiscore-row:nth-child(3){border-color:rgba(205,127,50,0.25);}
+  .prof-hiscore-rank{font-size:10px;color:rgba(0,245,255,0.3);width:22px;}
+  .prof-hiscore-row:nth-child(1) .prof-hiscore-rank{color:#ffd700;}
+  .prof-hiscore-score{font-size:13px;font-family:'Share Tech Mono',monospace;color:#fff;font-weight:700;}
+  .prof-hiscore-wave{font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:1px;}
+  .prof-hiscore-date{font-size:7px;color:rgba(0,245,255,0.25);letter-spacing:1px;}
+  .prof-ships-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;}
+  .prof-ship-slot{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 2px;border:1px solid rgba(0,245,255,0.1);background:rgba(0,0,0,0.3);position:relative;}
+  .prof-ship-slot.active{border-color:rgba(0,245,255,0.5);background:rgba(0,245,255,0.07);box-shadow:0 0 8px rgba(0,245,255,0.15);}
+  .prof-ship-slot.secret-slot{border-color:rgba(255,34,102,0.25);background:rgba(255,0,30,0.04);}
+  .prof-ship-slot.active.secret-slot{border-color:rgba(255,34,102,0.6);}
+  .prof-ship-name{font-size:6px;letter-spacing:1px;color:rgba(255,255,255,0.5);text-align:center;}
+  .prof-ship-active-dot{position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;background:#00f5ff;box-shadow:0 0 4px #00f5ff;}
+  .prof-ship-slot.secret-slot .prof-ship-active-dot{background:#ff2266;box-shadow:0 0 4px #ff2266;}
+  .prof-reset-btn{font-size:8px;letter-spacing:2px;color:rgba(255,60,60,0.4);background:transparent;border:1px solid rgba(255,60,60,0.2);cursor:pointer;font-family:'Orbitron';padding:5px 12px;transition:all .2s;margin-top:4px;}
+  .prof-reset-btn:hover{color:#ff4444;border-color:rgba(255,60,60,0.6);}
   .secret-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;margin-bottom:10px;}
   .secret-card{border:1.5px solid rgba(255,34,102,0.2);padding:8px 5px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:all .25s;position:relative;background:rgba(10,0,15,0.7);}
   .secret-card.unlocked{border-color:rgba(255,34,102,0.7);background:rgba(255,34,102,0.06);}
@@ -841,13 +895,14 @@ document.head.appendChild(st);
   <!-- MAIN MENU (RETRO ARCADE) -->
   <div class="panel show" id="menuPanel" style="justify-content:flex-start;padding:16px 0 12px;gap:8px;">
     <div class="sub">★ INSERT COIN TO PLAY ★</div>
-    <div id="menuPlayerBar" style="display:flex;align-items:center;gap:8px;padding:6px 14px;width:88%;box-sizing:border-box;cursor:pointer;" onclick="openChangeNameModal()" title="Klik untuk ganti nama">
-      <span style="font-size:13px;">👾</span>
+    <div id="menuPlayerBar" style="display:flex;align-items:center;gap:10px;padding:8px 14px;width:88%;box-sizing:border-box;cursor:pointer;border-radius:6px;" onclick="openProfile()" title="Buka Profil">
+      <canvas id="menuProfAvatarCanvas" width="42" height="42" style="border-radius:50%;border:1.5px solid rgba(0,200,255,0.4);flex-shrink:0;background:#0a1628;"></canvas>
       <div style="flex:1;min-width:0;">
         <div id="menuPlayerName" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">–</div>
-        <div style="font-family:'Press Start 2P',monospace;font-size:6px;letter-spacing:1px;color:rgba(255,136,255,0.4);">TAP UNTUK GANTI NAMA</div>
+        <div class="prof-bar-sub" id="menuProfSub">LIHAT PROFIL</div>
+        <div class="prof-bar-stats" id="menuProfStats"></div>
       </div>
-      <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:rgba(255,0,255,0.5);">▶</div>
+      <div class="prof-bar-arrow">▶</div>
     </div>
     <h1 id="menuTitle">SKY<br>VORTEX</h1>
     <div id="gameOverScore" style="display:none;flex-direction:column;align-items:center;gap:4px;">
@@ -955,6 +1010,73 @@ document.head.appendChild(st);
   </div>
 
   <!-- SECRET HANGAR PANEL -->
+  <!-- ══════ PROFILE PANEL ══════ -->
+  <div class="panel" id="profilePanel">
+    <div class="panel-header">
+      <button class="home-btn" onclick="closeProfile()" title="Kembali ke Menu">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </button>
+      <div><h2>PROFIL</h2><div class="panel-sub">PILOT DATA</div></div>
+    </div>
+    <div class="panel-body" id="profileBody">
+      <!-- Header: avatar + nama -->
+      <div class="prof-header-row">
+        <div class="prof-avatar-wrap" onclick="document.getElementById('profAvatarInput').click()" title="Ganti foto">
+          <canvas class="prof-avatar-canvas" id="profAvatarCanvas" width="90" height="90"></canvas>
+          <div class="prof-avatar-overlay">📷</div>
+        </div>
+        <input type="file" id="profAvatarInput" accept="image/*" onchange="handleAvatarUpload(event)">
+        <div class="prof-name-col">
+          <div class="prof-name" id="profName">—</div>
+          <div class="prof-sub">PILOT AKTIF</div>
+          <div class="prof-coin-row">🪙 <span id="profCoins">0</span></div>
+          <div class="prof-sub" id="profShipLabel" style="color:rgba(255,255,255,0.4);">—</div>
+        </div>
+      </div>
+      <!-- Statistik -->
+      <div class="prof-section">
+        <div class="prof-section-title">📊 STATISTIK</div>
+        <div class="prof-stats-grid">
+          <div class="prof-stat-box">
+            <div class="prof-stat-val" id="profTotalKills">0</div>
+            <div class="prof-stat-lbl">TOTAL KILL</div>
+          </div>
+          <div class="prof-stat-box">
+            <div class="prof-stat-val" id="profTotalWaves">0</div>
+            <div class="prof-stat-lbl">TOTAL WAVE</div>
+          </div>
+          <div class="prof-stat-box">
+            <div class="prof-stat-val" id="profTotalGames">0</div>
+            <div class="prof-stat-lbl">TOTAL GAME</div>
+          </div>
+          <div class="prof-stat-box">
+            <div class="prof-stat-val" id="profPlaytime">0j</div>
+            <div class="prof-stat-lbl">WAKTU MAIN</div>
+          </div>
+          <div class="prof-stat-box">
+            <div class="prof-stat-val" id="profBossKills">0</div>
+            <div class="prof-stat-lbl">BOSS DIKALAHKAN</div>
+          </div>
+          <div class="prof-stat-box">
+            <div class="prof-stat-val" id="profSkillsOwned">0</div>
+            <div class="prof-stat-lbl">SKILL DIMILIKI</div>
+          </div>
+        </div>
+      </div>
+      <!-- Riwayat skor tertinggi -->
+      <div class="prof-section">
+        <div class="prof-section-title">🏆 SKOR TERTINGGI</div>
+        <div class="prof-hiscore-list" id="profHiscoreList"></div>
+      </div>
+      <!-- Koleksi pesawat -->
+      <div class="prof-section">
+        <div class="prof-section-title">✈️ KOLEKSI PESAWAT (<span id="profShipCount">0</span>)</div>
+        <div class="prof-ships-grid" id="profShipsGrid"></div>
+      </div>
+      <button class="prof-reset-btn" onclick="resetProfileStats()">↺ RESET STATISTIK</button>
+    </div>
+  </div>
+
   <div class="panel" id="secretPanel">
     <div class="panel-header">
       <button class="home-btn" onclick="closeSecretHangar()" title="Kembali ke Menu">
@@ -1551,7 +1673,7 @@ const SECRET_SHIPS=[
 ];
 
 // ─── PERSISTENT DATA ──────────────────────────────────────
-let gameData={coins:0,ownedShips:['falcon'],selectedShip:'falcon',leaderboard:[],bossKills:0,unlockedSecrets:[],selectedSecret:null,ownedSkills:[],equippedSkills:[],shopLastRestock:0,shopStock:[]};
+let gameData={coins:0,ownedShips:['falcon'],selectedShip:'falcon',leaderboard:[],bossKills:0,unlockedSecrets:[],selectedSecret:null,ownedSkills:[],equippedSkills:[],shopLastRestock:0,shopStock:[],stats:{totalKills:0,totalWaves:0,totalGames:0,playtimeMs:0},scoreHistory:[],avatarDataUrl:null};
 function loadData(){try{const d=JSON.parse(localStorage.getItem('sv3_data'));if(d)Object.assign(gameData,d);}catch(e){}}
 function saveData(){try{localStorage.setItem('sv3_data',JSON.stringify(gameData));}catch(e){}flashSaveIndicator();}
 loadData();
@@ -1595,6 +1717,7 @@ function getJoyCenter(){
 
 // ─── GAME STATE ───────────────────────────────────────────
 let gameRunning=false;
+let _gameStartTime=0;
 let score=0,hiScore=0,lives=3,wave=1;
 let keys={},mouseX=W/2,useMouseX=false;
 let player,bullets,enemies,enemyBullets,particles,stars,powerups;
@@ -3037,12 +3160,12 @@ function update(){
             bossDefeatedThisStage=true;
             setTimeout(()=>{bossThemeActive=false;currentBossType=null;showBossHBar(false);},2000);
             // Advance to next stage
-            totalWaveKills++;waveKills++;score+=pts*wave;updateHUD();
+            totalWaveKills++;waveKills++;score+=pts*wave;if(!gameData.stats)gameData.stats={totalKills:0,totalWaves:0,totalGames:0,playtimeMs:0};gameData.stats.totalKills=(gameData.stats.totalKills||0)+1;updateHUD();
             advanceAfterWave();
           } else {
             playSoundExplode(false);
             spawnPowerup(e.x,e.y);
-            score+=pts*wave;waveKills++;totalWaveKills++;updateHUD();
+            score+=pts*wave;waveKills++;totalWaveKills++;if(!gameData.stats)gameData.stats={totalKills:0,totalWaves:0,totalGames:0,playtimeMs:0};gameData.stats.totalKills=(gameData.stats.totalKills||0)+1;updateHUD();
             // Normal wave advance
             if(waveInStage!==4&&totalWaveKills>=killsNeeded&&enemies.filter(en=>!en.dead&&en.type!=='boss').length===0){
               advanceAfterWave();
@@ -3099,11 +3222,46 @@ function updateMenuPlayerBar(){
   if(!el)return;
   if(name){
     el.textContent=name;
-    el.style.color='#00f5ff';
+    el.style.color='#fff';
   }else{
-    el.textContent='BELUM ADA NAMA';
+    el.textContent='PILOT BARU';
     el.style.color='rgba(0,245,255,0.35)';
   }
+  // Update stats ringkas
+  const statsEl=document.getElementById('menuProfStats');
+  if(statsEl&&gameData.stats){
+    const kills=(gameData.stats.totalKills||0).toLocaleString('id-ID');
+    const boss=gameData.bossKills||0;
+    statsEl.textContent='⚡ '+kills+' kill · 💀 '+boss+' boss';
+  }
+  // Render mini avatar di bar
+  renderMenuProfAvatar();
+}
+
+function renderMenuProfAvatar(){
+  const canvas=document.getElementById('menuProfAvatarCanvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,42,42);
+  // Background circle
+  ctx.fillStyle='#0a1628';
+  ctx.beginPath();ctx.arc(21,21,20,0,Math.PI*2);ctx.fill();
+  if(gameData.avatarDataUrl){
+    const img=new Image();
+    img.onload=()=>{
+      ctx.save();
+      ctx.beginPath();ctx.arc(21,21,20,0,Math.PI*2);ctx.clip();
+      ctx.drawImage(img,0,0,42,42);
+      ctx.restore();
+    };
+    img.src=gameData.avatarDataUrl;
+    return;
+  }
+  // Gambar pesawat aktif ukuran kecil
+  const activeShip=gameData.selectedShip||'falcon';
+  ctx.save();ctx.scale(0.6,0.6);ctx.translate(14,14);
+  drawShipAt(ctx,activeShip,21,26,false);
+  ctx.restore();
 }
 function openChangeNameModal(){
   // Reuse existing name modal
@@ -3255,7 +3413,7 @@ function startGame(){
   bossThemeActive=false;currentBossType=null;showBossHBar(false);
   skillCooldowns=[0,0,0];resetSkillEffects();
   ghostModeActive=false;ghostModeTimer=0;document.getElementById('ghostOverlay').classList.remove('active');
-  player=createPlayer();initStars();gameRunning=true;
+  player=createPlayer();initStars();gameRunning=true;_gameStartTime=Date.now();
   stopMenuBGM();
   playSoundStartGame();
   document.getElementById('menuPanel').classList.remove('show');
@@ -3268,7 +3426,20 @@ function endGame(){
   gameRunning=false;
   pendingScore=score;pendingWave=wave;
   const earned=calcCoins(score,wave);
-  gameData.coins+=earned;saveData();
+  gameData.coins+=earned;
+  // ── Track statistik ──
+  if(!gameData.stats)gameData.stats={totalKills:0,totalWaves:0,totalGames:0,playtimeMs:0};
+  gameData.stats.totalWaves=(gameData.stats.totalWaves||0)+wave;
+  gameData.stats.totalGames=(gameData.stats.totalGames||0)+1;
+  if(typeof _gameStartTime!=='undefined'&&_gameStartTime>0){
+    gameData.stats.playtimeMs=(gameData.stats.playtimeMs||0)+(Date.now()-_gameStartTime);
+    _gameStartTime=0;
+  }
+  // ── Simpan riwayat skor (max 10) ──
+  if(!gameData.scoreHistory)gameData.scoreHistory=[];
+  gameData.scoreHistory.unshift({score:score,wave:wave,date:new Date().toLocaleDateString('id-ID')});
+  if(gameData.scoreHistory.length>10)gameData.scoreHistory=gameData.scoreHistory.slice(0,10);
+  saveData();
   updateHUD();
   // Tampilkan modal nama
   const savedName=myPlayerName||localStorage.getItem('sv_player_name')||'';
@@ -6084,8 +6255,33 @@ function openMailbox(){
   document.getElementById('menuPanel').classList.remove('show');
   document.getElementById('mailboxPanel').classList.add('show');
   loadMailbox();
-  // Auto-refresh tiap 5 detik saat mailbox terbuka
-  mailboxPollTimer=setInterval(()=>loadMailbox(true),5000);
+  // Poll ringan tiap 8 detik — hanya sinkron badge & hapus item yang sudah diklaim di tab lain
+  // TIDAK overwrite seluruh mailboxData agar item yang baru diklaim tidak muncul lagi
+  mailboxPollTimer=setInterval(async()=>{
+    const name=(myPlayerName||localStorage.getItem('sv_player_name')||'').toUpperCase().trim();
+    if(!name)return;
+    try{
+      const [r1,r2]=await Promise.all([
+        sbFetch(SB_URL+'/rest/v1/pending_coins?name=eq.'+encodeURIComponent(name)+'&claimed=eq.false&select=id',{headers:SB_HDR}),
+        sbFetch(SB_URL+'/rest/v1/pending_ships?name=eq.'+encodeURIComponent(name)+'&select=id',{headers:SB_HDR})
+      ]);
+      const serverCoins=r1.ok?(await r1.json()||[]):[];
+      const serverShips=r2.ok?(await r2.json()||[]):[];
+      const serverCoinIds=new Set(serverCoins.map(c=>String(c.id)));
+      const serverShipIds=new Set(serverShips.map(s=>String(s.id)));
+      const before=mailboxData.length;
+      mailboxData=mailboxData.filter(m=>{
+        if(m._type==='coin')return serverCoinIds.has(String(m.id));
+        if(m._type==='ship')return serverShipIds.has(String(m.id));
+        return true;
+      });
+      if(mailboxData.length!==before){
+        const myName2=(myPlayerName||localStorage.getItem('sv_player_name')||'').toUpperCase().trim();
+        renderMailbox(myName2);
+      }
+      updateMailBadge(mailboxData.length);
+    }catch(e){}
+  },8000);
 }
 function closeMailbox(){
   playSoundMenuBack();
@@ -6376,12 +6572,162 @@ function updateMailBadge(count){
   }
 }
 
+// ══════════════════════════════════════════════
+// PROFILE PANEL
+// ══════════════════════════════════════════════
+function openProfile(){
+  playSoundMenuClick();
+  document.getElementById('menuPanel').classList.remove('show');
+  document.getElementById('profilePanel').classList.add('show');
+  renderProfile();
+}
+function closeProfile(){
+  playSoundMenuBack();
+  document.getElementById('profilePanel').classList.remove('show');
+  document.getElementById('menuPanel').classList.add('show');
+}
+
+function renderProfile(){
+  if(!gameData.stats)gameData.stats={totalKills:0,totalWaves:0,totalGames:0,playtimeMs:0};
+  if(!gameData.scoreHistory)gameData.scoreHistory=[];
+
+  // Nama & koin
+  const name=myPlayerName||localStorage.getItem('sv_player_name')||'ANON';
+  document.getElementById('profName').textContent=name;
+  document.getElementById('profCoins').textContent=(gameData.coins||0).toLocaleString('id-ID');
+
+  // Pesawat aktif
+  const activeShip=gameData.selectedShip||'falcon';
+  const shipDef=getShipDef(activeShip);
+  document.getElementById('profShipLabel').textContent='✈ '+((shipDef&&shipDef.name)||activeShip.toUpperCase());
+
+  // Avatar
+  renderProfAvatar();
+
+  // Statistik
+  document.getElementById('profTotalKills').textContent=(gameData.stats.totalKills||0).toLocaleString('id-ID');
+  document.getElementById('profTotalWaves').textContent=(gameData.stats.totalWaves||0).toLocaleString('id-ID');
+  document.getElementById('profTotalGames').textContent=(gameData.stats.totalGames||0).toLocaleString('id-ID');
+  document.getElementById('profBossKills').textContent=(gameData.bossKills||0);
+  document.getElementById('profSkillsOwned').textContent=((gameData.ownedSkills||[]).length);
+
+  // Playtime
+  const ms=gameData.stats.playtimeMs||0;
+  const totalMin=Math.floor(ms/60000);
+  const h=Math.floor(totalMin/60), m=totalMin%60;
+  document.getElementById('profPlaytime').textContent=h>0?(h+'j '+m+'m'):(m+'m');
+
+  // Riwayat skor
+  const hiList=document.getElementById('profHiscoreList');
+  const history=gameData.scoreHistory||[];
+  if(!history.length){
+    hiList.innerHTML='<div style="font-size:9px;letter-spacing:2px;color:rgba(0,245,255,0.2);text-align:center;padding:12px;">BELUM ADA DATA</div>';
+  }else{
+    const medals=['🥇','🥈','🥉'];
+    hiList.innerHTML=history.slice(0,5).map((e,i)=>`
+      <div class="prof-hiscore-row">
+        <span class="prof-hiscore-rank">${medals[i]||('#'+(i+1))}</span>
+        <span class="prof-hiscore-score">${(e.score||0).toLocaleString('id-ID')}</span>
+        <span class="prof-hiscore-wave">W${e.wave||0}</span>
+        <span class="prof-hiscore-date">${e.date||''}</span>
+      </div>`).join('');
+  }
+
+  // Koleksi pesawat
+  const allOwned=[...(gameData.ownedShips||['falcon'])];
+  const secretOwned=gameData.unlockedSecrets||[];
+  const allShips=[
+    ...SHIPS.filter(s=>allOwned.includes(s.id)),
+    ...SECRET_SHIPS.filter(s=>secretOwned.includes(s.id))
+  ];
+  document.getElementById('profShipCount').textContent=allShips.length;
+  const grid=document.getElementById('profShipsGrid');
+  grid.innerHTML=allShips.map(s=>{
+    const isActive=s.id===activeShip;
+    const isSecret=s.id.startsWith('s_');
+    const slotCls=(isSecret?'secret-slot ':'')+(isActive?'active':'');
+    return `<div class="prof-ship-slot ${slotCls}">
+      <canvas width="40" height="40" id="profShipCanvas_${s.id}"></canvas>
+      <div class="prof-ship-name">${s.name}</div>
+      ${isActive?'<div class="prof-ship-active-dot"></div>':''}
+    </div>`;
+  }).join('');
+
+  // Render mini ship drawings
+  requestAnimationFrame(()=>{
+    allShips.forEach(s=>{
+      const c=document.getElementById('profShipCanvas_'+s.id);
+      if(!c)return;
+      const ctx=c.getContext('2d');
+      ctx.clearRect(0,0,40,40);
+      drawShipAt(ctx,s.id,20,22,true);
+    });
+  });
+}
+
+function renderProfAvatar(){
+  const canvas=document.getElementById('profAvatarCanvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,90,90);
+
+  if(gameData.avatarDataUrl){
+    const img=new Image();
+    img.onload=()=>{
+      ctx.save();
+      ctx.beginPath();ctx.arc(45,45,44,0,Math.PI*2);ctx.clip();
+      ctx.drawImage(img,0,0,90,90);
+      ctx.restore();
+    };
+    img.src=gameData.avatarDataUrl;
+    return;
+  }
+  // Default: ship silhouette avatar
+  const name=myPlayerName||localStorage.getItem('sv_player_name')||'?';
+  ctx.fillStyle='#0a1628';
+  ctx.beginPath();ctx.arc(45,45,44,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='rgba(0,245,255,0.4)';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.arc(45,45,43,0,Math.PI*2);ctx.stroke();
+  // Gambar pesawat aktif
+  const activeShip=gameData.selectedShip||'falcon';
+  drawShipAt(ctx,activeShip,45,50,false);
+  // Inisial nama
+  ctx.fillStyle='rgba(0,245,255,0.25)';
+  ctx.font='bold 10px Orbitron,monospace';
+  ctx.textAlign='center';
+  ctx.fillText(name.slice(0,3),45,84);
+}
+
+function handleAvatarUpload(e){
+  const file=e.target.files&&e.target.files[0];
+  if(!file||!file.type.startsWith('image/'))return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    gameData.avatarDataUrl=ev.target.result;
+    saveData();
+    renderProfAvatar();
+  };
+  reader.readAsDataURL(file);
+}
+
+function resetProfileStats(){
+  if(!confirm('Reset semua statistik? (Kill, Wave, Waktu, Skor History)'))return;
+  gameData.stats={totalKills:0,totalWaves:0,totalGames:0,playtimeMs:0};
+  gameData.scoreHistory=[];
+  saveData();
+  renderProfile();
+}
+
 async function checkMailBadge(){
   const name=(myPlayerName||localStorage.getItem('sv_player_name')||'').toUpperCase().trim();
   if(!name)return;
+  // Jangan update badge dari server saat mailbox sedang terbuka — biar tidak override cache lokal
+  const mailboxOpen=document.getElementById('mailboxPanel')&&document.getElementById('mailboxPanel').classList.contains('show');
+  if(mailboxOpen)return;
   try{
     const [r1,r2]=await Promise.all([
       sbFetch(SB_URL+'/rest/v1/pending_coins?name=eq.'+encodeURIComponent(name)+'&claimed=eq.false&select=id',{headers:SB_HDR}),
+      // pending_ships pakai Opsi B (DELETE saat diklaim), jadi row yang tersisa = belum diklaim
       sbFetch(SB_URL+'/rest/v1/pending_ships?name=eq.'+encodeURIComponent(name)+'&select=id',{headers:SB_HDR})
     ]);
     const coins=r1.ok?(await r1.json()||[]).length:0;
