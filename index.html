@@ -22,7 +22,7 @@
   body{background:var(--dark);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Orbitron',monospace;overflow:hidden;color:var(--cyan);touch-action:pan-x pan-y;overscroll-behavior:none;position:fixed;width:100%;height:100%;}
   #wrapper{
     position:relative;display:flex;flex-direction:column;align-items:center;overscroll-behavior:none;
-    transform-origin:top center;
+    transform-origin:top left;
   }
   #hud{display:flex;justify-content:space-between;align-items:center;width:480px;padding:7px 12px;background:rgba(0,245,255,0.05);border:1px solid rgba(0,245,255,0.2);border-bottom:none;font-size:11px;letter-spacing:2px;}
   #hud .val{color:#fff;font-weight:700;font-size:13px;}
@@ -3195,11 +3195,11 @@ function update(){
   if(keys['ArrowUp']||keys['w']||keys['W'])inputY=-1;
   if(keys['ArrowDown']||keys['s']||keys['S'])inputY=1;
   if(useMouseX){const diff=mouseX-player.x;if(Math.abs(diff)>3)player.vx+=diff*.012*sens;}
-  else if(touch.active){
+  else if(touch.active&&settings.analogMode!=='finger'){
     const deadZone=8,maxRadius=62;const dx=touch.curX-touch.startX,dy=touch.curY-touch.startY;const dist=Math.hypot(dx,dy);
     if(dist>deadZone){const norm=Math.min(dist,maxRadius)/maxRadius;inputX=(dx/dist)*norm;inputY=(dy/dist)*norm;}
     player.vx+=inputX*accel*1.2;player.vy+=inputY*accel*1.2;
-  }else{player.vx+=inputX*accel;player.vy+=inputY*accel;}
+  }else if(!touch.active||settings.analogMode!=='finger'){player.vx+=inputX*accel;player.vy+=inputY*accel;}
   player.vx*=friction;player.vy*=friction;
   const spd=Math.hypot(player.vx,player.vy);if(spd>maxSpeed){player.vx=player.vx/spd*maxSpeed;player.vy=player.vy/spd*maxSpeed;}
   if(Math.abs(player.vx)<.01)player.vx=0;if(Math.abs(player.vy)<.01)player.vy=0;
@@ -5111,10 +5111,22 @@ canvas.addEventListener('click',e=>{
 document.getElementById('nameInput').addEventListener('keydown',e=>{if(e.key==='Enter')submitName();});
 
 // ─── TOUCH ────────────────────────────────────────────────
+// Helper: konversi koordinat sentuh ke koordinat canvas yang akurat
+// Memperhitungkan CSS transform scale pada wrapper
+function getTouchCanvasPos(clientX, clientY){
+  // Pakai canvas.getBoundingClientRect() langsung - paling akurat
+  // karena canvas adalah elemen yang kita sentuh, bukan wrapper
+  const rect = canvas.getBoundingClientRect();
+  const tx = (clientX - rect.left) * (W / rect.width);
+  const ty = (clientY - rect.top) * (H / rect.height);
+  return {x: tx, y: ty};
+}
+
 canvas.addEventListener('touchstart',e=>{
   e.preventDefault();if(!gameRunning)return;
-  const t=e.changedTouches[0];const rect=canvas.getBoundingClientRect();const sx=W/rect.width,sy=H/rect.height;
-  const tx=(t.clientX-rect.left)*sx,ty=(t.clientY-rect.top)*sy;
+  const t=e.changedTouches[0];
+  const pos=getTouchCanvasPos(t.clientX,t.clientY);
+  const tx=pos.x,ty=pos.y;
   // Check skill button tap first
   const slot=skillHitTest(tx,ty);
   if(slot>=0){useEquippedSkill(slot);return;}
@@ -5131,8 +5143,8 @@ canvas.addEventListener('touchmove',e=>{
   e.preventDefault();
   for(const t of e.changedTouches){
     if(t.identifier!==touch.id)continue;
-    const rect=canvas.getBoundingClientRect();const sx=W/rect.width,sy=H/rect.height;
-    touch.curX=(t.clientX-rect.left)*sx;touch.curY=(t.clientY-rect.top)*sy;
+    const pos=getTouchCanvasPos(t.clientX,t.clientY);
+    touch.curX=pos.x;touch.curY=pos.y;
     if(settings.analogMode==='finger'){
       // Pesawat langsung ikut jari
       player.x=Math.max(18,Math.min(W-18,touch.curX));
@@ -7305,8 +7317,13 @@ function showPendingCoinNotif(total){
     const sw=window.innerWidth,sh=window.innerHeight;
     const scaleX=sw/480,scaleY=sh/672; // 672 = hud(36)+canvas(600)+footer(36)
     const scale=Math.min(scaleX,scaleY,1); // max scale = 1 (never upscale past native)
+    window._gameScale=scale; // simpan global untuk touch handler
+    // transform-origin: top left, margin manual supaya center
+    const scaledW=480*scale, scaledH=672*scale;
+    wrap.style.transformOrigin='top left';
     wrap.style.transform='scale('+scale+')';
-    wrap.style.marginTop=((sh-(672*scale))/2)+'px';
+    wrap.style.marginLeft=((sw-scaledW)/2)+'px';
+    wrap.style.marginTop=((sh-scaledH)/2)+'px';
   }
   doScale();
   window.addEventListener('resize',doScale);
