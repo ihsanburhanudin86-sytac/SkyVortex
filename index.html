@@ -33,12 +33,12 @@
   #footer{width:480px;padding:5px 12px;background:rgba(0,245,255,0.03);border:1px solid rgba(0,245,255,0.2);border-top:none;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(0,245,255,0.3);display:flex;justify-content:space-between;}
 
   /* PANELS */
-  .panel{position:absolute;top:36px;left:0;width:480px;height:600px;display:none;flex-direction:column;align-items:center;justify-content:center;background:var(--panel);z-index:20;gap:14px;overflow-y:auto;}
+  .panel{position:absolute;top:36px;left:0;width:480px;height:600px;display:none;flex-direction:column;align-items:center;justify-content:center;background:var(--panel);z-index:20;gap:14px;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain;}
   .panel.show{display:flex;}
 
   /* ═══════ RETRO ARCADE MAIN MENU ═══════ */
   @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-  #menuPanel{background:radial-gradient(ellipse at top,#0a001a 0%,#000000 100%) !important;image-rendering:pixelated;border:4px solid #ff00ff !important;box-shadow:0 0 0 2px #000,0 0 0 4px #ff00ff,0 0 40px #ff00ff88 !important;justify-content:flex-start !important;overflow-y:auto !important;}
+  #menuPanel{background:radial-gradient(ellipse at top,#0a001a 0%,#000000 100%) !important;image-rendering:pixelated;border:4px solid #ff00ff !important;box-shadow:0 0 0 2px #000,0 0 0 4px #ff00ff,0 0 40px #ff00ff88 !important;justify-content:flex-start !important;overflow-y:auto !important;-webkit-overflow-scrolling:touch !important;touch-action:pan-y !important;overscroll-behavior:contain !important;}
   #menuPanel h1{font-family:'Press Start 2P',monospace !important;font-size:22px !important;font-weight:400 !important;letter-spacing:2px !important;color:#ffff00 !important;text-shadow:3px 3px 0 #ff8800,-1px -1px 0 #ff4400,0 0 20px #ffff00 !important;line-height:1.4 !important;text-align:center !important;animation:titleBlink 1.2s step-end infinite;}
   @keyframes titleBlink{0%,100%{opacity:1;}50%{opacity:0.85;}}
   @keyframes scanline{0%{background-position:0 0;}100%{background-position:0 4px;}}
@@ -238,6 +238,22 @@
   .gacha-roll-btn:disabled:hover{background:transparent;color:var(--gold);box-shadow:none;}
   #gachaResult{min-height:40px;font-size:11px;letter-spacing:2px;text-align:center;color:var(--gold);}
   .back-btn{font-size:10px;letter-spacing:3px;color:rgba(0,245,255,0.4);background:transparent;border:none;cursor:pointer;font-family:'Orbitron';padding:8px 14px;transition:color .2s;margin-top:4px;}
+  /* ═══ DAILY CHALLENGE ═══ */
+  .dc-header{font-family:'Press Start 2P',monospace;font-size:11px;color:#ffdd00;text-shadow:0 0 10px #ffaa00;letter-spacing:2px;text-align:center;margin-bottom:4px;}
+  .dc-date{font-size:8px;color:rgba(255,221,0,0.5);letter-spacing:3px;text-align:center;margin-bottom:12px;}
+  .dc-missions{display:flex;flex-direction:column;gap:8px;width:92%;margin-bottom:14px;}
+  .dc-mission{background:rgba(255,200,0,0.05);border:1px solid rgba(255,200,0,0.2);padding:10px 12px;display:flex;flex-direction:column;gap:4px;}
+  .dc-mission.done{border-color:rgba(0,255,136,0.4);background:rgba(0,255,136,0.05);}
+  .dc-mission-title{font-size:9px;letter-spacing:2px;color:#ffdd00;font-family:'Share Tech Mono',monospace;}
+  .dc-mission.done .dc-mission-title{color:#00ff88;}
+  .dc-mission-desc{font-size:8px;color:rgba(255,255,255,0.4);letter-spacing:1px;}
+  .dc-mission-reward{font-size:8px;color:#ffd700;letter-spacing:1px;}
+  .dc-progress-bar{height:4px;background:rgba(255,255,255,0.1);margin-top:4px;}
+  .dc-progress-fill{height:4px;background:#ffdd00;transition:width .4s;}
+  .dc-mission.done .dc-progress-fill{background:#00ff88;}
+  .dc-countdown{text-align:center;font-size:9px;color:rgba(0,245,255,0.5);letter-spacing:2px;font-family:'Share Tech Mono',monospace;margin-top:4px;}
+  .dc-total-reward{text-align:center;font-size:10px;color:#ffd700;letter-spacing:2px;margin-bottom:10px;padding:8px;border:1px solid rgba(255,215,0,0.25);background:rgba(255,215,0,0.05);width:92%;}
+  .dc-badge{position:absolute;top:-4px;right:-4px;background:#ff4400;color:#fff;font-size:7px;font-family:'Share Tech Mono';padding:2px 4px;border-radius:2px;letter-spacing:1px;}
   .back-btn:hover{color:var(--cyan);}
 
 
@@ -1052,10 +1068,31 @@ document.head.appendChild(st);
       <button class="glow-btn purple" onclick="openLeaderboard()">🏆 RANKING</button>
       <button class="glow-btn orange" onclick="openSettings()">⚙ SETTING</button>
       <button class="glow-btn btn-cyan" style="position:relative;" onclick="openMailbox()" id="mailboxMenuBtn">📬 MAILBOX<span class="mail-badge" id="mailBadge" style="display:none;">0</span></button>
+      <button class="glow-btn" id="dcMenuBtn" onclick="openDailyChallenge()" style="background:linear-gradient(135deg,rgba(60,40,0,0.9),rgba(30,20,0,0.9)) !important;border-color:#ffdd00 !important;color:#ffdd00 !important;grid-column:span 2;position:relative;">🎯 DAILY CHALLENGE<span class="dc-badge" id="dcBadge" style="display:none;">NEW</span></button>
       <button class="glow-btn btn-danger" onclick="openAdminLogin()" style="grid-column:span 2;">🛡 ADMIN</button>
       <button class="glow-btn" style="background:linear-gradient(135deg,#ff6600,#cc2200);border-color:#ff6600;color:#fff;grid-column:span 2;font-size:9px;letter-spacing:2px;" onclick="startEscortMode()">🛡 ESCORT MODE</button>
     </div>
     <div id="controlsHint">WASD/ARROW:GERAK | SPACE:TEMBAK<br>📱 GESER=JOYSTICK · AUTO TEMBAK</div>
+  </div>
+
+  <!-- DAILY CHALLENGE PANEL -->
+  <div class="panel" id="dcPanel">
+    <div class="panel-header">
+      <button class="home-btn" onclick="closeDailyChallenge()" title="Kembali ke Menu">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </button>
+      <div>
+        <h2>🎯 DAILY CHALLENGE</h2>
+        <div class="panel-sub" id="dcPanelSub">MISI HARIAN</div>
+      </div>
+    </div>
+    <div style="width:100%;overflow-y:auto;display:flex;flex-direction:column;align-items:center;padding:10px 0 16px;gap:0;">
+      <div class="dc-header">TANTANGAN HARI INI</div>
+      <div class="dc-date" id="dcDateLabel"></div>
+      <div class="dc-missions" id="dcMissionList"></div>
+      <div class="dc-total-reward" id="dcTotalReward">🪙 SELESAIKAN SEMUA MISI UNTUK BONUS!</div>
+      <div class="dc-countdown" id="dcCountdown"></div>
+    </div>
   </div>
 
   <!-- MAILBOX PANEL -->
@@ -3603,6 +3640,7 @@ function endGame(){
   gameData.scoreHistory.unshift({score:score,wave:wave,date:new Date().toLocaleDateString('id-ID')});
   if(gameData.scoreHistory.length>10)gameData.scoreHistory=gameData.scoreHistory.slice(0,10);
   saveData();
+  updateDcProgress(); // Daily Challenge progress
   updateHUD();
   // Tampilkan modal nama
   const savedName=myPlayerName||localStorage.getItem('sv_player_name')||'';
@@ -7310,6 +7348,231 @@ function showPendingCoinNotif(total){
 }
 
 // ─── INIT ──────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// ─── DAILY CHALLENGE SYSTEM ───────────────────────────────
+// ══════════════════════════════════════════════════════════
+
+function getDcSeed(){
+  const d=new Date();
+  return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();
+}
+
+function seededRand(seed,n){
+  // Simple LCG
+  let s=seed;
+  const results=[];
+  for(let i=0;i<n;i++){
+    s=(s*1664525+1013904223)&0xffffffff;
+    results.push(Math.abs(s));
+  }
+  return results;
+}
+
+const DC_MISSION_POOL=[
+  {id:'score5k',  title:'ROOKIE PILOT',   desc:'Capai skor 5.000 dalam 1 game',   target:5000,  type:'score',   reward:80},
+  {id:'score10k', title:'ACE PILOT',      desc:'Capai skor 10.000 dalam 1 game',  target:10000, type:'score',   reward:150},
+  {id:'score20k', title:'LEGEND PILOT',   desc:'Capai skor 20.000 dalam 1 game',  target:20000, type:'score',   reward:300},
+  {id:'wave5',    title:'WAVE RUNNER',    desc:'Bertahan hingga wave 5',           target:5,     type:'wave',    reward:100},
+  {id:'wave10',   title:'IRON WING',      desc:'Bertahan hingga wave 10',          target:10,    type:'wave',    reward:200},
+  {id:'play2',    title:'DAILY GRIND',    desc:'Main 2 game hari ini',             target:2,     type:'games',   reward:60},
+  {id:'play3',    title:'TRIPLE RUN',     desc:'Main 3 game hari ini',             target:3,     type:'games',   reward:90},
+  {id:'coin50',   title:'COIN HUNTER',   desc:'Kumpulkan 50 koin hari ini',       target:50,    type:'coins',   reward:70},
+  {id:'coin100',  title:'GOLD RUSH',     desc:'Kumpulkan 100 koin hari ini',      target:100,   type:'coins',   reward:130},
+  {id:'wave3',    title:'SURVIVOR',      desc:'Bertahan hingga wave 3',            target:3,     type:'wave',    reward:50},
+];
+
+function getDailyMissions(){
+  const seed=getDcSeed();
+  const rands=seededRand(seed,3);
+  const pool=[...DC_MISSION_POOL];
+  const chosen=[];
+  const usedIdx=new Set();
+  for(let i=0;i<3;i++){
+    const idx=rands[i]%pool.length;
+    let pick=idx;
+    while(usedIdx.has(pick))pick=(pick+1)%pool.length;
+    usedIdx.add(pick);
+    chosen.push({...pool[pick]});
+  }
+  return chosen;
+}
+
+function getDcData(){
+  const today=getDcSeed();
+  try{
+    const raw=JSON.parse(localStorage.getItem('sv_dc')||'{}');
+    if(raw.seed!==today){
+      // Hari baru — reset progress
+      return {seed:today,progress:{},claimed:false};
+    }
+    return raw;
+  }catch(e){return {seed:today,progress:{},claimed:false};}
+}
+
+function saveDcData(data){
+  try{localStorage.setItem('sv_dc',JSON.stringify(data));}catch(e){}
+}
+
+// Dipanggil setiap endGame untuk update progress DC
+function updateDcProgress(){
+  const dc=getDcData();
+  const missions=getDailyMissions();
+  const today=getDcSeed();
+  if(!dc.progress)dc.progress={};
+
+  missions.forEach(m=>{
+    const cur=dc.progress[m.id]||0;
+    let add=0;
+    if(m.type==='score')   add=Math.max(0,score);        // skor game ini
+    if(m.type==='wave')    add=wave;                      // wave game ini
+    if(m.type==='games')   add=1;                         // +1 game
+    if(m.type==='coins')   add=calcCoins(score,wave);     // koin game ini
+
+    if(m.type==='score'||m.type==='wave'){
+      // Ambil nilai tertinggi (bukan akumulasi)
+      dc.progress[m.id]=Math.max(cur,add);
+    }else{
+      // Akumulasi
+      dc.progress[m.id]=cur+add;
+    }
+  });
+
+  // Cek apakah semua done → update badge saja, klaim manual lewat tombol
+  saveDcData(dc);
+  updateDcBadge();
+}
+
+function showDcCompleteToast(bonus){
+  let toast=document.getElementById('dcToast');
+  if(!toast){
+    toast=document.createElement('div');
+    toast.id='dcToast';
+    toast.style.cssText="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(255,215,0,0.95);color:#000;font-family:'Press Start 2P',monospace;font-size:8px;padding:10px 16px;letter-spacing:1px;z-index:9999;text-align:center;border:2px solid #ff8800;box-shadow:0 0 20px #ffaa00;";
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML='🎯 DAILY CHALLENGE SELESAI!<br>+'+bonus+' 🪙 BONUS MASUK!';
+  toast.style.display='block';
+  setTimeout(()=>{toast.style.display='none';},3500);
+}
+
+function updateDcBadge(){
+  const dc=getDcData();
+  const missions=getDailyMissions();
+  const allDone=missions.every(m=>(dc.progress[m.id]||0)>=m.target);
+  const badge=document.getElementById('dcBadge');
+  if(!badge)return;
+  if(allDone&&!dc.claimed){
+    // Semua selesai, belum diklaim → merah "KLAIM!"
+    badge.style.display='';
+    badge.textContent='KLAIM!';
+    badge.style.background='#ff2200';
+  }else{
+    badge.style.display='none';
+  }
+}
+
+function openDailyChallenge(){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('show'));
+  document.getElementById('dcPanel').classList.add('show');
+  renderDcPanel();
+}
+
+function closeDailyChallenge(){
+  document.getElementById('dcPanel').classList.remove('show');
+  document.getElementById('menuPanel').classList.add('show');
+}
+
+function renderDcPanel(){
+  const missions=getDailyMissions();
+  const dc=getDcData();
+  const d=new Date();
+  const days=['MINGGU','SENIN','SELASA','RABU','KAMIS','JUMAT','SABTU'];
+  document.getElementById('dcDateLabel').textContent=
+    days[d.getDay()]+', '+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+
+  const list=document.getElementById('dcMissionList');
+  list.innerHTML='';
+  let totalReward=0;
+  let allDone=true;
+
+  missions.forEach(m=>{
+    const prog=dc.progress[m.id]||0;
+    const done=prog>=m.target;
+    if(!done)allDone=false;
+    totalReward+=m.reward;
+    const pct=Math.min(100,Math.round((prog/m.target)*100));
+    const div=document.createElement('div');
+    div.className='dc-mission'+(done?' done':'');
+    div.innerHTML=
+      '<div class="dc-mission-title">'+(done?'✅ ':'')+m.title+'</div>'+
+      '<div class="dc-mission-desc">'+m.desc+'</div>'+
+      '<div class="dc-mission-reward">🪙 +'+m.reward+' KOIN</div>'+
+      '<div class="dc-progress-bar"><div class="dc-progress-fill" style="width:'+pct+'%"></div></div>'+
+      '<div style="font-size:7px;color:rgba(255,255,255,0.3);letter-spacing:1px;margin-top:2px;">'+
+        (m.type==='score'?'SKOR TERBAIK: ':m.type==='wave'?'WAVE TERBAIK: ':'PROGRESS: ')+
+        prog+' / '+m.target+
+      '</div>';
+    list.appendChild(div);
+  });
+
+  const totalEl=document.getElementById('dcTotalReward');
+  if(dc.claimed){
+    totalEl.innerHTML='✅ SEMUA MISI SELESAI!<br><span style="font-size:9px;color:#00ff88;">+'+totalReward+' 🪙 SUDAH DIKLAIM</span>';
+    totalEl.style.color='#00ff88';
+    totalEl.style.borderColor='rgba(0,255,136,0.3)';
+  }else if(allDone){
+    totalEl.innerHTML='🎉 SEMUA MISI SELESAI!<br><span style="font-size:9px;">BONUS: +'+totalReward+' 🪙</span><br>'+
+      '<button onclick="claimDcReward()" style="margin-top:8px;background:#ff2200;border:2px solid #ff6600;color:#fff;font-family:Orbitron,monospace;font-size:10px;letter-spacing:2px;padding:8px 24px;cursor:pointer;animation:titleBlink 0.8s step-end infinite;">🎁 KLAIM REWARD</button>';
+    totalEl.style.color='#ffdd00';
+    totalEl.style.borderColor='rgba(255,100,0,0.5)';
+  }else{
+    totalEl.innerHTML='🎯 BONUS SEMUA MISI: +'+totalReward+' 🪙';
+    totalEl.style.color='#ffd700';
+    totalEl.style.borderColor='rgba(255,215,0,0.25)';
+  }
+
+  // Countdown ke reset berikutnya
+  dcStartCountdown();
+}
+
+function claimDcReward(){
+  const dc=getDcData();
+  const missions=getDailyMissions();
+  const allDone=missions.every(m=>(dc.progress[m.id]||0)>=m.target);
+  if(!allDone||dc.claimed)return;
+  const bonus=missions.reduce((s,m)=>s+m.reward,0);
+  dc.claimed=true;
+  saveDcData(dc);
+  gameData.coins+=bonus;
+  saveData();
+  updateHUD();
+  updateDcBadge();
+  renderDcPanel();
+  showDcCompleteToast(bonus);
+}
+
+let dcCountdownTimer=null;
+function dcStartCountdown(){
+  if(dcCountdownTimer)clearInterval(dcCountdownTimer);
+  function tick(){
+    const now=new Date();
+    const next=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1);
+    const diff=next-now;
+    const h=Math.floor(diff/3600000);
+    const m=Math.floor((diff%3600000)/60000);
+    const s=Math.floor((diff%60000)/1000);
+    const el=document.getElementById('dcCountdown');
+    if(el)el.textContent='⏱ RESET DALAM '+h+'J '+m+'M '+s+'D';
+  }
+  tick();
+  dcCountdownTimer=setInterval(tick,1000);
+}
+
+// Init badge saat load
+window.addEventListener('load',()=>{updateDcBadge();});
+
+// ══════════════════════════════════════════════════════════
+
 // ── AUTO SCALE wrapper to fit screen ──────────────────────
 (function scaleWrapper(){
   const wrap=document.getElementById('wrapper');
@@ -7368,10 +7631,13 @@ setTimeout(()=>{checkMailBadge();},2000);
     if (e.touches[0]) _touchStartY = e.touches[0].clientY;
   }, {passive: true});
   document.addEventListener('touchmove', e => {
-    const pb = e.target.closest('.panel-body');
-    if (!pb) { e.preventDefault(); return; }
-    const atTop = pb.scrollTop <= 0;
-    const atBottom = pb.scrollTop + pb.clientHeight >= pb.scrollHeight - 1;
+    // Izinkan scroll di panel (.panel) dan panel-body
+    const scrollable = e.target.closest('.panel, .panel-body, #menuPanel');
+    if (!scrollable) { e.preventDefault(); return; }
+    // Cegah overscroll di ujung panel
+    const el = scrollable;
+    const atTop = el.scrollTop <= 0;
+    const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
     const scrollingUp = e.touches[0].clientY > _touchStartY;
     if ((atTop && scrollingUp) || (atBottom && !scrollingUp)) {
       e.preventDefault();
